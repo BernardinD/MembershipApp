@@ -1,0 +1,143 @@
+#:import environ os.environ        
+<AddMember>:
+    BoxLayout
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.15
+            canvas:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            padding: 10
+            Button:
+                id: new_button
+                size_hint: 0.33, 1
+                text: 'Cancel?'
+                text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+                on_press: app.on_back()
+                #disabled: False if platform == 'win' else True
+            Label:
+        BoxLayout
+            size_hint: 1, 0.60
+            orientation: 'horizontal'
+            BoxLayout
+                orientation: 'vertical'
+                BoxLayout:
+                    padding: 5
+                    Label:
+                        color: 0, 0, 0, 1
+                        canvas.before:
+                            Color:
+                                rgba: 1, 1, 1, 1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+                        id: testing
+                        text: 'First Name:'
+                    TextInput:
+                        id: first_name
+                        #focus_next: mem_email
+                        write_tab: False
+                BoxLayout:
+                    padding: 5
+                    Label:
+                        color: 0, 0, 0, 1
+                        canvas.before:
+                            Color:
+                                rgba: 1, 1, 1, 1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+
+                        text: 'Last Name:'
+                    TextInput:
+                        id: last_name
+                        #focus_next: mem_email
+                        #focus_previous: first_name
+                        write_tab: False
+                BoxLayout:
+                    padding: 5
+                    Label:
+                        color: 0, 0, 0, 1
+                        canvas.before:
+                            Color:
+                                rgba: 1, 1, 1, 1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+                        text: 'E-mail:'
+                    TextInput:
+                        id: mem_email
+                        #focus_next: mem_email
+                        #focus_previous: last_name
+                        write_tab: False
+                BoxLayout:
+                    padding: 5
+                    Label:
+                        color: 0, 0, 0, 1
+                        canvas.before:
+                            Color:
+                                rgba: 1, 1, 1, 1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+                        halign: 'center'
+                        valign: 'center'
+                        text: 'Phone # \\n(For groupchat invite):'
+                    TextInput:
+                        id: mem_phone
+                        write_tab: False
+                        #focus_previous: mem_email
+                        #focus_next: mem_email
+            BoxLayout
+                orientation: 'vertical'
+                QRCodeWidget:
+                    show_border: False
+                    size_hint: 1, 0.75
+                    id: qr
+                    data: 'testing, jiujiu'
+                BoxLayout
+                    size_hint: 1, 0.25
+                    orientation: 'horizontal'
+                    Image:
+                        source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
+                    Image:
+                        source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
+        BoxLayout
+            orientation: 'vertical'
+            size_hint: 1, 0.30
+            Button:
+                id: intent_button
+                text: 'Add New Member'
+                size_hint: 1, 0.33
+                height: sp(40)
+                on_release: root.confirm(self)
+            
+            Button:
+                id: confirm_button
+                text: 'Confirm?'
+                size_hint: 1, 0.33
+                on_release: root.add_member(self, first_name.text, last_name.text, mem_email.text, mem_phone.text)
+                disabled: True
+            
+            
+            BoxLayout:
+                size_hint: 1, 0.33
+                orientation: 'horizontal'
+                Button:
+                    id: home_button
+                    text: "Return to Home?"
+                    on_release: app.on_back()
+                    height: sp(40)
+                    disabled: True
+                Button:
+                    id: again_button
+                    text: "Add another?"
+                    on_release: root.on_pre_enter()
+                    height: sp(40)
+                    disabled: True

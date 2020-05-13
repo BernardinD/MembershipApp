@@ -1,0 +1,222 @@
+#:import environ os.environ
+#:import Toolbar kivymd.uix.toolbar.MDToolbar
+##:import ZBarCam kivy_garden.zbarcam.ZBarCam
+##:import MDTextField kivymd.textfields.MDTextField
+##:import NavigationLayout kivymd.navigationdrawer.NavigationLayout
+##:import BoxLayout kivy.uix.boxlayout.BoxLayout
+#:import platform kivy.utils.platform
+
+
+        	
+        
+<Scan>
+    BoxLayout:
+        orientation: 'vertical'
+        
+        ZBarCam:
+            id: zbarcam
+        #     optional, by default checks all types
+            #code_types: ZBarSymbol.QRCODE,
+            on_symbols: root.scanned()
+            #on_parent: zbarcam.stop()
+
+        GridLayout:
+            cols: 3
+            rows: 1
+            size_hint: 1.0, 0.2
+            padding: 5
+            Widget:
+            Button:
+                text: 'Go to home'
+                text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+                on_press: app.on_back()
+            Widget:
+            
+<Drive>
+    BoxLayout:
+        orientation: 'vertical'
+        
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation: 'horizontal'
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            Label:
+                text: "Name: "
+            Label:
+                id: name
+                text: "..."
+                color: 1, 1, 1, 1
+                
+        BoxLayout:
+            orientation: 'horizontal'
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            Label:
+                text: "Level: "
+            Label:
+                background_color: 0, 0, 0, 1
+                canvas.before:
+                    Color:
+                        rgba: self.background_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                id: level
+                text: "..."
+                color: 1, 1, 1, 1
+                
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            cols: 1
+            rows: 1
+            size_hint: 1.0, 0.2
+            Label:
+				id: prompt
+                text: root.prompt_property
+                color: 1, 0, 0, 1
+                
+        BoxLayout:
+            orientation: 'horizontal'
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            Button:
+                id: yes
+                text: "Yes"
+                on_release: root.approve()
+            Button:
+                id: no
+                text: "No"
+                on_release: root.cancel()
+
+        BoxLayout:
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            padding: 5
+            Widget:
+            Image:
+            	source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
+            Widget:
+  
+    
+<NavigationItem>
+    theme_text_color: 'Custom'
+    divider: None
+	on_release: self.pressed()
+
+    IconLeftWidget:
+        icon: root.icon
+
+		
+<ContentNavigationDrawer>
+    BoxLayout:
+		#on_active: print("******IT WORKED******")
+        orientation: 'vertical'
+		FloatLayout:
+            #size_hint_y: None
+            #height: "200dp"
+			BoxLayout:
+				id: top_box
+				#height: "200dp"
+				#padding: "10dp"
+				x: root.parent.x
+				pos_hint: {"top": 1}
+				FitImage:
+					source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
+			#MDIconButton:
+			#	icon: "close"
+			#	x: root.x 
+			#	#theme_text_color: 'Primary'
+			#	#text_color: 1,1,1,1
+			#	opposite_colors: True
+			#	pos_hint: {"top": 1}
+			#	on_release: app.root.ids.nav_drawer.set_state("toggle") if platform in 'win,linux' else None
+			
+		NavigationItem:
+			canvas.before:
+				Color:
+					rgba: app.theme_cls.primary_color
+				Rectangle:
+					pos: self.pos
+					size: self.size
+			#size_hint: 1, 0.1
+			idx: 1
+			text: "Switch: Sign-in/Test-out"
+			on_release: app.root.ids.drive_id.flag_property = not app.root.ids.drive_id.flag_property
+			
+		MDLabel:
+			markup: True
+			text: "Menu and Settings"
+			#pos_hint: {'center_y': .5}
+			x: root.parent.x + dp(10)
+			y: root.height - top_box.height + dp(10)
+			size_hint_y: None
+			height: self.texture_size[1]
+			color: 1,1,1,1
+        ScrollView:
+            pos_hint: {"top": 1}
+            GridLayout:
+                id: box_item
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+
+Screen:
+	BoxLayout:
+		orientation: 'vertical'
+	MDToolbar:
+		id: toolbar
+		pos_hint: {"top": 1}
+		size_hint: 1, 0.1
+		md_bg_color: app.theme_cls.primary_color
+		elevation: 10
+		title: "Membership Scanner" if not (nav_drawer.state == "open") else "Swipe to close menu"
+		disabled: False if not (nav_drawer.state == "open") else True
+		left_action_items: [['menu', lambda x: nav_drawer.set_state("toggle")]] if not (nav_drawer.state == "open") else [['arrow-right', lambda x: self.toggle_state()]]
+    NavigationLayout:
+        id: navigation_id
+		size_hint: 1, 0.9
+		ScreenManager:
+			id: screen_manager_id
+			size_hint_y: None
+			height: root.height - toolbar.height
+			#disabled: False if root.ids.nav_drawer.state=="open" else False
+			Home:
+				id: home_id
+				name: 'home_screen'
+			Scan:
+				id: scan_id
+				name: 'scan_screen'
+			Drive:
+				id: drive_id
+				name: 'drive_screen'
+			AddMember:
+				id: add_id
+				name: 'add_screen'
+			Settings_Setup:
+				id: settings_id
+				name: 'settings_screen'
+		MDNavigationDrawer:
+			id: nav_drawer
+			ContentNavigationDrawer:
+				height: root.height
+				id: content_drawer
+				

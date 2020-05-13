@@ -1,0 +1,81 @@
+<Settings_cell>:
+	orientation: 'horizontal'
+	BoxLayout:
+		padding: 5
+		Label:
+			size_hint_x: 0.33
+			color: 0, 0, 0, 1
+			canvas.before:
+				Color:
+					rgba: 1, 1, 1, 1
+				Rectangle:
+					size: self.size
+					pos: self.pos
+			#id: testing
+			text: root.topic
+		Label:
+			size_hint_x: 0.33
+			color: 0, 0, 0, 1
+			canvas.before:
+				Color:
+					rgba: 1, 1, 1, 1
+				Rectangle:
+					size: self.size
+					pos: self.pos
+			#id: testing
+			text: root.info
+		Button:
+			size_hint_x: 0.33
+			id: button
+			text: 'Change?'
+			height: sp(40)
+			on_release: root.buttons(self)
+		
+
+<Settings_Setup>:
+    BoxLayout
+        orientation: 'vertical'
+		BoxLayout
+			orientation: 'vertical'
+			size_hint: 1, 0.70
+			Settings_cell:
+				topic: "Current sheet"
+			Settings_cell:
+				topic: "Default color"
+			Settings_cell:
+				topic: "Create new sheet"
+			Settings_cell:
+				topic: "Sharing (copy email address)"
+		BoxLayout
+			orientation: 'vertical'
+			size_hint: 1, 0.30
+			Button:
+				id: intent_button
+				text: 'Add New Member'
+				size_hint: 1, 0.33
+				height: sp(40)
+				on_release: root.confirm(self)
+			
+			Button:
+				id: confirm_button
+				text: 'Confirm?'
+				size_hint: 1, 0.33
+				on_release: root.add_member(self, first_name.text, last_name.text, mem_email.text, mem_phone.text)
+				disabled: True
+			
+			
+			BoxLayout:
+				size_hint: 1, 0.33
+				orientation: 'horizontal'
+				Button:
+					id: home_button
+					text: "Return to Home?"
+					on_release: app.on_back()
+					height: sp(40)
+					disabled: True
+				Button:
+					id: again_button
+					text: "Add another?"
+					on_release: root.on_pre_enter()
+					height: sp(40)
+					disabled: True

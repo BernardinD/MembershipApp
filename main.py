@@ -1,0 +1,473 @@
+#!/usr/bin/env python3
+#import validators
+try:
+    import sys
+    import os
+    
+    abs_root = os.path.split(os.path.abspath("."))[0]
+    if getattr(sys, "frozen", False):  # bundle mode with PyInstaller
+        os.environ["PULSO_APP_ROOT"] = sys._MEIPASS
+    else:
+        sys.path.append(os.path.abspath(__file__).split("demos")[0])
+        os.environ["PULSO_APP_ROOT"] = os.path.dirname(os.path.abspath(__file__))
+    os.environ["PULSO_APP_ASSETS"] = os.path.join(
+        os.environ["PULSO_APP_ROOT"], f"assets{os.sep}"
+    )
+    from kivy_garden.zbarcam import ZBarCam
+    from kivy_garden import zbarcam 
+    temp_path = os.path.abspath(zbarcam.__file__)
+    temp_path = temp_path.split("zbarcam")[0]
+    print("temp_path = ", temp_path)
+    import glob
+    from os.path import join
+    from os import sep
+    for file in glob.iglob(join("**{}*".format(sep)), recursive=True):
+        print (file)
+        
+    sys.path.insert(0, temp_path)
+    from kivy_deps import sdl2, glew
+    from kivymd import hooks_path as kivymd_hooks_path
+    from kivy.lang import Builder
+    from kivy.utils import platform
+    print('os.path.abspath(".") =', os.path.abspath("."))
+    #from kivy.utils import platform
+    if platform in 'win,linux':
+        from kivy_garden.qrcode import QRCodeWidget
+        Builder.load_file(os.path.join(
+                    os.environ["PULSO_APP_ROOT"], "libs", "kv",
+                    "add_memb.kv"))
+    
+    Builder.load_file(os.path.join(
+                os.environ["PULSO_APP_ROOT"], "libs", "kv",
+                "settings.kv"))
+    Builder.load_file(os.path.join(
+                os.environ["PULSO_APP_ROOT"], "libs", "kv",
+                "home.kv"))
+    from kivymd.app import MDApp
+    from kivy.clock import Clock
+    #from kivy.core.clipboard import Clipboard
+    from kivy.logger import LOG_LEVELS, Logger
+    from kivy.properties import StringProperty, BooleanProperty, NumericProperty
+    from kivy.uix.screenmanager import Screen, ScreenManager
+    from kivymd.icon_definitions import md_icons
+    from kivymd.theming import ThemeManager
+    from kivymd.uix.toolbar import MDToolbar
+    from kivy.graphics import Color, Rectangle
+    from kivymd.uix.button import Button
+    from kivymd.uix.label import Label
+    from kivy.uix.boxlayout import BoxLayout
+    from kivymd.uix.list import OneLineAvatarListItem
+    from kivy.uix.popup import Popup
+    from kivymd.uix.navigationdrawer import MDNavigationDrawer
+    from libs.classes.settings import Settings_Setup
+    from libs.classes.home import Home
+    #/////////////////////////////////////
+    
+    from kivy.storage.jsonstore import JsonStore
+
+    store = JsonStore(os.path.join(abs_root, "assets",'hello.json'))
+    print("store.get('tito') =", store.get('tito') if 'tito' in store else None)
+    store.put('tito', name='Mathieu', org='kivy')
+    print("store.get('tito') =", store.get('tito') if 'tito' in store else None)
+    
+    import gspread
+    from oauth2client.service_account import ServiceAccountCredentials
+
+    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
+        print("sys.path =", sys.path)
+        dirs = [ i for i in sys.path if os.path.isdir(i)]
+        for i in dirs:
+            print("listdir(i) =", os.listdir(i))
+            #print(os.listdir("C:\\Users"))
+            try:
+                if 'client_secret.json' in os.listdir(i):
+                    print("Trying to get json")
+                    creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
+                    break
+                # If can't find json, end program
+            except Exception as e:
+                print(e)
+        print("---- Didn't find json ----")
+        print("---- Terminating application ----")
+        raise True
+    else:
+        creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
+                                                                    os.environ["PULSO_APP_ASSETS"],
+                                                                    'client_secret.json'),
+                                                                scope)
+    
+    sheet = None
+
+    def get_spread():
+        client = gspread.authorize(creds)
+
+        sheet = client.open("Spring 20 Members sheet").sheet1
+        print("sheet =", sheet)
+        print("sheet =", sheet.get_all_values())
+        return sheet
+    sheet = get_spread()
+
+    levels = {'Beginner':(1, 0, 0, 1), 'Intermediate':(0, 0, 1, 1), "Advanced":(1, 1, 0, 1)}
+    from plyer import email
+    #///////////////////////////////////
+
+    from kivy.core.window import Window
+
+    class CustomToolbar(MDToolbar):
+        """
+        Toolbar with helper method for loading default/back buttons.
+        """
+        
+        state = BooleanProperty()
+        
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            Clock.schedule_once(self.load_default_buttons)
+            self.app = MDApp.get_running_app()
+
+        def on_state(self, *args):
+            if self.app.root.ids.nav_drawer.state == "close":
+                self.left_action_items = [['menu', lambda x: self.toggle_state()]]
+            elif self.app.root.ids.nav_drawer.state == "open":
+                self.left_action_items = [['arrow-right', lambda x: self.toggle_state()]]
+
+        def load_default_buttons(self, dt=None):
+            app = MDApp.get_running_app()
+            #self.left_action_items = [
+            #    ['menu', lambda x: app.root.set_state("toggle")]]
+            self.right_action_items = [
+                ['dots-vertical', lambda x: self.app.root.toggle_nav_drawer()]]
+
+        def load_back_button(self, function):
+            self.left_action_items = [['arrow-left', lambda x: function()]]
+            
+    #class Home(Screen):
+    #    def __init__(self, **kwargs):
+    #        #self.manager = manager
+    #        super(Home, self).__init__(**kwargs)
+    #        self.app = MDApp.get_running_app()
+    #        
+    #    def show_add(self):
+    #        self.app.changeScreen('add_screen')
+            
+            
+    class Scan(Screen):
+        
+        def __init__(self, **kwargs):
+            #self.manager = manager
+            super(Scan, self).__init__(**kwargs)
+            self.screen = False
+            self.app = MDApp.get_running_app()
+
+        def _after_init(self, dt):
+            """
+            Turns off ZBarCam until needed
+            """
+            #self.ids['zbarcam'].stop()
+            
+        def scanned(self):
+            """
+            A function executed when a qrcode is detected.
+            """
+            # The on_symbols event is also fired when list gets empty, then it would raise an IndexError
+            if self.ids.zbarcam.symbols and self.screen:
+                symbol = self.ids.zbarcam.symbols[0]
+                data = symbol.data.decode('utf8')
+                print(data)
+                if "PulsoCaribe" in data:
+                    temp = data.split(',')
+                    if len(temp) < 2:
+                        return
+                    qrfound_screen = self.app.changeScreen('drive_screen')
+                        
+                    qrfound_screen.data_property = data
+                
+        def on_enter(self):
+            #self.ids['zbarcam'].start()
+            self.screen = True
+        def on_pre_leave(self):
+            #self.ids['zbarcam'].stop()
+            self.screen = False
+                
+    class Drive(Screen):
+
+        data_property = StringProperty()
+
+        prompt_property = StringProperty()
+        col_property = NumericProperty()
+        flag_property = BooleanProperty() # Defaults to True
+        
+        def __init__(self, **kwargs):
+            #self.manager = manager
+            #self.symbol = ''
+            self.row = None
+            super(Drive, self).__init__(**kwargs)
+            self.prompt_property = 'Would you like sign this person in?'
+            self.col_property = 5
+            self.app = MDApp.get_running_app()
+            
+        
+        def on_flag_property(self, instance, val):
+            # True -> sign in; False -> test out
+            if val:
+                self.col_property = 5
+                self.prompt_property = 'Would you like sign this person in?'
+                self.app.root.ids['home_id'].ids['scan_button'].text = "Sign in"
+                # Popup for  switch between Sign-in/Test-out
+                self.app.updates = "Scanner now set to Sign In"
+                self.app.popup.open()
+            else:
+                self.col_property = 3
+                self.prompt_property = "Test out?"
+                self.app.root.ids['home_id'].ids['scan_button'].text = "Test out"
+                # Popup for  switch between Sign-in/Test-out
+                self.app.updates =  "Scanner now set to Test out"
+                self.app.popup.open()
+                
+            self.app.root.ids.nav_drawer.set_state("close")
+                
+                
+        def on_data_property(self, instance, value):
+            """
+            Updates `icon_property` and `title_property`.
+            """
+            temp = value.split(',')
+            first_name = temp[1].strip()
+            last_name = temp[2].strip()
+            first_names = sheet.findall(first_name)
+            last_names = sheet.findall(last_name)
+            row = None
+            levels_obj=self.ids['level']
+            print("testing ->", first_names)
+            print("testing ->", last_names)
+            # Find matching row and column
+            for name in first_names:
+                for lname in last_names:
+                    if name.row == lname.row:
+                        row = name.row
+                        level = sheet.cell(row, 3).value
+                        print("row = ", row)
+                        self.ids['name'].text = "{} {}".format(first_name, last_name)
+                        # If member not currently signed in -> normal behavior, else -> print as message
+                        levels_obj.text = ("{}".format(level)) if ('No' in sheet.cell(row, 5).value) or self.col_property == 3  else 'Already signed in.'
+                        levels_obj.background_color = (levels[level]) if ('No' in sheet.cell(row, 5).value) or self.col_property == 3  else (0,0,0,1)
+                        # Disable sign-in if already signed in
+                        print("******* Here")
+                        self.ids['yes'].disabled = False if ('No' in sheet.cell(row, 5).value) or self.col_property == 3 else True
+                        self.row = row
+                        return
+            self.ids['name'].text = "User not found."
+            self.ids['level'].text = "..."
+            self.ids['yes'].disabled = True
+            levels_obj.background_color = (0,0,0,1)
+        
+        def approve(self):
+            # Change 'Signed in' to 'Yes'
+            sheet.update_cell(self.row, self.col_property, 'Yes' if (self.col_property == 5) else self.getNextLevel())
+            print(sheet.get_all_values())
+            # Call 'cancel()' since all it does it return to home
+            self.cancel()
+            
+        def getNextLevel(self):
+            curr_level = list(levels.keys()).index(self.ids['level'].text)
+            return list(levels.keys())[curr_level+1] if curr_level+1 < len( (levels.keys()) ) else list(levels.keys())[curr_level]
+            
+        def cancel(self):
+            self.app.on_back()
+            
+    class ContentNavigationDrawer(BoxLayout):
+        pass
+
+
+    class AddMember(Screen):
+       
+        def __init__(self, **kwargs):
+            super(AddMember, self).__init__(**kwargs)
+            self.app = MDApp.get_running_app()
+            
+        '''def go_home(self):
+            self.app.changeScreen('home_screen')'''
+
+        def on_pre_enter(self):
+            self.ids['intent_button'].disabled = False
+            self.ids['first_name'].text = ''
+            self.ids['last_name'].text = ''
+            self.ids['mem_email'].text = ''
+            self.ids['mem_phone'].text = ''
+            self.ids['confirm_button'].disabled = True
+            self.ids['again_button'].disabled = True
+            self.ids['home_button'].disabled = True
+            
+        
+        def add_member(self, button, first_name, last_name, email, phone):
+            # Create QR Code
+            global sheet
+            print(self.ids['testing'].text)
+            if creds.access_token_expired:
+                sheet = get_spread()
+            sheet.append_row([first_name.strip(),last_name.strip(), 'Beginner', 0, 'No', email, phone])
+            button.disabled = True
+            self.ids['home_button'].disabled = False
+            self.ids['again_button'].disabled = False
+            self.ids['qr'].data = "PulsoCaribe,{},{}".format(first_name,last_name)
+
+        def confirm(self, button):
+            button.disabled = True
+            self.ids['confirm_button'].disabled = False
+        
+        pass
+            
+    class NavigationItem(OneLineAvatarListItem):
+        icon = StringProperty()
+        idx = NumericProperty()
+            
+        def home(self):
+            self.app.toggle_nav_drawer()
+            
+        def reload(self):
+            # Reload google sheet
+            sheet = get_spread()
+            self.app.root.ids.nav_drawer.set_state("toggle")
+            # Popup for  switch between Sign-in/Test-out
+            self.app.updates = "Members have been reloaded"
+            self.app.popup.open()
+            
+        def settings(self):
+            # Change Google sheet
+            self.app.changeScreen('settings_screen')
+            self.app.root.ids.nav_drawer.set_state("toggle")
+            pass
+            
+        def exit(self):
+            self.app.exit()
+            
+        def __init__(self, index=0, **kwargs):
+            super().__init__(**kwargs)
+            self.idx = index
+            self.switcher = {
+                #1:self.switch,
+                2:self.reload,
+                3:self.settings,
+                4:self.exit
+            }
+            self.app = MDApp.get_running_app()
+            
+            '''if index == 2:
+                content = BoxLayout(orientation='vertical')
+                label = Label(text="Members have been reloaded", size_hint=(1,0.5))
+                button=Button(text="OK", size_hint=(1,0.5))
+                content.add_widget(label)
+                content.add_widget(button)
+                self.popup = Popup(title="Update",
+                        content=content, 
+                        size_hint=(.3, .3),
+                        auto_dismiss=True)
+                button.bind(on_release=self.popup.dismiss)'''
+            
+        def pressed(self):
+            func = self.switcher.get(self.idx, lambda: "Invalid Function")
+            func()
+        
+        
+    class MainApp(MDApp):
+
+        updates = StringProperty("Members have been reloaded")
+        
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            Window.bind(on_keyboard=self.on_key)
+            self.app = MDApp.get_running_app()
+            self.screen_list = []
+            self.nav_state = False
+            
+            # Popup used for updates
+            content = BoxLayout(orientation='vertical')
+            label = Label(text=self.updates, size_hint=(1,0.5), id="updates")
+            self.bind(updates=label.setter('text'))
+            button=Button(text="OK", size_hint=(1,0.5))
+            content.add_widget(label)
+            content.add_widget(button)
+            self.popup = Popup(title="Update",
+                    content=content, 
+                    size_hint=(.3, .3),
+                    auto_dismiss=True)
+            button.bind(on_release=self.popup.dismiss)
+
+        def on_key(self, window, key, *args):
+        
+            if key == 27:  # the esc key
+                print("*********in on_key*********")
+                print("****screen_list = ", self.screen_list, "*******")
+                # If nav is open or on a sub-screen
+                if self.screen_list:
+                    # If nav drawer is open, make sure to close it
+                    if self.screen_list:
+                        self.on_back();
+                    return True
+                else:
+                    self.app.exit()
+                    return True
+            return False
+            
+        def on_back(self):
+            self.root.ids.screen_manager_id.transition.direction = 'right'
+            self.root.ids.screen_manager_id.current = self.screen_list.pop()
+        
+        def on_start(self):
+            # The numbers in the list of tuples refer to the operations in the 
+            # NavigationItem under 'switcher'
+            for items in [
+                #("home-circle-outline", "Home",1),
+                ("update", "Reload Members",2),
+                ("settings-outline", "Open Settings",3),
+                ("exit-to-app", "Exit",4),
+            ]:
+                self.root.ids.content_drawer.ids.box_item.add_widget(
+                    NavigationItem(
+                        items[2],
+                        text=items[1],
+                        icon=items[0],
+                    )
+                )
+            #self.root.ids.nav_drawer.bind(state=self.toggle_nav_drawer)
+            
+        def changeScreen(self, next):
+            if self.root.ids.screen_manager_id.current not in self.screen_list:
+                self.screen_list.append(self.root.ids.screen_manager_id.current)
+                
+            self.root.ids.screen_manager_id.transition.direction = 'left'
+            self.root.ids.screen_manager_id.current = next
+            
+            return self.root.ids.screen_manager_id.current_screen
+            
+        def exit(self):
+            print("***** self.exit run *****")
+            app = MDApp.get_running_app()
+            app.root.ids.scan_id.ids.zbarcam.stop()
+            app.stop()
+            print("***** STOPPED ******")
+            
+        def build(self):
+            self.icon = "docs/images/icon.png"
+            
+            # Return main root
+            return Builder.load_file(os.path.join(
+                    os.environ["PULSO_APP_ROOT"], "libs", "kv",
+                    "main.kv"))
+
+
+    def main():
+        # when the -d/--debug flag is set, Kivy sets log level to debug
+        level = Logger.getEffectiveLevel()
+        in_debug = level == LOG_LEVELS.get('debug')
+        #client = configure_sentry(in_debug)
+                
+        MainApp().run()
+
+
+    if __name__ == '__main__':
+        main()
+except Exception as e:
+    print(e)
+    input("Application crashed.\nPress 'Enter/Return' to close")

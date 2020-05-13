@@ -1,0 +1,15 @@
+kivymd==0.103.0
+Pillow
+cython
+gspread
+google-auth-oauthlib
+httplib2
+pyasn1
+pyasn1-modules
+rsa
+plyer
+oauth2client
+kivy_garden.qrcode
+kivy_garden.zbarcam
+plyer
+pylibdmtx

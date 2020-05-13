@@ -1,0 +1,47 @@
+<Home>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.10
+            canvas:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+    	    padding: 10
+        	Button:
+        	    id: new_button
+                size_hint: 0.33, 1
+            	text: 'Add Member'
+            	text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+            	on_press: root.show_add()
+            	disabled: False if platform in 'win,linux' else True
+        	Label:
+        	    
+            
+        BoxLayout:
+            size_hint: 1, 0.70
+            canvas:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Widget:
+            Image:
+            	source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
+            Widget:
+
+        Button:
+			id: scan_button
+            size_hint: 1, 0.20
+        	text: "Sign in"
+        	text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+        	on_press: app.changeScreen('scan_screen')
