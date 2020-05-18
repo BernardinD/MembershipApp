@@ -4,7 +4,11 @@ try:
     import sys
     import os
     
+    # Assuming executable/script to be at head or 'dist'
     abs_root = os.path.split(os.path.abspath("."))[0]
+    if "PusloMembershipApp" not in abs_root:
+        abs_root = os.path.join(abs_root, "PusloMembershipApp")
+        
     if getattr(sys, "frozen", False):  # bundle mode with PyInstaller
         os.environ["PULSO_APP_ROOT"] = sys._MEIPASS
     else:
@@ -42,6 +46,9 @@ try:
                 "settings.kv"))
     Builder.load_file(os.path.join(
                 os.environ["PULSO_APP_ROOT"], "libs", "kv",
+                "browse.kv"))
+    Builder.load_file(os.path.join(
+                os.environ["PULSO_APP_ROOT"], "libs", "kv",
                 "home.kv"))
     from kivymd.app import MDApp
     from kivy.clock import Clock
@@ -65,10 +72,8 @@ try:
     
     from kivy.storage.jsonstore import JsonStore
 
-    store = JsonStore(os.path.join(abs_root, "assets",'hello.json'))
-    print("store.get('tito') =", store.get('tito') if 'tito' in store else None)
-    store.put('tito', name='Mathieu', org='kivy')
-    print("store.get('tito') =", store.get('tito') if 'tito' in store else None)
+    store = JsonStore(os.path.join(abs_root, "assets",'settings.json'))
+    print('store.get("Settings")["Current sheet"] =', store.get("Settings")["Current sheet"] if 'Current sheet' in store else None)
     
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
@@ -102,7 +107,7 @@ try:
     def get_spread():
         client = gspread.authorize(creds)
 
-        sheet = client.open("Spring 20 Members sheet").sheet1
+        sheet = client.open(store.get("Settings")["Current sheet"]).sheet1
         print("sheet =", sheet)
         print("sheet =", sheet.get_all_values())
         return sheet
@@ -380,6 +385,9 @@ try:
             self.app = MDApp.get_running_app()
             self.screen_list = []
             self.nav_state = False
+            self.store = store
+            self.abs_root = abs_root
+            self.get_spread = get_spread
             
             # Popup used for updates
             content = BoxLayout(orientation='vertical')
@@ -397,8 +405,8 @@ try:
         def on_key(self, window, key, *args):
         
             if key == 27:  # the esc key
-                print("*********in on_key*********")
-                print("****screen_list = ", self.screen_list, "*******")
+                print("main.py: ********* in on_key*********")
+                print("main.py: ********* screen_list = ", self.screen_list, "*******")
                 # If nav is open or on a sub-screen
                 if self.screen_list:
                     # If nav drawer is open, make sure to close it
@@ -442,11 +450,15 @@ try:
             return self.root.ids.screen_manager_id.current_screen
             
         def exit(self):
-            print("***** self.exit run *****")
+            print("main.py: ********* self.exit run *****")
             app = MDApp.get_running_app()
             app.root.ids.scan_id.ids.zbarcam.stop()
-            app.stop()
-            print("***** STOPPED ******")
+            try:
+                app.stop()
+            except Exception as e:
+                print(e)
+                pass
+            print("main.py: ********* STOPPED ******")
             
         def build(self):
             self.icon = "docs/images/icon.png"
@@ -471,3 +483,7 @@ try:
 except Exception as e:
     print(e)
     input("Application crashed.\nPress 'Enter/Return' to close")
+    if isinstance(e, TypeError):
+        print("main.py: ********* came in ******")
+        pass
+    

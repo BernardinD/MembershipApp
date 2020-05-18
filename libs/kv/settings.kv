@@ -1,13 +1,19 @@
 <Settings_cell>:
 	orientation: 'horizontal'
+	info_color: 1, 1, 1, 1
+	btn_color: 1, 1, 1, 1
+	btn_text: "Change?"
 	BoxLayout:
-		padding: 5
+		# Space between border of layout and elements
+		padding: 3
+		# Space between each element
+		spacing: dp(8)
 		Label:
 			size_hint_x: 0.33
 			color: 0, 0, 0, 1
 			canvas.before:
 				Color:
-					rgba: 1, 1, 1, 1
+					rgba: 1,1,1,1
 				Rectangle:
 					size: self.size
 					pos: self.pos
@@ -18,7 +24,7 @@
 			color: 0, 0, 0, 1
 			canvas.before:
 				Color:
-					rgba: 1, 1, 1, 1
+					rgba: root.info_color
 				Rectangle:
 					size: self.size
 					pos: self.pos
@@ -27,25 +33,41 @@
 		Button:
 			size_hint_x: 0.33
 			id: button
-			text: 'Change?'
+			background_color: 1,1,1,1
+			text: root.btn_text
 			height: sp(40)
-			on_release: root.buttons(self)
+			on_release: root.buttons()
 		
 
 <Settings_Setup>:
-    BoxLayout
+	id: settings
+    BoxLayout:
         orientation: 'vertical'
 		BoxLayout
 			orientation: 'vertical'
 			size_hint: 1, 0.70
 			Settings_cell:
 				topic: "Current sheet"
+				id: sheet
 			Settings_cell:
-				topic: "Default color"
+				topic: "Primary color"
+				id: color
+			# Holds file name of logo, but using an image that was copied and saved to absolute-dir
+			Settings_cell:
+				topic: "Logo"
+				id: logo
 			Settings_cell:
 				topic: "Create new sheet"
+				id: create
+				info: ""
+				info_color: 0,1,1,1
+				btn_text: "Create"
 			Settings_cell:
 				topic: "Sharing (copy email address)"
+				id: share
+				info: ""
+				info_color: 0,1,1,1
+				btn_text: "Copy to clipboard"
 		BoxLayout
 			orientation: 'vertical'
 			size_hint: 1, 0.30
@@ -69,13 +91,42 @@
 				orientation: 'horizontal'
 				Button:
 					id: home_button
-					text: "Return to Home?"
-					on_release: app.on_back()
+					text: "Save changes"
+					on_release: root.save()
 					height: sp(40)
-					disabled: True
+					#disabled: True
 				Button:
 					id: again_button
 					text: "Add another?"
 					on_release: root.on_pre_enter()
 					height: sp(40)
 					disabled: True
+					
+<Change_popup>:
+	label: ""
+	size_hint: .4, .25
+	title: root.label
+	title_align: 'center'
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			id: placeholder
+			#TextInput:
+			#	id: txt
+			#	multiline: False
+			#	on_text_validate: root.confirm()
+			#	halign: 'center'
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint: 1, 0.5
+			Button:
+				text: "CONFIRM"
+				on_release: root.confirm()
+			Button:
+				text: "EXIT"
+				on_release: root.exit()
+#<FileBrowser>:
+#	size_hint: 0.75, 0.75
+#	FileChooserListView:
+#		# Grab topic name from popup and save selection to that key
+#		on_selection: root.root.dismiss(self.selection)
