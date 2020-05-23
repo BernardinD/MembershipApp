@@ -14,8 +14,6 @@ from libs.classes.browse import Browser, FileBrowser    # This is for the Label/
 # All global objects' events are defined in locations where local information is needed
 text_box = TextInput(id='txt', multiline=False, halign='center')
 browser = Browser(orientation='vertical')
-'''browse_btn = Button(text="Browse")
-browse_btn.bind(on_release=lambda x : x.root.browse(x))'''
 
 '''class FileBrowser(Popup):
     # Object openning browser
@@ -27,7 +25,7 @@ browse_btn.bind(on_release=lambda x : x.root.browse(x))'''
 print("Right before variable")        
 fb = FileBrowser()
 # Open browsing popup
-browser.browse_btn.bind(on_release=fb.open)
+#browser.browse_btn.bind(on_release=fb.open)
 print("Right after variable") 
 
 class Change_popup(Popup):
@@ -39,13 +37,8 @@ class Change_popup(Popup):
         super(Change_popup, self).__init__(**kwargs)
         self.app = MDApp.get_running_app()
         text_box.bind(on_text_validate=self.confirm)
-    
-    def exit(self):
-        # Clear placeholder in popup
-        self.dismiss()
-        self.app.root.ids.settings_id.popup.ids.placeholder.clear_widgets()
-        text_box.text = ""
-        
+        self.bind(on_dismiss=self.exit)
+     
     # args = self and MAYBE obj
     def confirm(*args):
         self = args[0]
@@ -60,7 +53,15 @@ class Change_popup(Popup):
         for name in self.app.root.ids.settings_id.ids:
             if isinstance(self.app.root.ids.settings_id.ids[name], Settings_cell) and self.app.root.ids.settings_id.ids[name].topic == self.curr:
                 self.app.root.ids.settings_id.ids[name].info = text
-        self.exit()
+        self.dismiss()
+        
+    def exit(*args):
+        self = args[0]
+        # Clear placeholder in popup
+        #self.dismiss()
+        self.app.root.ids.settings_id.popup.ids.placeholder.clear_widgets()
+        text_box.text = ""
+       
     
 class Settings_Setup(Screen):
     
@@ -127,10 +128,8 @@ class Settings_cell(BoxLayout):
             root.popup.label = "Enter new color"
         elif self.topic == 'Logo':
             root.popup.label = "Press Browse to find logo"
-            fb.bind(selection=self.selection)
             # Make connection to cell, in order to save selection
-            #fb.root = self
-            browser.browse_btn.root = self
+            fb.bind(selection=self.selection)
             self.app.root.ids.settings_id.popup.ids.placeholder.add_widget(browser)
         root.popup.curr = self.topic
         root.popup.open()
@@ -146,8 +145,9 @@ class Settings_cell(BoxLayout):
     # A callback for the 'selection' properties in 'fb' and its FileChooser
     def selection(self, obj, val):
         print("in selection")
-        browser.text_box.text =  val
-        obj.dismiss()
+        if not val == "":
+            browser.text_box.text =  val
+            obj.dismiss()
         
     def dismiss(self, selection):
         # Save selection to saves and browse_btn.text, and close popup

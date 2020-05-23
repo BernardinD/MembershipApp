@@ -3,7 +3,7 @@
 	FileChooserListView:
 		# Grab topic name from popup and save selection to that key
 		#on_selection: root.root.dismiss(self.selection)
-		on_selection: root.selection = self.selection[0]
+		on_selection: root.selection = self.selection[0] if len(self.selection) > 0 else ""
 		
 <Browser>:
 	color: 0, 0, 0, 1

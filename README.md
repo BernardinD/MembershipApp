@@ -12,3 +12,5 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 ## Working on
 * Adding a functional settings page for dynamic customization
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
+* Make FileBrowser class in libs/classes/browse.py a singleton-class so that binding browser_btn can be completly internal
+

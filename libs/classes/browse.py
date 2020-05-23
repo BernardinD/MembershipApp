@@ -14,7 +14,7 @@ class FileBrowser(Popup):
     selection = StringProperty("")
     instance = None
     
-    def __init__(self, **kwargs):
+    '''def __init__(self, **kwargs):
         super(FileBrowser, self).__init__(**kwargs)
         self.app = MDApp.get_running_app
         
@@ -30,8 +30,8 @@ class FileBrowser(Popup):
     
     # TO-DO:
     # Bind cell's on_selection function to popup's self.selection property
-    
-    '''def __new__(cls, *args, **kwargs):
+    '''
+    def __new__(cls, *args, **kwargs):
         print("instance = ", cls.instance)
         if cls.instance is None:
             #FileBrowser.instance = FileBrowser.__FileBrowser()
@@ -43,16 +43,15 @@ class FileBrowser(Popup):
     def __getattr(self, name):
         return getattr(self.instance, name)
     def __setattr(self, name):
-        return setattr(self.instance, name)'''
+        return setattr(self.instance, name)
+    
 
 class Browser(BoxLayout):
     
     browse_btn = Button(text="Browse")
     #browse_btn.bind(on_release=lambda x : x.root.browse(x))
-    browse_btn.bind(on_release=FileBrowser().browse)
-    browse_btn.bind(on_release=FileBrowser().browse)
     # bind button to static FileBrowser' browse() function
-    # ...
+    browse_btn.bind(on_release=lambda x : FileBrowser.open(FileBrowser.instance))
     text_box = Label(text="...", color=(0,0,0,1))
     
     def __init__(self, **kwargs):

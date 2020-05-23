@@ -124,9 +124,4 @@
 				on_release: root.confirm()
 			Button:
 				text: "EXIT"
-				on_release: root.exit()
-#<FileBrowser>:
-#	size_hint: 0.75, 0.75
-#	FileChooserListView:
-#		# Grab topic name from popup and save selection to that key
-#		on_selection: root.root.dismiss(self.selection)
+				on_release: root.dismiss()
