@@ -11,6 +11,12 @@ from kivy.uix.filechooser import FileChooserListView
 from libs.classes.browse import Browser, FileBrowser    # This is for the Label/Button combo object
                                                         # and browser popup, respectively
 
+                                                        # For pulling in the widget in 'placeholder'
+
+                
+from libs.classes.colorpicker import ColorPicker
+
+
 # All global objects' events are defined in locations where local information is needed
 text_box = TextInput(id='txt', multiline=False, halign='center')
 browser = Browser(orientation='vertical')
@@ -108,11 +114,15 @@ class Settings_Setup(Screen):
 class Settings_cell(BoxLayout):
     topic = StringProperty()
     info = StringProperty("'Empty'")
+    type = StringProperty("'Empty'")
+    popup_label = StringProperty("'Empty'")
+    
     #btn_color = 
 
     def __init__(self, **kwargs):
         super(Settings_cell, self).__init__(**kwargs)
         self.app = MDApp.get_running_app()
+        self.sub = None
         
         # Add in info from json file
         # ...
@@ -124,27 +134,41 @@ class Settings_cell(BoxLayout):
         if self.topic == "Current sheet":
             root.popup.label = "Enter new sheet's name"
             root.popup.ids.placeholder.add_widget(text_box)
-        elif self.topic == 'Primary color':
-            root.popup.label = "Enter new color"
-        elif self.topic == 'Logo':
-            root.popup.label = "Press Browse to find logo"
+        #elif self.topic == 'Primary color':
+        #    root.popup.label = "Enter new color"
+        # Will be changed to "Selection"
+        elif self.type == 'FileBrowser':
+            root.popup.label = self.popup_label
             # Make connection to cell, in order to save selection
             fb.bind(selection=self.selection)
             self.app.root.ids.settings_id.popup.ids.placeholder.add_widget(browser)
+        elif self.type == 'Selection':
+            print("Came in to 'Selection'")
+            root.popup.label = self.popup_label
+            self.sub = ColorPicker()
+            print("ColorPicker created. ")
+            self.sub.bind(selection=self.selection)
+            self.app.root.ids.settings_id.popup.ids.placeholder.add_widget(self.sub)
+        else:
+            print("***** DID NOT GO INTO ANY CASES ******")
         root.popup.curr = self.topic
         root.popup.open()
         text_box.focus = True
         
     def buttons(self):
-        if self.topic in self.app.root.ids.settings_id.changes:
-            self.change()
-        else:
-            pass
+        print("**** came into buttons *****")
+        #if self.topic in self.app.root.ids.settings_id.changes:
+        self.change()
+        #else:
+        #    pass
     
     # Used as retrival function for browser selection
     # A callback for the 'selection' properties in 'fb' and its FileChooser
     def selection(self, obj, val):
         print("in selection")
+        print("obj = ", obj)
+        if self.sub:
+            print("self.sub =", self.sub)
         if not val == "":
             browser.text_box.text =  val
             obj.dismiss()

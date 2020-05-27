@@ -1,3 +1,4 @@
+# Popup for selecting file
 <FileBrowser>:
 	size_hint: 0.75, 0.75
 	FileChooserListView:
@@ -5,6 +6,7 @@
 		#on_selection: root.root.dismiss(self.selection)
 		on_selection: root.selection = self.selection[0] if len(self.selection) > 0 else ""
 		
+# Layout with textbox and button
 <Browser>:
 	color: 0, 0, 0, 1
 	canvas.before:

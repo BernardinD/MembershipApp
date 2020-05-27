@@ -17,6 +17,8 @@ try:
     os.environ["PULSO_APP_ASSETS"] = os.path.join(
         os.environ["PULSO_APP_ROOT"], f"assets{os.sep}"
     )
+    print('os.environ["PULSO_APP_ROOT"] =', os.environ["PULSO_APP_ROOT"])
+    print('os.environ["PULSO_APP_ASSETS"] =', os.environ["PULSO_APP_ASSETS"])
     from kivy_garden.zbarcam import ZBarCam
     from kivy_garden import zbarcam 
     temp_path = os.path.abspath(zbarcam.__file__)
@@ -111,7 +113,16 @@ try:
         print("sheet =", sheet)
         print("sheet =", sheet.get_all_values())
         return sheet
-    sheet = get_spread()
+        
+    def spread_unloaded(self):
+        self.app.updates = "Spreadsheet could not be loaded.\nCheck connection and reload"
+        self.app.popup.open()
+        
+    # Try to get spread sheet
+    try:
+        sheet = get_spread()
+    except:
+        pass
 
     levels = {'Beginner':(1, 0, 0, 1), 'Intermediate':(0, 0, 1, 1), "Advanced":(1, 1, 0, 1)}
     from plyer import email
@@ -186,7 +197,8 @@ try:
                         return
                     qrfound_screen = self.app.changeScreen('drive_screen')
                         
-                    qrfound_screen.data_property = data
+                    if qrfound_screen:
+                        qrfound_screen.data_property = data
                 
         def on_enter(self):
             #self.ids['zbarcam'].start()
@@ -310,7 +322,11 @@ try:
             global sheet
             print(self.ids['testing'].text)
             if creds.access_token_expired:
-                sheet = get_spread()
+                try:
+                    sheet = get_spread()
+                except:
+                    spread_unloaded(MDApp.get_running_app())
+                    
             sheet.append_row([first_name.strip(),last_name.strip(), 'Beginner', 0, 'No', email, phone])
             button.disabled = True
             self.ids['home_button'].disabled = False
@@ -331,12 +347,15 @@ try:
             self.app.toggle_nav_drawer()
             
         def reload(self):
-            # Reload google sheet
-            sheet = get_spread()
-            self.app.root.ids.nav_drawer.set_state("toggle")
-            # Popup for  switch between Sign-in/Test-out
-            self.app.updates = "Members have been reloaded"
-            self.app.popup.open()
+            try:
+                # Reload google sheet
+                sheet = get_spread()
+                self.app.root.ids.nav_drawer.set_state("toggle")
+                # Popup for  switch between Sign-in/Test-out
+                self.app.updates = "Members have been reloaded"
+                self.app.popup.open()
+            except:
+                spread_unloaded(MDApp.get_running_app())
             
         def settings(self):
             # Change Google sheet
@@ -391,7 +410,7 @@ try:
             
             # Popup used for updates
             content = BoxLayout(orientation='vertical')
-            label = Label(text=self.updates, size_hint=(1,0.5), id="updates")
+            label = Label(text=self.updates, size_hint=(1,0.5), id="updates", halign='center')
             self.bind(updates=label.setter('text'))
             button=Button(text="OK", size_hint=(1,0.5))
             content.add_widget(label)
@@ -440,7 +459,18 @@ try:
                 )
             #self.root.ids.nav_drawer.bind(state=self.toggle_nav_drawer)
             
+            # Make sure sheet is ready before starting normal operation
+            if not sheet:
+                print("In from of popup")
+                input("Press enter to continue")
+                spread_unloaded(MDApp.get_running_app())
+            
         def changeScreen(self, next):
+            # To make sure spreadsheet is loaded
+            if not sheet  and not(next == "settings_screen"):
+                spread_unloaded(MDApp.get_running_app())
+                return None
+                
             if self.root.ids.screen_manager_id.current not in self.screen_list:
                 self.screen_list.append(self.root.ids.screen_manager_id.current)
                 
