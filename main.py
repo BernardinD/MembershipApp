@@ -462,7 +462,6 @@ try:
             # Make sure sheet is ready before starting normal operation
             if not sheet:
                 print("In from of popup")
-                input("Press enter to continue")
                 spread_unloaded(MDApp.get_running_app())
             
         def changeScreen(self, next):
