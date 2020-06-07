@@ -49,7 +49,7 @@ a = Analysis(
     win_private_assemblies=False,
     cipher=None,
     noarchive=False,
-	hiddenimports=['pkg_resources.py2_warn','kivy_garden.zbarcam'],
+	hiddenimports=['pkg_resources.py2_warn','kivy_garden.zbarcam', 'win32file', 'win32timezone' ],
 )
 pyz = PYZ(a.pure, a.zipped_data, cipher=None)
 

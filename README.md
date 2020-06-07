@@ -22,4 +22,5 @@ after adding a 'client_secret.json' file to the assets directory as well as an '
 * Have all logos in app dynamically read from json entry 
 * Change the QRCode generation to be unique to arbitrary club
 * Finish commenting instructions for all parts and functionalities of app
+* Alter the logo selection so that only jpg and png selections are allowed
 

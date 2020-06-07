@@ -65,5 +65,8 @@ class FileBrowser(Selection):
     
     def set_select(self, x):
         if len(x) > 0:
+            # Check if jpg or png
+            # ...
+            
             setattr(self, 'selection', x[0])
             self.Browser.dismiss()
