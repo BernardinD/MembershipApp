@@ -52,6 +52,12 @@ try:
     Builder.load_file(os.path.join(
                 os.environ["PULSO_APP_ROOT"], "libs", "kv",
                 "home.kv"))
+    Builder.load_file(os.path.join(
+                os.environ["PULSO_APP_ROOT"], "libs", "kv",
+                "colorpicker.kv"))
+    Builder.load_file(os.path.join(
+                os.environ["PULSO_APP_ROOT"], "libs", "kv",
+                "selection.kv"))
     from kivymd.app import MDApp
     from kivy.clock import Clock
     #from kivy.core.clipboard import Clipboard
@@ -80,36 +86,42 @@ try:
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
 
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
-        print("sys.path =", sys.path)
-        dirs = [ i for i in sys.path if os.path.isdir(i)]
-        for i in dirs:
-            print("listdir(i) =", os.listdir(i))
-            #print(os.listdir("C:\\Users"))
-            try:
-                if 'client_secret.json' in os.listdir(i):
-                    print("Trying to get json")
-                    creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
-                    break
-                # If can't find json, end program
-            except Exception as e:
-                print(e)
-        print("---- Didn't find json ----")
-        print("---- Terminating application ----")
-        raise True
-    else:
-        creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
-                                                                    os.environ["PULSO_APP_ASSETS"],
-                                                                    'client_secret.json'),
-                                                                scope)
     
     sheet = None
 
-    def get_spread():
+    def get_creds():
+        scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+        if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
+            print("sys.path =", sys.path)
+            dirs = [ i for i in sys.path if os.path.isdir(i)]
+            for i in dirs:
+                print("listdir(i) =", os.listdir(i))
+                #print(os.listdir("C:\\Users"))
+                try:
+                    if 'client_secret.json' in os.listdir(i):
+                        print("Trying to get json")
+                        creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
+                        break
+                    # If can't find json, end program
+                except Exception as e:
+                    print(e)
+            print("---- Didn't find json ----")
+            print("---- Terminating application ----")
+            raise True
+        else:
+            creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
+                                                                        os.environ["PULSO_APP_ASSETS"],
+                                                                        'client_secret.json'),
+                                                                    scope)
+        return creds
+        
+    
+    creds = get_creds()
+    
+    def get_spread(sheet = store.get("Settings")["Current sheet"]):
         client = gspread.authorize(creds)
 
-        sheet = client.open(store.get("Settings")["Current sheet"]).sheet1
+        sheet = client.open( sheet ).sheet1
         print("sheet =", sheet)
         print("sheet =", sheet.get_all_values())
         return sheet
@@ -406,7 +418,11 @@ try:
             self.nav_state = False
             self.store = store
             self.abs_root = abs_root
+            
+            #Used for global sheet manipulation
             self.get_spread = get_spread
+            self.spread_unloaded = spread_unloaded
+            self.get_creds = get_creds
             
             # Popup used for updates
             content = BoxLayout(orientation='vertical')

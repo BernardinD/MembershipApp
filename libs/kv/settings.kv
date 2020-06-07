@@ -45,15 +45,17 @@
         orientation: 'vertical'
 		BoxLayout
 			orientation: 'vertical'
-			size_hint: 1, 0.70
+			size_hint: 1, 0.80
 			Settings_cell:
 				topic: "Current sheet"
 				id: sheet
 			Settings_cell:
 				topic: "Primary color"
 				id: color
-				type: "Selection"
+				type: "ColorPicker"
 				popup_label: "Press Browse to selection color"
+				# Disable picking color for now
+				#on_kv_post: self.ids.button.disabled = True
 			# Holds file name of logo, but using an image that was copied and saved to absolute-dir
 			Settings_cell:
 				topic: "Logo"
@@ -74,21 +76,7 @@
 				btn_text: "Copy to clipboard"
 		BoxLayout
 			orientation: 'vertical'
-			size_hint: 1, 0.30
-			Button:
-				id: intent_button
-				text: 'Add New Member'
-				size_hint: 1, 0.33
-				height: sp(40)
-				on_release: root.confirm(self)
-			
-			Button:
-				id: confirm_button
-				text: 'Confirm?'
-				size_hint: 1, 0.33
-				on_release: root.add_member(self, first_name.text, last_name.text, mem_email.text, mem_phone.text)
-				disabled: True
-			
+			size_hint: 1, 0.20
 			
 			BoxLayout:
 				size_hint: 1, 0.33
@@ -101,10 +89,9 @@
 					#disabled: True
 				Button:
 					id: again_button
-					text: "Add another?"
-					on_release: root.on_pre_enter()
+					text: "Discard and exit"
+					on_release: root.app.on_back()
 					height: sp(40)
-					disabled: True
 					
 <Change_popup>:
 	label: ""

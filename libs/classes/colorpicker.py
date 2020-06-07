@@ -1,38 +1,40 @@
+from kivymd.app import MDApp
 from kivy.properties import StringProperty
 from kivy.uix.dropdown import DropDown
 from kivymd.uix.button import Button
 from kivymd.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
 from libs.classes.selection import Selection
 
-from kivy.lang import Builder
-import os
-'''print("***---- in colorpicker.py: {} ".format(os.path.join(
-                os.environ["PULSO_APP_ROOT"], "libs", "kv",
-                "selection.kv")))'''
                 
 class ColorPicker(Selection):
-    colors = {}
+    colors = {"Sky Blue":(0.529, 0.808, 0.922)}
     
-    # Layout for selecting items
-    text_box = Label(text="...", color=(0,0,0,1))
-    dropdown = DropDown()
-    #color = None
+        
+    browse_btn = Button(text="Browse")
+    #browse_btn.bind(on_release=lambda x : x.root.browse(x))
+    # bind button to static FileBrowser' browse() function
+    #browse_btn.bind(on_release=lambda x : FileBrowser.open(FileBrowser.instance))
     
     def __init__(self, **kwargs):
-        print("Starting super")
         super(ColorPicker, self).__init__(**kwargs)
-        print("finished super")
-        '''self.app = MDApp.get_running_app()
-        self.picker_btn = Button(text="Choose Color")
-        self.picker_btn.bind(on_release=self.dropdown.open)
-        self.add_widget(self.picker.picker_btn)
-        self.add_widget(self.text_box)
+        # Layout for selecting items
+        self.dropdown = DropDown()
+        self.app = MDApp.get_running_app()
+        self.picker_btn.text="Choose Color"
+        self.picker_btn.bind(on_release= self.dropdown.open)
         
         # Add colors to dropdown
-        for color in colors:
-            btn = Button(text=color)
+        for color in self.colors:
+            btn = Button(text=color, size_hint_y=None, height=40)
             # When a color is selected the name is passed to dropdown object
-            btn.bind(on_release = lambda btn : dropdown.select(btn.text) )
+            btn.bind(on_release = lambda btn : self.dropdown.select(btn.text) )
             self.dropdown.add_widget(btn)
             
-        self.dropdown.bind(on_select= lambda instance, x: setattr(self, 'selection', x) )'''
+        self.dropdown.bind(on_select= lambda instance, x: setattr(self, 'selection', x) )
+        
+    def dismiss(self):
+        self.dropdown.dismiss()
+        
+    def on_leave(self):
+        self.dropdown.clear_widgets()
