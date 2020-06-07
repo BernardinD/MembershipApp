@@ -18,6 +18,7 @@ from libs.classes.colorpicker import ColorPicker
 from libs.classes.selection import Selection
 
 import sys
+import os
 
 
 # All global objects' events are defined in locations where local information is needed
@@ -223,6 +224,42 @@ class Settings_cell(BoxLayout):
             obj.dismiss()
             obj.text_box.text =  val
         
+    def format_text(self, info, width):
+        '''
+        Format text so that it fits in Label and looks well-formated
+        '''
+        lines = []
+        char_width = 7
+        width /= char_width
+        width = int(width)
+        while len(info) > 0:
+            if len(info) < width:
+                width = len(info)
+            if (info[width-1] == os.sep):
+                width -= 1
+            # Splice til length
+            temp = info[:width] 
+            # Take path up til splice
+            split = os.path.split(temp)
+            if len(split[0]) > 0:
+                lines.append(split[0]+os.sep)
+                # Reattach rest of spliced path and continue
+                if len(split[1]) > 0:
+                    info = split[1] + info[width:]
+            else:
+                # Check if part of path is too long (first part of split will be empty)
+                split2 = (split[1] + info[width:]).split(os.sep)
+                if len(split2) > 1 or len(lines) > 4:
+                    lines = [
+                        "** - Path had to be cropped - **",
+                        " ",
+                        "... "+info[-(width- (char_width*3)) : ]
+                    ]
+                    break
+                lines.append(split[1])
+                info = ""
+        text = "\n".join(lines)
+        return text
     '''def dismiss(self, selection):
         # Save selection to saves and browse_btn.text, and close popup
         #print(self.root)

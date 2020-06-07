@@ -64,9 +64,10 @@ class FileBrowser(Selection):
         self.picker_btn.bind(on_release=lambda x : self.Browser.open(self.Browser))
     
     def set_select(self, x):
+        img_types = ['jpg', 'jpeg', 'png']
         if len(x) > 0:
+            check = x[0].lower()
             # Check if jpg or png
-            # ...
-            
-            setattr(self, 'selection', x[0])
-            self.Browser.dismiss()
+            if any(img_type in check for img_type in img_types):
+                setattr(self, 'selection', x[0])
+                self.Browser.dismiss()

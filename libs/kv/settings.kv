@@ -1,3 +1,5 @@
+#:import os os
+
 <Settings_cell>:
 	orientation: 'horizontal'
 	info_color: 1, 1, 1, 1
@@ -29,7 +31,9 @@
 					size: self.size
 					pos: self.pos
 			#id: testing
-			text: root.info
+			text: root.format_text(root.info, self.width)#os.path.split(root.info)[0]+'\n'+os.path.split(root.info)[1] # if len(root.info) < 
+			#text_size: self.width, None
+			halign: 'center'
 		Button:
 			size_hint_x: 0.33
 			id: button
