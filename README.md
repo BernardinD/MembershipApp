@@ -17,9 +17,9 @@ On first creation the app will need to be built using the command `pyinstaller -
 after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory
 
 ## Working on
-* Adding a functional settings page for dynamic customization
+* ~~Adding a functional settings page for dynamic customization~~
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
-* Make FileBrowser class in libs/classes/browse.py a singleton-class so that binding browser_btn can be completly internal
+* ~~Make FileBrowser class in libs/classes/browse.py a singleton-class so that binding browser_btn can be completly internal~~
 
 ---------
 * Have all logos in app dynamically read from json entry 
