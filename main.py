@@ -87,7 +87,7 @@ try:
     from oauth2client.service_account import ServiceAccountCredentials
 
     
-    sheet = None
+    #sheet = None
 
     def get_creds():
         scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
@@ -119,8 +119,12 @@ try:
     creds = get_creds()
     
     def get_spread(sheet = store.get("Settings")["Current sheet"]):
+        '''
+        Used to retrieve sheets and check if a sheet exists,
+        returns the sheet if it exists/accessable
+        '''
         client = gspread.authorize(creds)
-
+        print("Sheet name =", sheet)
         sheet = client.open( sheet ).sheet1
         print("sheet =", sheet)
         print("sheet =", sheet.get_all_values())
@@ -131,10 +135,10 @@ try:
         self.app.popup.open()
         
     # Try to get spread sheet
-    try:
-        sheet = get_spread()
-    except:
-        pass
+    #try:
+    #    sheet = get_spread()
+    #except:
+    #    pass
 
     levels = {'Beginner':(1, 0, 0, 1), 'Intermediate':(0, 0, 1, 1), "Advanced":(1, 1, 0, 1)}
     from plyer import email
@@ -264,8 +268,8 @@ try:
             temp = value.split(',')
             first_name = temp[1].strip()
             last_name = temp[2].strip()
-            first_names = sheet.findall(first_name)
-            last_names = sheet.findall(last_name)
+            first_names = self.app.sheet.findall(first_name)
+            last_names = self.app.sheet.findall(last_name)
             row = None
             levels_obj=self.ids['level']
             print("testing ->", first_names)
@@ -275,15 +279,15 @@ try:
                 for lname in last_names:
                     if name.row == lname.row:
                         row = name.row
-                        level = sheet.cell(row, 3).value
+                        level = self.app.sheet.cell(row, 3).value
                         print("row = ", row)
                         self.ids['name'].text = "{} {}".format(first_name, last_name)
                         # If member not currently signed in -> normal behavior, else -> print as message
-                        levels_obj.text = ("{}".format(level)) if ('No' in sheet.cell(row, 5).value) or self.col_property == 3  else 'Already signed in.'
-                        levels_obj.background_color = (levels[level]) if ('No' in sheet.cell(row, 5).value) or self.col_property == 3  else (0,0,0,1)
+                        levels_obj.text = ("{}".format(level)) if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3  else 'Already signed in.'
+                        levels_obj.background_color = (levels[level]) if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3  else (0,0,0,1)
                         # Disable sign-in if already signed in
                         print("******* Here")
-                        self.ids['yes'].disabled = False if ('No' in sheet.cell(row, 5).value) or self.col_property == 3 else True
+                        self.ids['yes'].disabled = False if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3 else True
                         self.row = row
                         return
             self.ids['name'].text = "User not found."
@@ -293,8 +297,8 @@ try:
         
         def approve(self):
             # Change 'Signed in' to 'Yes'
-            sheet.update_cell(self.row, self.col_property, 'Yes' if (self.col_property == 5) else self.getNextLevel())
-            print(sheet.get_all_values())
+            self.app.sheet.update_cell(self.row, self.col_property, 'Yes' if (self.col_property == 5) else self.getNextLevel())
+            print(self.app.sheet.get_all_values())
             # Call 'cancel()' since all it does it return to home
             self.cancel()
             
@@ -306,7 +310,10 @@ try:
             self.app.on_back()
             
     class ContentNavigationDrawer(BoxLayout):
-        pass
+        def __init__(self, **kwargs):
+            super(ContentNavigationDrawer, self).__init__(**kwargs)
+            self.app = MDApp.get_running_app()
+            
 
 
     class AddMember(Screen):
@@ -331,15 +338,14 @@ try:
         
         def add_member(self, button, first_name, last_name, email, phone):
             # Create QR Code
-            global sheet
             print(self.ids['testing'].text)
             if creds.access_token_expired:
                 try:
-                    sheet = get_spread()
+                    self.app.sheet = get_spread()
                 except:
                     spread_unloaded(MDApp.get_running_app())
                     
-            sheet.append_row([first_name.strip(),last_name.strip(), 'Beginner', 0, 'No', email, phone])
+            self.app.sheet.append_row([first_name.strip(),last_name.strip(), 'Beginner', 0, 'No', email, phone])
             button.disabled = True
             self.ids['home_button'].disabled = False
             self.ids['again_button'].disabled = False
@@ -355,13 +361,16 @@ try:
         icon = StringProperty()
         idx = NumericProperty()
             
+        def __init__(self, **kwargs):
+            super(NavigationItem, self).__init__(**kwargs)
+            self.app = MDApp.get_running_app()
         def home(self):
             self.app.toggle_nav_drawer()
             
         def reload(self):
             try:
-                # Reload google sheet
-                sheet = get_spread()
+                # Reload google self.app.sheet
+                self.app.sheet = get_spread()
                 self.app.root.ids.nav_drawer.set_state("toggle")
                 # Popup for  switch between Sign-in/Test-out
                 self.app.updates = "Members have been reloaded"
@@ -420,9 +429,17 @@ try:
             self.abs_root = abs_root
             
             #Used for global sheet manipulation
+            self.sheet = None
             self.get_spread = get_spread
             self.spread_unloaded = spread_unloaded
             self.get_creds = get_creds
+            
+            # Try to get sheet if accessable. Already handling the situation
+            #where no sheet is loaded later in 'on_start' and 'changeScreen'
+            try:
+                self.sheet = get_spread()
+            except:
+                pass
             
             # Popup used for updates
             content = BoxLayout(orientation='vertical')
@@ -476,13 +493,13 @@ try:
             #self.root.ids.nav_drawer.bind(state=self.toggle_nav_drawer)
             
             # Make sure sheet is ready before starting normal operation
-            if not sheet:
+            if not self.sheet:
                 print("In from of popup")
                 spread_unloaded(MDApp.get_running_app())
             
         def changeScreen(self, next):
             # To make sure spreadsheet is loaded
-            if not sheet  and not(next == "settings_screen"):
+            if not self.sheet  and not(next == "settings_screen"):
                 spread_unloaded(MDApp.get_running_app())
                 return None
                 
@@ -513,6 +530,9 @@ try:
                     os.environ["PULSO_APP_ROOT"], "libs", "kv",
                     "main.kv"))
 
+        def alert(self, mess):
+            self.updates = mess
+            self.popup.open()
 
     def main():
         # when the -d/--debug flag is set, Kivy sets log level to debug

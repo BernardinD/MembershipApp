@@ -23,7 +23,7 @@ import os
 
 # All global objects' events are defined in locations where local information is needed
 text_box = TextInput(id='txt', multiline=False, halign='center')
-#browser = Browser(orientation='vertical')
+new_sheet = None
 
 '''class FileBrowser(Popup):
     # Object openning browser
@@ -69,10 +69,15 @@ class Change_popup(Popup):
                 self.app.updates = "Sheet has been created and \n updated as current sheet \n Make sure to save new settings"
                 self.app.popup.open()
                 
+            # Setting 'new_sheet' to None after each failed attempted
+            #so that any previous successful attempts don't become current
+            #sheet
+            global new_sheet
             try:
-                sheet = self.app.get_spread(text)
+                new_sheet = self.app.get_spread(text)
             except:
                 self.app.spread_unloaded(MDApp.get_running_app())
+                new_sheet = None
                 
         # If current Op is for Selection
         #Uses root that was assigned manually to get instance and text_box
@@ -97,7 +102,7 @@ class Change_popup(Popup):
 class Settings_Setup(Screen):
     
     # Holds all the tags that go to editing operations
-    changes = ["Current sheet", "Primary color", "Logo"]
+    changes = ["Current sheet", "Primary color", "Logo", "Create new sheet"]
     
     # Holds preset values for colors
     colors = {}
@@ -107,11 +112,11 @@ class Settings_Setup(Screen):
         self.app = MDApp.get_running_app()
         self.popup = Change_popup()
         
-        
-    '''
-    Setting all topics and infos to corresponding cell before stating
-    '''
-    def on_enter(self):
+    
+    def on_enter(self):    
+        '''
+        Setting all topics and infos to corresponding cell before starting
+        '''
         # Dictionary of all the settings current set
         self.curr_sett = self.app.store.get("Settings")
         
@@ -127,17 +132,23 @@ class Settings_Setup(Screen):
                 
     # Save current settings to json file
     def save(self):
+        '''
+        Take current local entries and saved them to json file
+        '''
+        global new_sheet
         saves = dict()
         self.app.store.put("Settings", **self.curr_sett)
         self.app.on_back()
         self.app.updates = "Settings have been updated."
+        if new_sheet:
+            self.app.sheet = new_sheet
         self.app.popup.open()
-        
-    '''
-    Creates a new sheet that is assigned to the email address from  the 'client_secret'
-    json file. It is then shared with the club's gmail to transfer ownership
-    '''
-    def create(self, sheetname = "Test new sheet"):
+     
+    def create(self, sheetname = "Test new sheet"):   
+        '''
+        Creates a new sheet that is assigned to the email address from  the 'client_secret'
+        json file. It is then shared with the club's gmail to transfer ownership
+        '''
         # Create new sheet through gspread
         import gspread
         creds = self.app.get_creds()
@@ -201,8 +212,13 @@ class Settings_cell(BoxLayout):
         Corrdinates buttons for all cells in page
         '''
         print("**** came into buttons *****")
-        #if self.topic in self.app.root.ids.settings_id.changes:
-        self.change()
+        if "Sharing" in self.topic:
+            email = self.app.get_creds().service_account_email
+            Clipboard.copy(email)
+            self.app.alert("App's email account has be copied to clipboard \n Share with pre-exsisting sheet to gain access")
+            
+        elif self.topic in self.app.root.ids.settings_id.changes:
+            self.change()
         #elif 'create' in self.topic.lower():
         #    self.app.root.ids.settings_id.create()
         #else:
