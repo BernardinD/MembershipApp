@@ -25,19 +25,6 @@ import os
 text_box = TextInput(id='txt', multiline=False, halign='center')
 new_sheet = None
 
-'''class FileBrowser(Popup):
-    # Object openning browser
-    root = None
-    
-    def __init__(self, **kwargs):
-        super(FileBrowser, self).__init__(**kwargs)
-        self.app = MDApp.get_running_app()'''
-print("Right before variable")        
-#fb = FileBrowser()
-# Open browsing popup
-#browser.browse_btn.bind(on_release=fb.open)
-print("Right after variable") 
-
 class Change_popup(Popup):
 
     # Holds current topic
@@ -59,25 +46,32 @@ class Change_popup(Popup):
         # If current Op is selecting sheet 
         #(Used for both selection and creation)
         if isinstance(curr_plc_hldr, TextInput):
-            text = text_box.text
-            
             if (self.curr == "Create new sheet"):
-                self.app.root.ids.settings_id.create(text)
-                # Change current to 'Current sheet' since the rest of the operation
-                #is switch the current sheet
-                self.curr = "Current sheet"
-                self.app.updates = "Sheet has been created and \n updated as current sheet \n Make sure to save new settings"
-                self.app.popup.open()
+                try:
+                    self.app.root.ids.settings_id.create(text)
+                    # Change current to 'Current sheet' since the rest of the operation
+                    #is switch the current sheet
+                    self.curr = "Current sheet"
+                    self.app.updates = "Sheet has been created and \n updated as current sheet \n Make sure to save new settings"
+                    self.app.popup.open()
+                except Exception as e:
+                    self.app.spread_unloaded()
+                    print("settings.py: **** -----", e, "------------")
+                    return
                 
             # Setting 'new_sheet' to None after each failed attempted
             #so that any previous successful attempts don't become current
-            #sheet
+            #sheet.
+            # Also returns if sheet doesn't exsist
             global new_sheet
             try:
                 new_sheet = self.app.get_spread(text)
             except:
-                self.app.spread_unloaded(MDApp.get_running_app())
+                self.app.spread_unloaded("name")
                 new_sheet = None
+                return
+            text = text_box.text
+            
                 
         # If current Op is for Selection
         #Uses root that was assigned manually to get instance and text_box
@@ -138,9 +132,11 @@ class Settings_Setup(Screen):
         global new_sheet
         saves = dict()
         self.app.store.put("Settings", **self.curr_sett)
+        print("self.app.store.get('Settings') =", self.app.store.get("Settings"))
         self.app.on_back()
         self.app.updates = "Settings have been updated."
         if new_sheet:
+            print("---- Sheet is changing ------")
             self.app.sheet = new_sheet
         self.app.popup.open()
      
@@ -156,6 +152,10 @@ class Settings_Setup(Screen):
         
         sh = client.create(sheetname)
         sh.share("bdezius@gmail.com", perm_type='user', role='owner')
+        global new_sheet
+        new_sheet = sh.sheet1
+        if "is" == "empty":
+            new_sheet.append_row(["First Name", "Last Name", 'Level', "Attendences", "Signed-in", "Email", "Phone #"])
         print("New sheet created and shared")
 
 
@@ -276,13 +276,3 @@ class Settings_cell(BoxLayout):
                 info = ""
         text = "\n".join(lines)
         return text
-    '''def dismiss(self, selection):
-        # Save selection to saves and browse_btn.text, and close popup
-        #print(self.root)
-        if len(selection) > 0:
-            #self.info = selection[0]
-            browser.text_box.text=selection[0]
-        print("selection =", selection)
-        print("self.info =", self.info)
-        print("self.topic =", self.topic)
-        fb.dismiss()'''

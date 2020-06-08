@@ -80,8 +80,8 @@ try:
     
     from kivy.storage.jsonstore import JsonStore
 
-    store = JsonStore(os.path.join(abs_root, "assets",'settings.json'))
-    print('store.get("Settings")["Current sheet"] =', store.get("Settings")["Current sheet"] if 'Current sheet' in store else None)
+    #store = JsonStore(os.path.join(abs_root, "assets",'settings.json'))
+    #print('store.get("Settings")["Current sheet"] =', store.get("Settings")["Current sheet"] if 'Current sheet' in store else None)
     
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
@@ -89,50 +89,6 @@ try:
     
     #sheet = None
 
-    def get_creds():
-        scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-        if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
-            print("sys.path =", sys.path)
-            dirs = [ i for i in sys.path if os.path.isdir(i)]
-            for i in dirs:
-                print("listdir(i) =", os.listdir(i))
-                #print(os.listdir("C:\\Users"))
-                try:
-                    if 'client_secret.json' in os.listdir(i):
-                        print("Trying to get json")
-                        creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
-                        break
-                    # If can't find json, end program
-                except Exception as e:
-                    print(e)
-            print("---- Didn't find json ----")
-            print("---- Terminating application ----")
-            raise True
-        else:
-            creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
-                                                                        os.environ["PULSO_APP_ASSETS"],
-                                                                        'client_secret.json'),
-                                                                    scope)
-        return creds
-        
-    
-    creds = get_creds()
-    
-    def get_spread(sheet = store.get("Settings")["Current sheet"]):
-        '''
-        Used to retrieve sheets and check if a sheet exists,
-        returns the sheet if it exists/accessable
-        '''
-        client = gspread.authorize(creds)
-        print("Sheet name =", sheet)
-        sheet = client.open( sheet ).sheet1
-        print("sheet =", sheet)
-        print("sheet =", sheet.get_all_values())
-        return sheet
-        
-    def spread_unloaded(self):
-        self.app.updates = "Spreadsheet could not be loaded.\nCheck connection and reload"
-        self.app.popup.open()
         
     # Try to get spread sheet
     #try:
@@ -343,7 +299,7 @@ try:
                 try:
                     self.app.sheet = get_spread()
                 except:
-                    spread_unloaded(MDApp.get_running_app())
+                    self.app.spread_unloaded()
                     
             self.app.sheet.append_row([first_name.strip(),last_name.strip(), 'Beginner', 0, 'No', email, phone])
             button.disabled = True
@@ -370,13 +326,13 @@ try:
         def reload(self):
             try:
                 # Reload google self.app.sheet
-                self.app.sheet = get_spread()
+                self.app.sheet = self.app.get_spread()
                 self.app.root.ids.nav_drawer.set_state("toggle")
                 # Popup for  switch between Sign-in/Test-out
                 self.app.updates = "Members have been reloaded"
                 self.app.popup.open()
             except:
-                spread_unloaded(MDApp.get_running_app())
+                self.app.spread_unloaded()
             
         def settings(self):
             # Change Google sheet
@@ -425,20 +381,20 @@ try:
             self.app = MDApp.get_running_app()
             self.screen_list = []
             self.nav_state = False
-            self.store = store
+            self.store = JsonStore(os.path.join(abs_root, "assets",'settings.json'))
+            #print("self.store.get('Settings') = ", self.store.get("Settings") )
+            #print('self.store.get("Settings")["Current sheet"] =', self.store.get("Settings")["Current sheet"] if 'Current sheet' in self.store.get("Settings") else None)
             self.abs_root = abs_root
             
             #Used for global sheet manipulation
             self.sheet = None
-            self.get_spread = get_spread
-            self.spread_unloaded = spread_unloaded
-            self.get_creds = get_creds
             
             # Try to get sheet if accessable. Already handling the situation
             #where no sheet is loaded later in 'on_start' and 'changeScreen'
-            try:
-                self.sheet = get_spread()
-            except:
+            try:\
+                self.sheet = self.get_spread()
+            except Exception as e:
+                print(e)
                 pass
             
             # Popup used for updates
@@ -495,12 +451,12 @@ try:
             # Make sure sheet is ready before starting normal operation
             if not self.sheet:
                 print("In from of popup")
-                spread_unloaded(MDApp.get_running_app())
+                self.spread_unloaded()
             
         def changeScreen(self, next):
             # To make sure spreadsheet is loaded
             if not self.sheet  and not(next == "settings_screen"):
-                spread_unloaded(MDApp.get_running_app())
+                self.spread_unloaded()
                 return None
                 
             if self.root.ids.screen_manager_id.current not in self.screen_list:
@@ -510,6 +466,54 @@ try:
             self.root.ids.screen_manager_id.current = next
             
             return self.root.ids.screen_manager_id.current_screen
+            
+        def get_creds(self):
+            scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+            if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
+                print("sys.path =", sys.path)
+                dirs = [ i for i in sys.path if os.path.isdir(i)]
+                for i in dirs:
+                    print("listdir(i) =", os.listdir(i))
+                    #print(os.listdir("C:\\Users"))
+                    try:
+                        if 'client_secret.json' in os.listdir(i):
+                            print("Trying to get json")
+                            creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
+                            break
+                        # If can't find json, end program
+                    except Exception as e:
+                        print(e)
+                print("---- Didn't find json ----")
+                print("---- Terminating application ----")
+                raise True
+            else:
+                creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
+                                                                            os.environ["PULSO_APP_ASSETS"],
+                                                                            'client_secret.json'),
+                                                                        scope)
+            return creds
+            
+        
+        
+        def get_spread(self, sheet = None):
+            '''
+            Used to retrieve sheets and check if a sheet exists,
+            returns the sheet if it exists/accessable
+            '''
+            if not sheet:
+                sheet = self.store.get("Settings")["Current sheet"]
+                
+            creds = self.get_creds()
+            client = gspread.authorize(creds)
+            print("Sheet name =", sheet)
+            sheet = client.open( sheet ).sheet1
+            print("sheet =", sheet)
+            print("sheet =", sheet.get_all_values())
+            return sheet
+            
+        def spread_unloaded(self, type_ = "connection"):
+            self.app.updates = "Spreadsheet could not be loaded.\nCheck {} and reload".format(type_)
+            self.app.popup.open()
             
         def exit(self):
             print("main.py: ********* self.exit run *****")
