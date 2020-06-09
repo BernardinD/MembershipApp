@@ -345,18 +345,6 @@ try:
             }
             self.app = MDApp.get_running_app()
             
-            '''if index == 2:
-                content = BoxLayout(orientation='vertical')
-                label = Label(text="Members have been reloaded", size_hint=(1,0.5))
-                button=Button(text="OK", size_hint=(1,0.5))
-                content.add_widget(label)
-                content.add_widget(button)
-                self.popup = Popup(title="Update",
-                        content=content, 
-                        size_hint=(.3, .3),
-                        auto_dismiss=True)
-                button.bind(on_release=self.popup.dismiss)'''
-            
         def pressed(self):
             func = self.switcher.get(self.idx, lambda: "Invalid Function")
             func()

@@ -123,7 +123,7 @@ class Settings_Setup(Screen):
         Setting all topics and infos to corresponding cell before starting
         '''
         # Dictionary of all the settings current set
-        self.curr_sett = self.app.store.get("Settings")
+        self.curr_sett = self.app.store.get("Settings").copy()
         
         # Setting info from json file with correct cell name
         for name in self.ids:
@@ -227,19 +227,16 @@ class Settings_cell(BoxLayout):
     def buttons(self):
         '''
         Corrdinates buttons for all cells in page
+        All cells that are meant to change a setting are redirected to 'change()'
         '''
         print("**** came into buttons *****")
-        if "Sharing" in self.topic:
+        if "copy" in self.topic.lower():
             email = self.app.get_creds().service_account_email
             Clipboard.copy(email)
-            self.app.alert("App's email account has be copied to clipboard \n Share with pre-exsisting sheet to gain access")
+            self.app.alert("Link email copied to clipboard. \n Share with sheet to give access")
             
         elif self.topic in self.app.root.ids.settings_id.changes:
             self.change()
-        #elif 'create' in self.topic.lower():
-        #    self.app.root.ids.settings_id.create()
-        #else:
-        #    pass
     
     def selection(self, obj, val):
         '''
