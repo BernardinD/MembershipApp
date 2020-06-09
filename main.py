@@ -130,16 +130,6 @@ try:
         def load_back_button(self, function):
             self.left_action_items = [['arrow-left', lambda x: function()]]
             
-    #class Home(Screen):
-    #    def __init__(self, **kwargs):
-    #        #self.manager = manager
-    #        super(Home, self).__init__(**kwargs)
-    #        self.app = MDApp.get_running_app()
-    #        
-    #    def show_add(self):
-    #        self.app.changeScreen('add_screen')
-            
-            
     class Scan(Screen):
         
         def __init__(self, **kwargs):
@@ -163,7 +153,7 @@ try:
                 symbol = self.ids.zbarcam.symbols[0]
                 data = symbol.data.decode('utf8')
                 print(data)
-                if "PulsoCaribe" in data:
+                if self.app.club_striped in data:
                     temp = data.split(',')
                     if len(temp) < 2:
                         return
@@ -295,6 +285,7 @@ try:
         def add_member(self, button, first_name, last_name, email, phone):
             # Create QR Code
             print(self.ids['testing'].text)
+            creds = self.app.get_creds()
             if creds.access_token_expired:
                 try:
                     self.app.sheet = get_spread()
@@ -305,7 +296,7 @@ try:
             button.disabled = True
             self.ids['home_button'].disabled = False
             self.ids['again_button'].disabled = False
-            self.ids['qr'].data = "PulsoCaribe,{},{}".format(first_name,last_name)
+            self.ids['qr'].data = "{},{},{}".format(self.app.club_striped,first_name,last_name)
 
         def confirm(self, button):
             button.disabled = True
@@ -387,6 +378,7 @@ try:
             #print('self.store.get("Settings")["Current sheet"] =', self.store.get("Settings")["Current sheet"] if 'Current sheet' in self.store.get("Settings") else None)
             self.abs_root = abs_root
             self.logo = self.store.get("Settings")["Logo"]
+            self.club_striped = self.strip_name()
             
             #Used for global sheet manipulation
             self.sheet = None
@@ -454,6 +446,11 @@ try:
             if not self.sheet:
                 print("In from of popup")
                 self.spread_unloaded()
+            
+        def strip_name(self):
+            club = self.app.store.get("Settings")["Club name"]
+            club_striped = ''.join(e for e in club if e.isalnum())
+            return club_striped
             
         def changeScreen(self, next):
             # To make sure spreadsheet is loaded

@@ -46,7 +46,7 @@ class Change_popup(Popup):
         # If current Op uses Text Box
         if isinstance(curr_plc_hldr, TextInput):
             text = text_box.text
-            if self.curr == "Primary contact":
+            if "sheet" not in self.curr.lower():
                 pass
                 
             # If current Op is selecting sheet
@@ -107,7 +107,7 @@ class Settings_Setup(Screen):
     '''
     # Holds all the tags that go to editing operations
     changes = ["Current sheet", "Primary color", "Logo", "Create new sheet",
-                "Primary contact"]
+                "Primary contact", "Club name"]
     
     # Holds preset values for colors
     colors = {}
@@ -144,6 +144,7 @@ class Settings_Setup(Screen):
         saves = dict()
         self.app.store.put("Settings", **self.curr_sett)
         self.app.logo = self.app.store.get("Settings")["Logo"]
+        self.app.club_stripped = self.app.strip_name()
         print("self.app.store.get('Settings') =", self.app.store.get("Settings"))
         self.app.on_back()
         self.app.updates = "Settings have been updated."
