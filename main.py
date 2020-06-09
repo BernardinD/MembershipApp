@@ -522,6 +522,13 @@ try:
                     "main.kv"))
 
         def alert(self, mess):
+            # Check if this Popup is already open
+            for wid in self.app.get_running_app().root_window.children:
+                if wid == self.popup:
+                    print("main.py: **** ----- More than one alert has been fire ------------")
+                    print("main.py: **** ----- {} ------------".format(mess))
+                    return
+            
             self.updates = mess
             self.popup.open()
 

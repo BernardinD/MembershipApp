@@ -27,8 +27,8 @@ new_sheet = None
 
 class Change_popup(Popup):
 
-    # Holds current topic
-    curr = ""
+    # Holds current cell
+    curr = None
     
     def __init__(self, **kwargs):
         super(Change_popup, self).__init__(**kwargs)
@@ -38,6 +38,13 @@ class Change_popup(Popup):
      
     # args = self and MAYBE obj
     def confirm(*args):
+        '''
+        Procedure for every time the the confirmation button is pressed.
+        The objective is the retrieve the text inside the current object
+        in the placeholder. This handles each type of placeholder differenly
+        depending on the type of object. Text Input are just read and Selection
+        pass their 'selection' property.
+        '''
         self = args[0]
         print("In confirm")
         curr_plc_hldr = self.ids.placeholder.children[0]
@@ -46,19 +53,22 @@ class Change_popup(Popup):
         # If current Op uses Text Box
         if isinstance(curr_plc_hldr, TextInput):
             text = text_box.text
-            if "sheet" not in self.curr.lower():
+            if "sheet" not in self.curr.topic.lower():
                 pass
                 
             # If current Op is selecting sheet
             #(Used for both selection and creation)
             else:
-                if (self.curr == "Create new sheet"):
+                if (self.curr.topic == "Create new sheet"):
                     try:
-                        self.app.root.ids.settings_id.create(text)
+                        # Try to create new sheet
+                        if not self.app.root.ids.settings_id.create(text):
+                            return
+                        
                         # Change current to 'Current sheet' since the rest of the operation
                         #is switch the current sheet
-                        self.curr = "Current sheet"
-                        self.app.updates = "Sheet has been created and \n updated as current sheet \n Make sure to save new settings"
+                        self.curr = self.app.root.ids.settings_id.ids.sheet
+                        self.app.updates = "Created sheet is now current sheet \n Remember to save new settings!!"
                         self.app.popup.open()
                     except Exception as e:
                         self.app.spread_unloaded()
@@ -83,15 +93,18 @@ class Change_popup(Popup):
         #Uses root that was assigned manually to get instance and text_box
         elif curr_plc_hldr.root and isinstance(curr_plc_hldr.root, Selection):
             text = curr_plc_hldr.root.text_box.text
-            
-        self.app.root.ids.settings_id.curr_sett[self.curr] = text
         
-        for name in self.app.root.ids.settings_id.ids:
-            if isinstance(self.app.root.ids.settings_id.ids[name], Settings_cell) and self.app.root.ids.settings_id.ids[name].topic == self.curr:
-                self.app.root.ids.settings_id.ids[name].info = text
+        # Save data to temp settings
+        self.app.root.ids.settings_id.curr_sett[self.curr.topic] = text
+        
+        # Input data into info
+        self.curr.info = text
         self.dismiss()
         
     def exit(*args):
+        '''
+        Procedure every time exit of dialog box of the settings page
+        '''
         self = args[0]
         # Clear placeholder in popup
         self.app.root.ids.settings_id.popup.ids.placeholder.clear_widgets()
@@ -157,6 +170,7 @@ class Settings_Setup(Screen):
         '''
         Creates a new sheet that is assigned to the email address from  the 'client_secret'
         json file. It is then shared with the club's gmail to transfer ownership
+        Returns whether the creation was successful or not
         '''
         # Create new sheet through gspread
         import gspread
@@ -165,12 +179,18 @@ class Settings_Setup(Screen):
         
         sh = client.create(sheetname)
         email = self.app.store.get("Settings")["Primary contact"]
+        print("email = ", email)
+        if email == "":
+            print("Came into else")
+            self.app.alert("Input Primary's gmail and save \n before creating new sheet.")
+            return False
         sh.share(email, perm_type='user', role='owner')
         global new_sheet
         new_sheet = sh.sheet1
         if "is" == "empty":
             new_sheet.append_row(["First Name", "Last Name", 'Level', "Attendences", "Signed-in", "Email", "Phone #"])
         print("New sheet created and shared")
+        return True
 
 
 class Settings_cell(BoxLayout):
@@ -183,7 +203,7 @@ class Settings_cell(BoxLayout):
     topic = StringProperty()
     info = StringProperty("'Empty'")
     type = StringProperty("")
-    popup_label = StringProperty("'Empty'")
+    popup_label = StringProperty("Enter new sheet's name")
     
     #btn_color = 
 
@@ -201,15 +221,16 @@ class Settings_cell(BoxLayout):
         
     def change(self):
         '''
-        Corrdinates all cells that have to do with changing a setting
+        Corrdinates all cells that have to do with changing a setting.
+        Current broken up between a TextInput and Selection class
         '''
         root = self.app.root.ids.settings_id
         print("In 'change'")
         cls = self.str_to_class(self.type)
-        # Put current prompt on popup
+        root.popup.label = self.popup_label
+        # Put current prompt and placeholder in popup
         if cls and issubclass(cls, Selection):
             print("Came in to 'Selection'")
-            root.popup.label = self.popup_label
             self.sub = cls()
             print("self.sub = ", self.sub)
             self.sub.bind(selection=self.selection)
@@ -218,9 +239,8 @@ class Settings_cell(BoxLayout):
         else: 
             #self.topic == "Current sheet" or self.topic == "Create new sheet":
             print("In 'change's else")
-            root.popup.label = "Enter new sheet's name"
             root.popup.ids.placeholder.add_widget(text_box)
-        root.popup.curr = self.topic
+        root.popup.curr = self
         root.popup.open()
         text_box.focus = True
         
