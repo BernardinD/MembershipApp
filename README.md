@@ -26,5 +26,5 @@ after adding a 'client_secret.json' file to the assets directory as well as an '
 * Change the QRCode generation to be unique to arbitrary club
 * Finish commenting instructions for all parts and functionalities of app
 * ~~Alter the logo selection so that only jpg/jpeg and png selections are allowed~~
-* Make sheet creation dynamic (i.e. include primary contact field)
+* ~~Make sheet creation dynamic (i.e. include primary contact field)~~
 

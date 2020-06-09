@@ -42,35 +42,41 @@ class Change_popup(Popup):
         print("In confirm")
         curr_plc_hldr = self.ids.placeholder.children[0]
         # Print new and save it to list of settings
-        
-        # If current Op is selecting sheet 
-        #(Used for both selection and creation)
+         
+        # If current Op uses Text Box
         if isinstance(curr_plc_hldr, TextInput):
-            if (self.curr == "Create new sheet"):
-                try:
-                    self.app.root.ids.settings_id.create(text)
-                    # Change current to 'Current sheet' since the rest of the operation
-                    #is switch the current sheet
-                    self.curr = "Current sheet"
-                    self.app.updates = "Sheet has been created and \n updated as current sheet \n Make sure to save new settings"
-                    self.app.popup.open()
-                except Exception as e:
-                    self.app.spread_unloaded()
-                    print("settings.py: **** -----", e, "------------")
-                    return
-                
-            # Setting 'new_sheet' to None after each failed attempted
-            #so that any previous successful attempts don't become current
-            #sheet.
-            # Also returns if sheet doesn't exsist
-            global new_sheet
-            try:
-                new_sheet = self.app.get_spread(text)
-            except:
-                self.app.spread_unloaded("name")
-                new_sheet = None
-                return
             text = text_box.text
+            if self.curr == "Primary contact":
+                pass
+                
+            # If current Op is selecting sheet
+            #(Used for both selection and creation)
+            else:
+                if (self.curr == "Create new sheet"):
+                    try:
+                        self.app.root.ids.settings_id.create(text)
+                        # Change current to 'Current sheet' since the rest of the operation
+                        #is switch the current sheet
+                        self.curr = "Current sheet"
+                        self.app.updates = "Sheet has been created and \n updated as current sheet \n Make sure to save new settings"
+                        self.app.popup.open()
+                    except Exception as e:
+                        self.app.spread_unloaded()
+                        print("settings.py: **** -----", e, "------------")
+                        return
+                    
+                # Setting 'new_sheet' to None after each failed attempted
+                #so that any previous successful attempts don't become current
+                #sheet.
+                # Also returns if sheet doesn't exsist
+                global new_sheet
+                
+                try:
+                    new_sheet = self.app.get_spread(text)
+                except:
+                    self.app.spread_unloaded("name")
+                    new_sheet = None
+                    return
             
                 
         # If current Op is for Selection
@@ -94,9 +100,14 @@ class Change_popup(Popup):
        
     
 class Settings_Setup(Screen):
-    
+    '''
+    Relys on each cell in the page being broken up into types.
+    Mainly there are types that are for directly changing entries, whose
+    topics are put into the 'changes' list
+    '''
     # Holds all the tags that go to editing operations
-    changes = ["Current sheet", "Primary color", "Logo", "Create new sheet"]
+    changes = ["Current sheet", "Primary color", "Logo", "Create new sheet",
+                "Primary contact"]
     
     # Holds preset values for colors
     colors = {}
@@ -132,6 +143,7 @@ class Settings_Setup(Screen):
         global new_sheet
         saves = dict()
         self.app.store.put("Settings", **self.curr_sett)
+        self.app.logo = self.app.store.get("Settings")["Logo"]
         print("self.app.store.get('Settings') =", self.app.store.get("Settings"))
         self.app.on_back()
         self.app.updates = "Settings have been updated."
@@ -151,7 +163,8 @@ class Settings_Setup(Screen):
         client = gspread.authorize(creds)
         
         sh = client.create(sheetname)
-        sh.share("bdezius@gmail.com", perm_type='user', role='owner')
+        email = self.app.store.get("Settings")["Primary contact"]
+        sh.share(email, perm_type='user', role='owner')
         global new_sheet
         new_sheet = sh.sheet1
         if "is" == "empty":
@@ -168,7 +181,7 @@ class Settings_cell(BoxLayout):
     
     topic = StringProperty()
     info = StringProperty("'Empty'")
-    type = StringProperty("'Empty'")
+    type = StringProperty("")
     popup_label = StringProperty("'Empty'")
     
     #btn_color = 
@@ -182,27 +195,30 @@ class Settings_cell(BoxLayout):
         # ...
         
     def str_to_class(self, classname):
-        return getattr(sys.modules[__name__], classname)
+        # Checks to see if a classname is given. If so, returns the type
+        return getattr(sys.modules[__name__], classname) if not (classname == "") else None
         
     def change(self):
         '''
         Corrdinates all cells that have to do with changing a setting
         '''
         root = self.app.root.ids.settings_id
+        print("In 'change'")
+        cls = self.str_to_class(self.type)
         # Put current prompt on popup
-        if self.topic == "Current sheet" or self.topic == "Create new sheet":
-            root.popup.label = "Enter new sheet's name"
-            root.popup.ids.placeholder.add_widget(text_box)
-        elif (self.str_to_class(self.type), Selection):
+        if cls and issubclass(cls, Selection):
             print("Came in to 'Selection'")
             root.popup.label = self.popup_label
-            self.sub = (self.str_to_class(self.type))()
+            self.sub = cls()
             print("self.sub = ", self.sub)
             self.sub.bind(selection=self.selection)
             self.app.root.ids.settings_id.popup.ids.placeholder.add_widget(self.sub.layout)
             print("selection layout added")
-        else:
-            print("***** DID NOT GO INTO ANY CASES ******")
+        else: 
+            #self.topic == "Current sheet" or self.topic == "Create new sheet":
+            print("In 'change's else")
+            root.popup.label = "Enter new sheet's name"
+            root.popup.ids.placeholder.add_widget(text_box)
         root.popup.curr = self.topic
         root.popup.open()
         text_box.focus = True
@@ -242,28 +258,31 @@ class Settings_cell(BoxLayout):
         
     def format_text(self, info, width):
         '''
-        Format text so that it fits in Label and looks well-formated
+        Format text so that it fits in Label and looks well-formated.
+        It does it by attempting to break up the string by the length 
+        of the Label box and print up to 4 lines of text
         '''
         lines = []
         char_width = 7
         width /= char_width
         width = int(width)
+        sep = os.sep if os.sep in info else ""
         while len(info) > 0:
             if len(info) < width:
                 width = len(info)
-            if (info[width-1] == os.sep):
+            if (info[width-1] == sep):
                 width -= 1
             # Splice til length
             temp = info[:width] 
             # Take path up til splice
             split = os.path.split(temp)
             if len(split[0]) > 0:
-                lines.append(split[0]+os.sep)
+                lines.append(split[0]+ sep )
                 # Reattach rest of spliced path and continue
                 if len(split[1]) > 0:
                     info = split[1] + info[width:]
             else:
-                # Check if part of path is too long (first part of split will be empty)
+                # Check if part if remaining path is too long (first part of split will be empty)
                 split2 = (split[1] + info[width:]).split(os.sep)
                 if len(split2) > 1 or len(lines) > 4:
                     lines = [

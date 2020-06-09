@@ -114,7 +114,7 @@
             Widget:
             Image:
             	#source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
-				source: root.app.store.get("Settings")["Logo"]
+				source: root.app.logo
             Widget:
   
     
@@ -142,7 +142,8 @@
 				pos_hint: {"top": 1}
 				FitImage:
 					#source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
-					source: root.app.store.get("Settings")["Logo"]
+					source: root.app.logo
+					#container.image.soure: root.app.logo
 			#MDIconButton:
 			#	icon: "close"
 			#	x: root.x 

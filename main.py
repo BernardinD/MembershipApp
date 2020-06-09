@@ -374,6 +374,7 @@ try:
     class MainApp(MDApp):
 
         updates = StringProperty("Members have been reloaded")
+        logo = StringProperty("")
         
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
@@ -385,6 +386,7 @@ try:
             #print("self.store.get('Settings') = ", self.store.get("Settings") )
             #print('self.store.get("Settings")["Current sheet"] =', self.store.get("Settings")["Current sheet"] if 'Current sheet' in self.store.get("Settings") else None)
             self.abs_root = abs_root
+            self.logo = self.store.get("Settings")["Logo"]
             
             #Used for global sheet manipulation
             self.sheet = None

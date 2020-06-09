@@ -59,13 +59,16 @@
 				type: "ColorPicker"
 				popup_label: "Press Browse to selection color"
 				# Disable picking color for now
-				#on_kv_post: self.ids.button.disabled = True
+				on_kv_post: self.ids.button.disabled = True
 			# Holds file name of logo, but using an image that was copied and saved to absolute-dir
 			Settings_cell:
 				topic: "Logo"
 				id: logo
 				type: "FileBrowser"
 				popup_label: "Press Browse to find logo"
+			Settings_cell
+				topic: "Primary contact"
+				id: contact
 			Settings_cell:
 				topic: "Create new sheet"
 				id: create
