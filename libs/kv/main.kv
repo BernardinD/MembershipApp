@@ -5,118 +5,6 @@
 ##:import NavigationLayout kivymd.navigationdrawer.NavigationLayout
 ##:import BoxLayout kivy.uix.boxlayout.BoxLayout
 #:import platform kivy.utils.platform
-
-
-        	
-        
-<Scan>
-    BoxLayout:
-        orientation: 'vertical'
-        
-        ZBarCam:
-            id: zbarcam
-        #     optional, by default checks all types
-            #code_types: ZBarSymbol.QRCODE,
-            on_symbols: root.scanned()
-            #on_parent: zbarcam.stop()
-
-        GridLayout:
-            cols: 3
-            rows: 1
-            size_hint: 1.0, 0.2
-            padding: 5
-            Widget:
-            Button:
-                text: 'Go to home'
-                text_size: self.size
-                halign: 'center'
-                valign: 'middle'
-                on_press: app.on_back()
-            Widget:
-            
-<Drive>
-    BoxLayout:
-        orientation: 'vertical'
-        
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, 1
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        BoxLayout:
-            orientation: 'horizontal'
-            cols: 2
-            rows: 1
-            size_hint: 1.0, 0.2
-            Label:
-                text: "Name: "
-            Label:
-                id: name
-                text: "..."
-                color: 1, 1, 1, 1
-                
-        BoxLayout:
-            orientation: 'horizontal'
-            cols: 2
-            rows: 1
-            size_hint: 1.0, 0.2
-            Label:
-                text: "Level: "
-            Label:
-                background_color: 0, 0, 0, 1
-                canvas.before:
-                    Color:
-                        rgba: self.background_color
-                    Rectangle:
-                        size: self.size
-                        pos: self.pos
-                id: level
-                text: "..."
-                color: 1, 1, 1, 1
-                
-        BoxLayout:
-            orientation: 'horizontal'
-            padding: 10
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, 1
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
-            cols: 1
-            rows: 1
-            size_hint: 1.0, 0.2
-            Label:
-				id: prompt
-                text: root.prompt_property
-                color: 1, 0, 0, 1
-                
-        BoxLayout:
-            orientation: 'horizontal'
-            cols: 2
-            rows: 1
-            size_hint: 1.0, 0.2
-            Button:
-                id: yes
-                text: "Yes"
-                on_release: root.approve()
-            Button:
-                id: no
-                text: "No"
-                on_release: root.cancel()
-
-        BoxLayout:
-            cols: 2
-            rows: 1
-            size_hint: 1.0, 0.2
-            padding: 5
-            Widget:
-            Image:
-            	#source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
-				source: root.app.logo
-            Widget:
-  
     
 <NavigationItem>
     theme_text_color: 'Custom'
@@ -163,7 +51,7 @@
 			#size_hint: 1, 0.1
 			idx: 1
 			text: "Switch: Sign-in/Test-out"
-			on_release: app.root.ids.drive_id.flag_property = not app.root.ids.drive_id.flag_property
+			on_release: app.root.ids.verify_id.flag_property = not app.root.ids.verify_id.flag_property
 			
 		MDLabel:
 			markup: True
@@ -208,9 +96,9 @@ Screen:
 			Scan:
 				id: scan_id
 				name: 'scan_screen'
-			Drive:
-				id: drive_id
-				name: 'drive_screen'
+			Verify:
+				id: verify_id
+				name: 'verify_screen'
 			AddMember:
 				id: add_id
 				name: 'add_screen'

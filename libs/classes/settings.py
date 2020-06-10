@@ -20,12 +20,25 @@ from libs.classes.selection import Selection
 import sys
 import os
 
+'''
+This page holds all the settings that the Membership app uses during operation
+and configuring for individual school organizations. The main object is the 'Settings_Setup' class.
+
+It works on the premise of adding 'Settings_cell' objects to the kv file. 
+Each object corresponds to a specific setting and has a button at the end 
+that manipulates the information in the cell. Those actions are controlled 
+by the cells' local 'button' class and redirected from there
+'''
 
 # All global objects' events are defined in locations where local information is needed
 text_box = TextInput(id='txt', multiline=False, halign='center')
 new_sheet = None
 
 class Change_popup(Popup):
+    '''
+    This class is a dialog the opens when a setting has something to change
+    or manipulate thorugh to user
+    '''
 
     # Holds current cell
     curr = None
@@ -66,7 +79,7 @@ class Change_popup(Popup):
                             return
                         
                         # Change current to 'Current sheet' since the rest of the operation
-                        #is switch the current sheet
+                        #is switching the current sheet
                         self.curr = self.app.root.ids.settings_id.ids.sheet
                         self.app.updates = "Created sheet is now current sheet \n Remember to save new settings!!"
                         self.app.popup.open()

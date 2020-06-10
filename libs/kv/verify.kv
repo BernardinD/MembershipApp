@@ -1,0 +1,82 @@
+<Verify>
+    BoxLayout:
+        orientation: 'vertical'
+        
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation: 'horizontal'
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            Label:
+                text: "Name: "
+            Label:
+                id: name
+                text: "..."
+                color: 1, 1, 1, 1
+                
+        BoxLayout:
+            orientation: 'horizontal'
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            Label:
+                text: "Level: "
+            Label:
+                background_color: 0, 0, 0, 1
+                canvas.before:
+                    Color:
+                        rgba: self.background_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                id: level
+                text: "..."
+                color: 1, 1, 1, 1
+                
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            cols: 1
+            rows: 1
+            size_hint: 1.0, 0.2
+            Label:
+				id: prompt
+                text: root.prompt_property
+                color: 1, 0, 0, 1
+                
+        BoxLayout:
+            orientation: 'horizontal'
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            Button:
+                id: yes
+                text: "Yes"
+                on_release: root.approve()
+            Button:
+                id: no
+                text: "No"
+                on_release: root.cancel()
+
+        BoxLayout:
+            cols: 2
+            rows: 1
+            size_hint: 1.0, 0.2
+            padding: 5
+            Widget:
+            Image:
+            	#source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
+				source: root.app.logo
+            Widget:
