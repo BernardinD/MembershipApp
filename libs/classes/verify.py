@@ -20,7 +20,7 @@ class Verify(Screen):
 		
 	
 	def on_flag_property(self, instance, val):
-		# True -> sign in; False -> test out
+		# val: True -> sign in; False -> test out
 		if val:
 			self.col_property = 5
 			self.prompt_property = 'Would you like sign this person in?'

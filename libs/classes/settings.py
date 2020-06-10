@@ -200,8 +200,7 @@ class Settings_Setup(Screen):
         sh.share(email, perm_type='user', role='owner')
         global new_sheet
         new_sheet = sh.sheet1
-        if "is" == "empty":
-            new_sheet.append_row(["First Name", "Last Name", 'Level', "Attendences", "Signed-in", "Email", "Phone #"])
+        new_sheet.append_row(["First Name", "Last Name", 'Level', "Attendences", "Signed-in", "Email", "Phone #"])
         print("New sheet created and shared")
         return True
 
