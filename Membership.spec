@@ -31,7 +31,6 @@ file_dir = zbarcam.__file__.split("site-packages")
 print("__file__ = ", file_dir)
 zbarcam_dir = join(file_dir[0], "site-packages", file_dir[1].split(sep)[1])
 print("zbarcam_dir =", zbarcam_dir)
-#zbarcam_data.extend((file, "kivy_garden" +os.path.dirname(file).split("kivy_garden")[1]) for file in glob.iglob(os.path.join(zbarcam_path,"**{}*".format(os.sep)), recursive=True))#:
 zbarcam_data.extend((file, dirname(file).split("site-packages")[1].split(sep, 1)[1]) for file in glob.iglob(join(zbarcam_dir,"**{}*".format(sep)), recursive=True))
 print("zbarcam_data = ", zbarcam_data)
 
@@ -58,21 +57,6 @@ a.binaries += TOC([
     for dep in pylibdmtx.EXTERNAL_DEPENDENCIES + pyzbar.EXTERNAL_DEPENDENCIES
 ])
 
-
-'''exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
-    debug=False,
-    strip=False,
-    upx=True,
-    name="PulsoMembership",
-    console=True,
-)'''
-
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
@@ -80,14 +64,14 @@ exe = EXE(pyz,
           a.datas,
           [],
 		  *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
-          name='PulsoMembership',
+          name='MembershipApp',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True, icon="pulso_caribe_logo_jNl_icon.ico" )
+          console=True, icon="club_logo.ico" )
 
 coll = COLLECT(exe,
                a.binaries,
@@ -96,4 +80,4 @@ coll = COLLECT(exe,
                *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
                strip=False,
                upx=True,
-               name='PulsoMembership')
+               name='MembershipApp')

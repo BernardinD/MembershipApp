@@ -18,6 +18,7 @@ class Scan(Screen):
 			symbol = self.ids.zbarcam.symbols[0]
 			data = symbol.data.decode('utf8')
 			print(data)
+			# If unique identifier is in the QRCode, continue process
 			if self.app.club_striped in data:
 				temp = data.split(',')
 				if len(temp) < 2:
@@ -25,6 +26,9 @@ class Scan(Screen):
 				qrfound_screen = self.app.changeScreen('verify_screen')
 					
 				if qrfound_screen:
+					# Clearing property every single time because callback
+                    #will not be called if new and old data are the same
+					qrfound_screen.data_property = ""
 					qrfound_screen.data_property = data
 			
 	def on_enter(self):
