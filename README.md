@@ -10,9 +10,12 @@ This also makes it easy for converting/exporting to a mobile app version
 All one would need in order to use this app is a GoogleSheets spreadsheet of there members and a google client key
 
 ## Installations
+* Install Python3: [website]
 
 
 ## Use
+Run `pip install -r requirements` from the folder where you copied this repository
+
 On first creation the app will need to be built using the command `pyinstaller --onefile .\Membership.spec`
 after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory
 
@@ -24,7 +27,7 @@ after adding a 'client_secret.json' file to the assets directory as well as an '
 ---------
 * ~~Have all logos in app dynamically read from json entry~~
 * ~~Change the QRCode generation to be unique to arbitrary club~~
-* Finish commenting instructions for all parts and functionalities of app
+* ~~Finish commenting instructions for all parts and functionalities of app~~
 * ~~Alter the logo selection so that only jpg/jpeg and png selections are allowed~~
 * ~~Make sheet creation dynamic (i.e. include primary contact field)~~
 
