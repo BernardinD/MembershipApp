@@ -6,13 +6,17 @@ class Verify(Screen):
 	data_property = StringProperty()
 
 	prompt_property = StringProperty()
+	
+	# The column controlling signin and membership increase in the spreadsheet
 	col_property = NumericProperty()
+	
+	# Determines of doing sign-in or membership increase
 	flag_property = BooleanProperty() # Defaults to True
 	
 	def __init__(self, **kwargs):
-		#self.manager = manager
-		#self.symbol = ''
+		# Used for updating data of a member
 		self.row = None
+		
 		super(Verify, self).__init__(**kwargs)
 		self.prompt_property = 'Would you like sign this person in?'
 		self.col_property = 5
@@ -25,15 +29,15 @@ class Verify(Screen):
 			self.col_property = 5
 			self.prompt_property = 'Would you like sign this person in?'
 			self.app.root.ids['home_id'].ids['scan_button'].text = "Sign in"
-			# Popup for  switch between Sign-in/Test-out
+			# Popup for	 switch between Sign-in/Test-out
 			self.app.updates = "Scanner now set to Sign In"
 			self.app.popup.open()
 		else:
 			self.col_property = 3
 			self.prompt_property = "Test out?"
 			self.app.root.ids['home_id'].ids['scan_button'].text = "Test out"
-			# Popup for  switch between Sign-in/Test-out
-			self.app.updates =  "Scanner now set to Test out"
+			# Popup for	 switch between Sign-in/Test-out
+			self.app.updates =	"Scanner now set to Test out"
 			self.app.popup.open()
 			
 		self.app.root.ids.nav_drawer.set_state("close")
@@ -41,7 +45,7 @@ class Verify(Screen):
 			
 	def on_data_property(self, instance, value):
 		"""
-		Updates `icon_property` and `title_property`.
+		Updates the name and membership information
 		"""
 		temp = value.split(',')
 		first_name = temp[1].strip()
@@ -61,10 +65,9 @@ class Verify(Screen):
 					print("row = ", row)
 					self.ids['name'].text = "{} {}".format(first_name, last_name)
 					# If member not currently signed in -> normal behavior, else -> print as message
-					levels_obj.text = ("{}".format(level)) if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3  else 'Already signed in.'
-					levels_obj.background_color = (self.app.levels[level]) if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3  else (0,0,0,1)
+					levels_obj.text = ("{}".format(level)) if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3	 else 'Already signed in.'
+					levels_obj.background_color = (self.app.levels[level]) if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3	 else (0,0,0,1)
 					# Disable sign-in if already signed in
-					print("******* Here")
 					self.ids['yes'].disabled = False if ('No' in self.app.sheet.cell(row, 5).value) or self.col_property == 3 else True
 					self.row = row
 					return
@@ -74,6 +77,9 @@ class Verify(Screen):
 		levels_obj.background_color = (0,0,0,1)
 	
 	def approve(self):
+		'''
+		Approves the current membershipo operation type
+		'''
 		# Change 'Signed in' to 'Yes'
 		self.app.sheet.update_cell(self.row, self.col_property, 'Yes' if (self.col_property == 5) else self.getNextLevel())
 		print(self.app.sheet.get_all_values())
@@ -81,6 +87,9 @@ class Verify(Screen):
 		self.cancel()
 		
 	def getNextLevel(self):
+		'''
+		Get the next level of membership
+		'''
 		levels = self.app.levels
 		curr_level = list(levels.keys()).index(self.ids['level'].text)
 		return list(levels.keys())[curr_level+1] if curr_level+1 < len( (levels.keys()) ) else list(levels.keys())[curr_level]

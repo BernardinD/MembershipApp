@@ -314,7 +314,7 @@ class Settings_cell(BoxLayout):
             else:
                 # Check if part if remaining path is too long (first part of split will be empty)
                 split2 = (split[1] + info[width:]).split(os.sep)
-                if len(split2) > 1 or len(lines) > 4:
+                if len(split2) > 1 or len(lines) > 3:
                     lines = [
                         "** - Path had to be cropped - **",
                         " ",

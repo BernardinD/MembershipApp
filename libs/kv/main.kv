@@ -12,12 +12,12 @@
 	on_release: self.pressed()
 
     IconLeftWidget:
+		on_release: root.pressed()
         icon: root.icon
 
 		
 <ContentNavigationDrawer>
     BoxLayout:
-		#on_active: print("******IT WORKED******")
         orientation: 'vertical'
 		FloatLayout:
             #size_hint_y: None
@@ -32,14 +32,6 @@
 					#source: f'{environ["PULSO_APP_ASSETS"]}pulso_caribe_logo.jpg'
 					source: root.app.logo
 					#container.image.soure: root.app.logo
-			#MDIconButton:
-			#	icon: "close"
-			#	x: root.x 
-			#	#theme_text_color: 'Primary'
-			#	#text_color: 1,1,1,1
-			#	opposite_colors: True
-			#	pos_hint: {"top": 1}
-			#	on_release: app.root.ids.nav_drawer.set_state("toggle") if platform in 'win,linux' else None
 			
 		NavigationItem:
 			canvas.before:
@@ -81,6 +73,7 @@ Screen:
 		elevation: 10
 		title: "Membership Scanner" if not (nav_drawer.state == "open") else "Swipe to close menu"
 		disabled: False if not (nav_drawer.state == "open") else True
+		# Changes the icon image based on Navigation state
 		left_action_items: [['menu', lambda x: nav_drawer.set_state("toggle")]] if not (nav_drawer.state == "open") else [['arrow-right', lambda x: self.toggle_state()]]
     NavigationLayout:
         id: navigation_id

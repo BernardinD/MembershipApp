@@ -89,6 +89,7 @@ try:
     from oauth2client.service_account import ServiceAccountCredentials
     #/////////////////////////////////////////////
 
+    # Club membership levels
     levels = {'Beginner':(1, 0, 0, 1), 'Intermediate':(0, 0, 1, 1), "Advanced":(1, 1, 0, 1)}
             
     class ContentNavigationDrawer(BoxLayout):
@@ -97,16 +98,38 @@ try:
             self.app = MDApp.get_running_app()
             
     class NavigationItem(OneLineAvatarListItem):
+        '''Creates an object for every item in the side-menu
+        ...
+        >>> NavigationItem(menu_idx, setting_txt, icon)
+        
+        Icon names can be found at: https://github.com/HeaTTheatR/KivyMD/blob/master/kivymd/icon_definitions.py
+        '''
         icon = StringProperty()
         idx = NumericProperty()
+        
+        # List of all the operations in the menu
+        switcher = {}
             
-        def __init__(self, **kwargs):
+        '''def __init__(self, **kwargs):
             super(NavigationItem, self).__init__(**kwargs)
+            self.app = MDApp.get_running_app()'''
+                
+        def __init__(self, index=0, **kwargs):
+            super().__init__(**kwargs)
             self.app = MDApp.get_running_app()
-        def home(self):
-            self.app.toggle_nav_drawer()
+            
+            self.idx = index
+            self.switcher = {
+                #1:self.switch,
+                2:self.reload,
+                3:self.settings,
+                4:self.exit
+            }
             
         def reload(self):
+            '''
+            Reloads spreadsheet
+            '''
             try:
                 # Reload google self.app.sheet
                 self.app.sheet = self.app.get_spread()
@@ -118,27 +141,15 @@ try:
                 self.app.spread_unloaded()
             
         def settings(self):
-            # Change Google sheet
+            '''
+            Goes to settings page
+            '''
             self.app.changeScreen('settings_screen')
             self.app.root.ids.nav_drawer.set_state("toggle")
             pass
             
         def exit(self):
-            try:
-                self.app.exit()
-            except:
-                pass
-            
-        def __init__(self, index=0, **kwargs):
-            super().__init__(**kwargs)
-            self.idx = index
-            self.switcher = {
-                #1:self.switch,
-                2:self.reload,
-                3:self.settings,
-                4:self.exit
-            }
-            self.app = MDApp.get_running_app()
+            self.app.exit()
             
         def pressed(self):
             func = self.switcher.get(self.idx, lambda: "Invalid Function")
@@ -147,7 +158,10 @@ try:
         
     class MainApp(MDApp):
 
+        # Prompt for popup alert box
         updates = StringProperty("Members have been reloaded")
+        
+        # String for path of club logo 
         logo = StringProperty("")
         
         def __init__(self, **kwargs):
@@ -187,10 +201,14 @@ try:
             button.bind(on_release=self.popup.dismiss)
 
         def on_key(self, window, key, *args):
-        
-            if key == 27:  # the esc key
-                print("main.py: ********* in on_key*********")
-                print("main.py: ********* screen_list = ", self.screen_list, "*******")
+            '''
+            Handles the esc button on PC and 'back' on android
+            Must return True to stop the stack of the key press
+            '''
+            
+            if key == 27:
+                #print("main.py: ********* in on_key*********")
+                #print("main.py: ********* screen_list = ", self.screen_list, "*******")
                 # If nav is open or on a sub-screen
                 if self.screen_list:
                     # If nav drawer is open, make sure to close it
@@ -198,10 +216,7 @@ try:
                         self.on_back();
                     return True
                 else:
-                    try:
-                        self.app.exit()
-                    except:
-                        pass
+                    self.app.exit()
                     return True
             return False
             
@@ -241,6 +256,9 @@ try:
             return club_striped
             
         def changeScreen(self, next):
+            '''
+            Handles all the changing of screens
+            '''
             # To make sure spreadsheet is loaded
             if not self.sheet  and not(next == "settings_screen"):
                 self.spread_unloaded()
@@ -257,6 +275,10 @@ try:
             return self.root.ids.screen_manager_id.current_screen
             
         def get_creds(self):
+            '''
+            Get the credentials to access the spreadsheet
+            '''
+            
             scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
             if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
                 print("sys.path =", sys.path)
@@ -282,13 +304,12 @@ try:
                                                                         scope)
             return creds
             
-        
-        
         def get_spread(self, sheet = None):
             '''
             Used to retrieve sheets and check if a sheet exists,
             returns the sheet if it exists/accessable
             '''
+            
             if not sheet:
                 sheet = self.store.get("Settings")["Current sheet"]
                 
@@ -305,11 +326,9 @@ try:
             self.app.popup.open()
             
         def exit(self):
-            print("main.py: ********* self.exit run *****")
             app = MDApp.get_running_app()
             app.root.ids.scan_id.ids.zbarcam.stop()
             app.stop()
-            print("main.py: ********* STOPPED ******")
             
         def build(self):
             self.icon = "docs/images/icon.png"
@@ -320,6 +339,10 @@ try:
                     "main.kv"))
 
         def alert(self, mess):
+            '''
+            Displays popup for alert messages
+            '''
+            
             # Check if this Popup is already open
             for wid in self.app.get_running_app().root_window.children:
                 if wid == self.popup:
@@ -338,8 +361,11 @@ try:
         reset()
         MainApp().run()
 
-    # Prevents the 'TypeError' that sometimes happens
     def reset():
+        '''
+        Prevents the 'TypeError' that sometimes happens
+        '''
+        
         import kivy.core.window as window
         from kivy.base import EventLoop
         if not EventLoop.event_listeners:

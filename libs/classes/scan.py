@@ -2,12 +2,17 @@ from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 
 class Scan(Screen):
+	'''
+	Screen used for scanning in members' QRCode
+	'''
 	
 	def __init__(self, **kwargs):
 		#self.manager = manager
 		super(Scan, self).__init__(**kwargs)
-		self.screen = False
 		self.app = MDApp.get_running_app()
+		
+		# Determines if currently on the screen or not
+		self.screen = False
 		
 	def scanned(self):
 		"""
@@ -27,7 +32,7 @@ class Scan(Screen):
 					
 				if qrfound_screen:
 					# Clearing property every single time because callback
-                    #will not be called if new and old data are the same
+					#will not be called if new and old data are the same
 					qrfound_screen.data_property = ""
 					qrfound_screen.data_property = data
 			

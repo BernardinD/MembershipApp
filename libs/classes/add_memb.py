@@ -19,7 +19,9 @@ class AddMember(Screen):
 		
 	
 	def add_member(self, button, first_name, last_name, email, phone):
-		print(self.ids['testing'].text)
+        '''
+        Adds new member to spreadsheet
+        '''
         
         # Add to spreadsheet
 		creds = self.app.get_creds()
