@@ -19,11 +19,11 @@ class AddMember(Screen):
 		
 	
 	def add_member(self, button, first_name, last_name, email, phone):
-        '''
-        Adds new member to spreadsheet
-        '''
-        
-        # Add to spreadsheet
+		'''
+		Adds new member to spreadsheet
+		'''
+		
+		# Add to spreadsheet
 		creds = self.app.get_creds()
 		if creds.access_token_expired:
 			try:
@@ -34,7 +34,7 @@ class AddMember(Screen):
 		button.disabled = True
 		self.ids['home_button'].disabled = False
 		self.ids['again_button'].disabled = False
-        
+		
 		# Create QR Code
 		self.ids['qr'].data = "{},{},{}".format(self.app.club_striped,first_name,last_name)
 
