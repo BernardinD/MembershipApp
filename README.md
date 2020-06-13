@@ -11,6 +11,9 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 
 ## Installations
 * Install Python3: [website]
+### Windows:
+	If getting an error involving sld2 run `python -m pip install kivy.deps.sdl2 kivy.deps.glew`
+
 
 
 ## Use
