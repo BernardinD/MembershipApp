@@ -15,3 +15,5 @@ kivy_garden.qrcode
 kivy_garden.zbarcam
 plyer
 pylibdmtx
+kivy.deps.sdl2; sys_platform == 'windows'
+kivy.deps.glew; sys_platform == 'windows'
