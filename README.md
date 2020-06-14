@@ -22,6 +22,18 @@ python -m pip install kivy.deps.sdl2 kivy.deps.glew
 
 
 ## Use
+Using the club´s Ggoogle/Sheets account create a json file using this method:
+### Active option to connect
+* Go to this page: https://console.developers.google.com/project
+* Select the option to "Create Project" and give it a name and create it
+* On the side-left menu go to “APIs & Services > Library”
+* Search for and enable both "Drive API" and "Sheets API" respectively
+### Create linking file:
+* On the side-left menu go to “APIs & Services > Credentials”
+* Choose the option to "Creat Credentials” and select "Service Account"
+* Give this a name and create it (press continue until it is created)
+* Click on the item just created and select "Add key > Create new key" at the bottom of the page
+* Select 'JSON' and create the file. Save this file under the name 'client_secret'
 
 On first creation the app will need to be built using the command `pyinstaller --onefile .\Membership.spec`
 after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory
@@ -30,7 +42,7 @@ after adding a 'client_secret.json' file to the assets directory as well as an '
 * ~~Adding a functional settings page for dynamic customization~~
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
 * ~~Make FileBrowser class in libs/classes/browse.py a singleton-class so that binding browser_btn can be completly internal~~
-
+* Include Mac and Linux installation instructions
 ---------
 * ~~Have all logos in app dynamically read from json entry~~
 * ~~Change the QRCode generation to be unique to arbitrary club~~
