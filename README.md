@@ -15,7 +15,9 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 * Run `pip install -r requirements` from the folder where you copied this repository
 ### Windows:
 If getting an error involving sld2 run:
-`python -m pip install kivy.deps.sdl2 kivy.deps.glew`
+```
+python -m pip install kivy.deps.sdl2 kivy.deps.glew
+```
 
 
 
