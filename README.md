@@ -32,7 +32,7 @@ Using the club´s Google/Sheets account create a json file using this method:
 * On the side-left menu go to “APIs & Services > Credentials”
 * Choose the option to "Create Credentials” and select "Service Account"
 * Give this a name and create it (press continue until it is created)
-* Click on the item you've just created (towards the bottom of the page) and select "Add key > Create new key" at the bottom of the next page 
+* Click on the item you've just created (towards the bottom of the page) and at the bottom of the next page select "Add key > Create new key" 
 * Select 'JSON' and create the file. 
 * Save this file with the name 'client_secret'
 -------
