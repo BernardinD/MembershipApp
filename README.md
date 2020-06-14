@@ -40,14 +40,5 @@ On first creation the app will need to be built using the command `pyinstaller -
 after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory
 
 ## Working on
-* ~~Adding a functional settings page for dynamic customization~~
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
-* ~~Make FileBrowser class in libs/classes/browse.py a singleton-class so that binding browser_btn can be completly internal~~
 * Include Mac and Linux installation instructions
----------
-* ~~Have all logos in app dynamically read from json entry~~
-* ~~Change the QRCode generation to be unique to arbitrary club~~
-* ~~Finish commenting instructions for all parts and functionalities of app~~
-* ~~Alter the logo selection so that only jpg/jpeg and png selections are allowed~~
-* ~~Make sheet creation dynamic (i.e. include primary contact field)~~
-
