@@ -25,15 +25,16 @@ python -m pip install kivy.deps.sdl2 kivy.deps.glew
 Using the club´s Google/Sheets account create a json file using this method:
 ### Activate option to connect:
 * Go to this page: https://console.developers.google.com/project
-* Select the option to "Create Project" and give it a name and create it
+* Select the option to "Create Project", give it a name and create it
 * On the side-left menu go to “APIs & Services > Library”
 * Search for and enable both "Drive API" and "Sheets API" respectively
 ### Create linking file:
 * On the side-left menu go to “APIs & Services > Credentials”
-* Choose the option to "Creat Credentials” and select "Service Account"
+* Choose the option to "Create Credentials” and select "Service Account"
 * Give this a name and create it (press continue until it is created)
-* Click on the item just created and select "Add key > Create new key" at the bottom of the page
-* Select 'JSON' and create the file. Save this file under the name 'client_secret'
+* Click on the  you've just created (towards the bottom of the page) and select "Add key > Create new key" at the bottom of the next page 
+* Select 'JSON' and create the file. 
+* Save this file with the name 'client_secret'
 -------
 On first creation the app will need to be built using the command `pyinstaller --onefile .\Membership.spec`
 after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory
