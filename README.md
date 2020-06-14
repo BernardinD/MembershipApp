@@ -14,8 +14,8 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 	* After launching the installation file make sure to click the check box at the bottom of the popup window that states adding Python to PATH
 * Run `pip install -r requirements` from the folder where you copied this repository
 ### Windows:
-	If getting an error involving sld2 run:
-	`python -m pip install kivy.deps.sdl2 kivy.deps.glew`
+If getting an error involving sld2 run:
+`python -m pip install kivy.deps.sdl2 kivy.deps.glew`
 
 
 
