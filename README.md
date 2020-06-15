@@ -22,22 +22,33 @@ python -m pip install kivy.deps.sdl2 kivy.deps.glew
 
 
 ## Use
-Using the club´s Google/Sheets account create a json file using this method:
-### Activate option to connect:
+###Needed:
+* Google credentials file 'client_secret.json'
+* '.ico' file of club logo (optional - if you want to customize the image of the application)
+
+### Creating 'client_secret.json' file:
+
+#### Activate option to connect:
 * Go to this page: https://console.developers.google.com/project
 * Select the option to "Create Project", give it a name and create it
 * On the side-left menu go to “APIs & Services > Library”
 * Search for and enable both "Drive API" and "Sheets API" respectively
-### Create linking file:
+#### Create linking file:
 * On the side-left menu go to “APIs & Services > Credentials”
 * Choose the option to "Create Credentials” and select "Service Account"
 * Give this a name and create it (press continue until it is created)
 * Click on the item you've just created (towards the bottom of the page) and at the bottom of the next page select "Add key > Create new key" 
 * Select 'JSON' and create the file. 
 * Save this file with the name 'client_secret'
--------
+
+## Build app
+
+### Windows
 On first creation the app will need to be built using the command `pyinstaller --onefile .\Membership.spec`
 after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory
+
+### Android
+On a Linux machine you will have to run `buildozer -- `
 
 ## Working on
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
