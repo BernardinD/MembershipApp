@@ -45,7 +45,9 @@ python -m pip install kivy.deps.sdl2 kivy.deps.glew
 
 ### Windows
 On first creation the app will need to be built using the command `pyinstaller --onefile .\Membership.spec`
-after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory
+after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory if you wish the app to have your club logo
+
+After the command finishes you'll find the application in the 'dist' folder
 
 ### Android
 On a Linux machine you will have to run `buildozer -- `
