@@ -16,7 +16,6 @@ from libs.classes.browse import FileBrowser    # This is for the Label/Button co
                 
 from libs.classes.colorpicker import Color_Picker                
 from libs.classes.selection import Selection
-from libs.classes.custom_class import SubClass
 
 import sys
 import os
