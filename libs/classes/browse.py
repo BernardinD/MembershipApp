@@ -15,11 +15,18 @@ class FileBrowser(Selection):
     text_box = Label(text="...", color=(0,0,0,1))
     
     def __init__(self, **kwargs):
+        print("In FileBrowser")
         super(FileBrowser, self).__init__(**kwargs)
         self.app = MDApp.get_running_app()
         self.Browser = Popup(size_hint=(0.75, 0.75))
         fc = FileChooserListView()
-        self.Browser.add_widget(fc)
+        exit = Button(text='Cancel',
+                        size_hint=(1, 0.1),
+                        on_release=self.Browser.dismiss)
+        layout = BoxLayout(orientation='vertical')
+        layout.add_widget(fc)
+        layout.add_widget(exit)
+        self.Browser.add_widget(layout)
         
         fc.bind(selection= lambda instance, x: self.set_select(x))
         self.picker_btn.bind(on_release=lambda x : self.Browser.open(self.Browser))

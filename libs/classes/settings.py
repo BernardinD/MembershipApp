@@ -14,8 +14,9 @@ from libs.classes.browse import FileBrowser    # This is for the Label/Button co
                                                         # For pulling in the widget in 'placeholder'
 
                 
-from libs.classes.colorpicker import ColorPicker                
+from libs.classes.colorpicker import Color_Picker                
 from libs.classes.selection import Selection
+from libs.classes.custom_class import SubClass
 
 import sys
 import os
@@ -104,8 +105,8 @@ class Change_popup(Popup):
                 
         # If current Op is for Selection
         #Uses root that was assigned manually to get instance and text_box
-        elif curr_plc_hldr.root and isinstance(curr_plc_hldr.root, Selection):
-            text = curr_plc_hldr.root.text_box.text
+        elif curr_plc_hldr and isinstance(curr_plc_hldr, Selection):
+            text = curr_plc_hldr.text_box.text
         
         # Save data to temp settings
         self.app.root.ids.settings_id.curr_sett[self.curr.topic] = text
@@ -243,11 +244,17 @@ class Settings_cell(BoxLayout):
         # Put current prompt and placeholder in popup
         if cls and issubclass(cls, Selection):
             print("Came in to 'Selection'")
+            print("cls =", cls)
+            print("cls() =", cls())
             self.sub = cls()
             print("self.sub = ", self.sub)
             self.sub.bind(selection=self.selection)
-            self.app.root.ids.settings_id.popup.ids.placeholder.add_widget(self.sub.layout)
+            self.app.root.ids.settings_id.popup.ids.placeholder.add_widget(self.sub)
             print("selection layout added")
+        elif cls and issubclass(cls, SubClass):
+            self.sub = cls()
+            self.app.root.ids.settings_id.popup.ids.placeholder.add_widget(self.sub)
+            print("self.sub =", self.sub)
         else: 
             #self.topic == "Current sheet" or self.topic == "Create new sheet":
             print("In 'change's else")
@@ -267,7 +274,7 @@ class Settings_cell(BoxLayout):
             Clipboard.copy(email)
             self.app.alert("Link email copied to clipboard. \n Share with sheet to give access")
             
-        elif self.topic in self.app.root.ids.settings_id.changes:
+        elif self.topic in self.app.root.ids.settings_id.changes or "Custom Class" in self.topic:
             self.change()
     
     def selection(self, obj, val):

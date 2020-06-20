@@ -56,10 +56,10 @@
 			Settings_cell:
 				topic: "Primary color"
 				id: color
-				type: "ColorPicker"
+				type: "Color_Picker"
 				popup_label: "Press Browse to selection color"
 				# Disable picking color for now
-				on_kv_post: self.ids.button.disabled = True
+				#on_kv_post: self.ids.button.disabled = True
 			# Holds file name of logo, but using an image that was copied and saved to absolute-dir
 			Settings_cell:
 				topic: "Logo"
@@ -70,6 +70,11 @@
 				topic: "Primary contact"
 				id: contact
 				popup_label: "Enter Primary's gmail"
+			Settings_cell
+				topic: "Custom Class"
+				type: "SubClass"
+				id: custom
+				popup_label: "Testing CustomClass as super class"
 			Settings_cell
 				topic: "Club name"
 				id: club

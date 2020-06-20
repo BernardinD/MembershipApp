@@ -7,7 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from libs.classes.selection import Selection
 
                 
-class ColorPicker(Selection):
+class Color_Picker(Selection):
     colors = {"Sky Blue":(0.529, 0.808, 0.922)}
     
         
@@ -17,7 +17,7 @@ class ColorPicker(Selection):
     #browse_btn.bind(on_release=lambda x : FileBrowser.open(FileBrowser.instance))
     
     def __init__(self, **kwargs):
-        super(ColorPicker, self).__init__(**kwargs)
+        super(Color_Picker, self).__init__(**kwargs)
         # Layout for selecting items
         self.dropdown = DropDown()
         self.app = MDApp.get_running_app()
