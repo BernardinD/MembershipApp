@@ -41,9 +41,9 @@ requirements =
     decorator,
     kivy==58e70b1,
     #kivy-garden.kivymd==2019.910,
-    kivy-garden.xcamera==2019.928,
-    kivy-garden.zbarcam==2019.1020,
-    kivy-garden.qrcode,
+    xcamera==2019.928,
+    #zbarcam==2019.1020,
+    #qrcode,
     git+https://github.com/HeaTTheatR/KivyMD.git,
     libiconv,
     libzbar,
@@ -53,6 +53,9 @@ requirements =
     pyzbar==0.1.8,
     raven==6.9.0,
     validators,
+    pygments
+    #plyer,
+    #pyjnius,
     # -----------------------------------------------------------------
     gspread,oauth2client,httplib2,pyopenssl,google-auth-oauthlib,pyasn1,
     pyasn1-modules,rsa,requests,google-auth-httplib2,openssl,
@@ -106,7 +109,7 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (list) Permissions
-android.permissions = CAMERA, INTERNET
+android.permissions = CAMERA, INTERNET, WRITE_EXTERNAL_STORAGE
 
 # (int) Target Android API, should be as high as possible.
 android.api = 27
