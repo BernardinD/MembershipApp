@@ -39,23 +39,25 @@ version = 0.1
 requirements =
     android,
     decorator,
-    kivy==1.11.1,
+    kivy==58e70b1,
     #kivy-garden.kivymd==2019.910,
-    kivy-garden.xcamera==2019.911,
-    kivy-garden.zbarcam==2019.910,
+    kivy-garden.xcamera==2019.928,
+    kivy-garden.zbarcam==2019.1020,
     kivy-garden.qrcode,
-    kivymd==0.103.0,
+    git+https://github.com/HeaTTheatR/KivyMD.git,
     libiconv,
     libzbar,
-    Pillow==5.2.0,
-    python3,
+    Pillow==7.0.0,
+    hostpython3==3.8.1,
+    python3==3.8.1,
     pyzbar==0.1.8,
     raven==6.9.0,
     validators,
-    oauth2client,
-    requests,
-    gspread,
-    google-auth-oauthlib,httplib2,pyasn1,pyasn1-modules, rsa, plyer
+    # -----------------------------------------------------------------
+    gspread,oauth2client,httplib2,pyopenssl,google-auth-oauthlib,pyasn1,
+    pyasn1-modules,rsa,requests,google-auth-httplib2,openssl,
+    google-api-python-client,google-auth,credentials,oauth2,google,cachetools,
+    urllib3,chardet,idna,requests_oauthlib,oauthlib
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
