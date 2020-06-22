@@ -31,7 +31,7 @@ by the cells' local 'button' class and redirected from there
 '''
 
 # All global objects' events are defined in locations where local information is needed
-text_box = TextInput(id='txt', multiline=False, halign='center')
+text_box = TextInput(multiline=False, halign='center')
 new_sheet = None
 
 class Change_popup(Popup):
