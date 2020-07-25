@@ -5,6 +5,7 @@ try:
     import os
     from os.path import join
     from os import sep
+    from kivy.logger import Logger
     
     # ////// Setting up requried paths //////////
     # Assuming executable/script to be at head or 'dist'
@@ -36,6 +37,7 @@ try:
     print('os.path.abspath(".") =', os.path.abspath("."))
     # Only load in 'add_memb' design if on a PC
     if platform in 'win,linux':
+        Logger.info("ALERT: Running on PC")
         from libs.classes.add_memb import AddMember
         from kivy_garden.qrcode import QRCodeWidget
         Builder.load_file(os.path.join(
