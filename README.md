@@ -50,7 +50,10 @@ after adding a 'client_secret.json' file to the assets directory as well as an '
 After the command finishes you'll find the application in the 'dist' folder
 
 ### Android
-On a Linux machine you will have to run `buildozer -- `
+`pip3 install --upgrade Cython`
+On a Linux machine you will have to run `buildozer -v android debug deploy run logcat`
+
+To do a fresh build run `buildozer -v android clean` first
 
 ## Working on
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
