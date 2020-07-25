@@ -9,10 +9,10 @@ try:
     
     # ////// Setting up requried paths //////////
     # Assuming executable/script to be at head or 'dist'
-    abs_root = os.path.split(os.path.abspath("."))[0]
-    if "MembershipApp" not in abs_root:
-        abs_root = os.path.join(abs_root, "MembershipApp")
-        
+    abs_root = os.path.abspath(".")
+    print("abs_root = ", abs_root)
+    print("files=", os.listdir("."), sep='\n')
+    print("./assets = ", os.listdir("./assets") )
     if getattr(sys, "frozen", False):  # bundle mode with PyInstaller
         os.environ["PULSO_APP_ROOT"] = sys._MEIPASS
     else:
@@ -37,7 +37,12 @@ try:
     print('os.path.abspath(".") =', os.path.abspath("."))
     # Only load in 'add_memb' design if on a PC
     if platform in 'win,linux':
+<<<<<<< HEAD
         Logger.info("ALERT: Running on PC")
+=======
+        if "MembershipApp" not in abs_root:
+            abs_root = os.path.join(abs_root, "MembershipApp")
+>>>>>>> fe7c0468feff473cf415688e8b80aa241167b1e3
         from libs.classes.add_memb import AddMember
         from kivy_garden.qrcode import QRCodeWidget
         Builder.load_file(os.path.join(
@@ -191,7 +196,7 @@ try:
             
             # Popup used for updates
             content = BoxLayout(orientation='vertical')
-            label = Label(text=self.updates, size_hint=(1,0.5), id="updates", halign='center')
+            label = Label(text=self.updates, size_hint=(1,0.5), halign='center')
             self.bind(updates=label.setter('text'))
             button=Button(text="OK", size_hint=(1,0.5))
             content.add_widget(label)
@@ -298,7 +303,7 @@ try:
                         print(e)
                 print("---- Didn't find json ----")
                 print("---- Terminating application ----")
-                raise True
+                #raise True
             else:
                 creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
                                                                             os.environ["PULSO_APP_ASSETS"],
