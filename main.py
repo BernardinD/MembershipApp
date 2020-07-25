@@ -37,12 +37,9 @@ try:
     print('os.path.abspath(".") =', os.path.abspath("."))
     # Only load in 'add_memb' design if on a PC
     if platform in 'win,linux':
-<<<<<<< HEAD
         Logger.info("ALERT: Running on PC")
-=======
         if "MembershipApp" not in abs_root:
             abs_root = os.path.join(abs_root, "MembershipApp")
->>>>>>> fe7c0468feff473cf415688e8b80aa241167b1e3
         from libs.classes.add_memb import AddMember
         from kivy_garden.qrcode import QRCodeWidget
         Builder.load_file(os.path.join(
