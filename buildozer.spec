@@ -41,7 +41,7 @@ requirements =
     android,
     decorator,
     kivy==1.11.1,
-    kivymd,
+    git+https://github.com/HeaTTheatR/KivyMD.git,
     xcamera,
     kivy-garden.qrcode,
     libiconv,
@@ -105,7 +105,7 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (list) Permissions
-android.permissions = CAMERA, INTERNET, WRITE_EXTERNAL_STORAGE
+android.permissions = CAMERA, INTERNET
 
 # (int) Target Android API, should be as high as possible.
 android.api = 27
