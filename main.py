@@ -29,6 +29,7 @@ try:
     from libs.classes.home import Home
     from libs.classes.scan import Scan
     from libs.classes.verify import Verify
+    from libs.classes.add_memb import AddMember
     # ////////////////////////////////////////////
     
     # //////////// Loading in designs ////////////
@@ -40,7 +41,6 @@ try:
         Logger.info("ALERT: Running on PC")
         if "MembershipApp" not in abs_root:
             abs_root = os.path.join(abs_root, "MembershipApp")
-        from libs.classes.add_memb import AddMember
         from kivy_garden.qrcode import QRCodeWidget
         Builder.load_file(os.path.join(
                     os.environ["PULSO_APP_ROOT"], "libs", "kv",
