@@ -1,4 +1,6 @@
 from kivymd.app import MDApp
+import os
+
 from kivy.uix.filechooser import FileChooserListView
 from kivymd.uix.button import Button
 from kivymd.uix.label import Label
@@ -20,6 +22,7 @@ class FileBrowser(Selection):
         self.app = MDApp.get_running_app()
         self.Browser = Popup(size_hint=(0.75, 0.75))
         fc = FileChooserListView()
+        fc.rootpath = os.environ["PULSO_APP_ROOT"]
         exit = Button(text='Cancel',
                         size_hint=(1, 0.1),
                         on_release=self.Browser.dismiss)
