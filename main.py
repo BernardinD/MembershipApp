@@ -198,9 +198,10 @@ try:
             button=Button(text="OK", size_hint=(1,0.5))
             content.add_widget(label)
             content.add_widget(button)
+            size_hint = (.3,.3) if platform in 'win,linux' else (.6,.3)
             self.popup = Popup(title="Update",
                     content=content, 
-                    size_hint=(.3, .3),
+                    size_hint=size_hint,
                     auto_dismiss=True)
             button.bind(on_release=self.popup.dismiss)
 
