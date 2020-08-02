@@ -58,3 +58,4 @@ To do a fresh build run `buildozer -v android clean` first
 ## Working on
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
 * Include Mac and Linux installation instructions
+* Use Kivy's ColorPicker class to add customization
