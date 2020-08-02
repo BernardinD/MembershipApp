@@ -59,3 +59,4 @@ To do a fresh build run `buildozer -v android clean` first
 * Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
 * Include Mac and Linux installation instructions
 * Use Kivy's ColorPicker class to add customization
+* Incoporate Mac steps into README (source: https://www.pyimagesearch.com/2018/05/21/an-opencv-barcode-and-qr-code-scanner-with-zbar/)
