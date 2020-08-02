@@ -193,7 +193,7 @@ try:
             
             # Popup used for updates
             content = BoxLayout(orientation='vertical')
-            label = Label(text=self.updates, size_hint=(1,0.5), halign='center')
+            label = Label(text=self.updates, size_hint=(1,0.5), halign='center', font_size='15sp')
             self.bind(updates=label.setter('text'))
             button=Button(text="OK", size_hint=(1,0.5))
             content.add_widget(label)
