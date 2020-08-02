@@ -260,9 +260,9 @@ class Settings_cell(BoxLayout):
             #self.topic == "Current sheet" or self.topic == "Create new sheet":
             print("In 'change's else")
             root.popup.ids.placeholder.add_widget(text_box)
+            text_box.focus = True
         root.popup.curr = self
         root.popup.open()
-        text_box.focus = True
         
     def buttons(self):
         '''
