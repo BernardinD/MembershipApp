@@ -1,4 +1,5 @@
 #:import os os
+#:import Window kivy.core.window.Window
 
 <Settings_cell>:
 	orientation: 'horizontal'
@@ -45,52 +46,54 @@
 
 <Settings_Setup>:
 	id: settings
-    BoxLayout:
-        orientation: 'vertical'
-		BoxLayout
-			orientation: 'vertical'
+	BoxLayout:
+		orientation: 'vertical'
+		ScrollView:
+			do_scroll_x: False
+			do_scroll_y: True
 			size_hint: 1, 0.80
-			Settings_cell:
-				topic: "Current sheet"
-				id: sheet
-			Settings_cell:
-				topic: "Primary color"
-				id: color
-				type: "Color_Picker"
-				popup_label: "Press Browse to selection color"
-				# Disable picking color for now
-				#on_kv_post: self.ids.button.disabled = True
-			# Holds file name of logo, but using an image that was copied and saved to absolute-dir
-			Settings_cell:
-				topic: "Logo"
-				id: logo
-				type: "FileBrowser"
-				popup_label: "Press Browse to find logo"
-			Settings_cell
-				topic: "Primary contact"
-				id: contact
-				popup_label: "Enter Primary's gmail"
-			Settings_cell
-				topic: "Custom Class"
-				type: "SubClass"
-				id: custom
-				popup_label: "Testing CustomClass as super class"
-			Settings_cell
-				topic: "Club name"
-				id: club
-				popup_label: "Enter Organization's name"
-			Settings_cell:
-				topic: "Create new sheet"
-				id: create
-				info: ""
-				info_color: 0,1,1,1
-				btn_text: "Create"
-			Settings_cell:
-				topic: "Link address (copy)"
-				id: share
-				info: ""
-				info_color: 0,1,1,1
-				btn_text: "Copy to clipboard"
+			BoxLayout:
+				orientation: 'vertical'
+				#size_hint: (1,None)
+				size_hint_y: None
+				height: Window.height*0.8
+				cols: 1
+				Settings_cell:
+					topic: "Current sheet"
+					id: sheet
+				Settings_cell:
+					topic: "Primary color"
+					id: color
+					type: "Color_Picker"
+					popup_label: "Press Browse to selection color"
+					# Disable picking color for now
+					#on_kv_post: self.ids.button.disabled = True
+				# Holds file name of logo, but using an image that was copied and saved to absolute-dir
+				Settings_cell:
+					topic: "Logo"
+					id: logo
+					type: "FileBrowser"
+					popup_label: "Press Browse to find logo"
+				Settings_cell
+					topic: "Primary contact"
+					id: contact
+					popup_label: "Enter Primary's gmail"
+				Settings_cell
+					topic: "Club name"
+					id: club
+					popup_label: "Enter Organization's name"
+				Settings_cell:
+					topic: "Create new sheet"
+					id: create
+					info: ""
+					info_color: 0,1,1,1
+					btn_text: "Create"
+				Settings_cell:
+					topic: "Link address (copy)"
+					id: share
+					info: ""
+					info_color: 0,1,1,1
+					btn_text: "Copy to clipboard"
 		BoxLayout
 			orientation: 'vertical'
 			size_hint: 1, 0.20
