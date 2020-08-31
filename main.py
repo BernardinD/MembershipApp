@@ -102,8 +102,9 @@ try:
             self.app = MDApp.get_running_app()
             
     class NavigationItem(OneLineAvatarListItem):
-        '''Creates an object for every item in the side-menu
-        ...
+        ''' Creates an object for every item in the side-menu
+        
+        Usage:
         >>> NavigationItem(menu_idx, setting_txt, icon)
         
         Icon names can be found at: https://github.com/HeaTTheatR/KivyMD/blob/master/kivymd/icon_definitions.py
@@ -114,9 +115,6 @@ try:
         # List of all the operations in the menu
         switcher = {}
             
-        '''def __init__(self, **kwargs):
-            super(NavigationItem, self).__init__(**kwargs)
-            self.app = MDApp.get_running_app()'''
                 
         def __init__(self, index=0, **kwargs):
             super().__init__(**kwargs)
@@ -146,7 +144,7 @@ try:
             
         def settings(self):
             '''
-            Goes to settings page
+            Changes screen to settings page
             '''
             self.app.changeScreen('settings_screen')
             self.app.root.ids.nav_drawer.set_state("toggle")
