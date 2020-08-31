@@ -9,6 +9,24 @@ This also makes it easy for converting/exporting to a mobile app version
 
 All one would need in order to use this app is a GoogleSheets spreadsheet of there members and a google client key
 
+## Walkthrough
+
+### Basic info
+`main.py` is where everything starts. All over scrips are in `libs/classes` and control the designs of each page.
+
+`libs/classes/home` is the home page.
+
+Page designs are in `libs/kv` and can be edited with some knowledge of Kivy.
+
+All pages and their scripts have the same prefix to their file name (i.e. `libs/classes/home.py` <-> `libs/kv/home.kv`)
+
+### Techincal info
+The scanner handles scanning in QRcodes and finding the corresponding memeber in the Google Sheet.
+
+Member addition and QRcode generation is done from the Add Members page (only on desktops)
+
+The settings page is where individual club specfications can be set.
+
 ## Installations
 * Install Python3: https://www.python.org/downloads/ (Search for version 3.6.7)
 	* After launching the installation file make sure to click the check box at the bottom of the popup window that states adding Python to PATH
