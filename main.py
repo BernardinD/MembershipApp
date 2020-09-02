@@ -122,10 +122,9 @@ try:
             
             self.idx = index
             self.switcher = {
-                #1:self.switch,
-                2:self.reload,
-                3:self.settings,
-                4:self.exit
+                1:self.reload,
+                2:self.settings,
+                3:self.exit
             }
             
         def reload(self):
@@ -210,8 +209,6 @@ try:
             '''
             
             if key == 27:
-                #print("main.py: ********* in on_key*********")
-                #print("main.py: ********* screen_list = ", self.screen_list, "*******")
                 # If nav is open or on a sub-screen
                 if self.screen_list:
                     # If nav drawer is open, make sure to close it
@@ -231,10 +228,9 @@ try:
             # The numbers in the list of tuples refer to the operations in the 
             # NavigationItem under 'switcher'
             for items in [
-                #("home-circle-outline", "Home",1),
-                ("update", "Reload Members",2),
-                ("settings-outline", "Open Settings",3),
-                ("exit-to-app", "Exit",4),
+                ("update", "Reload Members",1),
+                ("settings-outline", "Open Settings",2),
+                ("exit-to-app", "Exit",3),
             ]:
                 self.root.ids.content_drawer.ids.box_item.add_widget(
                     NavigationItem(
@@ -283,6 +279,8 @@ try:
             '''
             
             scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+            
+            # Find credentials json file and make connection
             if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
                 print("sys.path =", sys.path)
                 dirs = [ i for i in sys.path if os.path.isdir(i)]
@@ -299,7 +297,6 @@ try:
                         print(e)
                 print("---- Didn't find json ----")
                 print("---- Terminating application ----")
-                #raise True
             else:
                 creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
                                                                             os.environ["PULSO_APP_ASSETS"],
