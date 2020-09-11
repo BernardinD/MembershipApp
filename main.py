@@ -91,6 +91,7 @@ try:
     # ///////////// GSpread Essentials ////////////
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
+    from google.oauth2 import service_account
     #/////////////////////////////////////////////
 
     # Club membership levels
@@ -176,6 +177,16 @@ try:
             self.logo = self.store.get("Settings")["Logo"]
             self.club_striped = self.strip_name()
             self.levels = levels
+            
+            from googleapiclient.discovery import build
+            file_metadata = {
+                'name': 'Invoices',
+                'mimeType': 'application/vnd.google-apps.folder'
+            }
+            drive_service = build(u'drive', u'v3', credentials=self.get_creds())
+            file = drive_service.files().create(body=file_metadata,
+                                                fields='id').execute()
+            print ( 'Folder ID: %s' % file.get('id') )
             
             #Used for global sheet manipulation
             self.sheet = None
@@ -278,7 +289,10 @@ try:
             Get the credentials to access the spreadsheet
             '''
             
-            scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+            scope = ["https://www.googleapis.com/auth/spreadsheets", 
+                        "https://www.googleapis.com/auth/drive", 
+                        "https://www.googleapis.com/auth/drive.file",
+                    ]
             
             # Find credentials json file and make connection
             if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
@@ -290,7 +304,8 @@ try:
                     try:
                         if 'client_secret.json' in os.listdir(i):
                             print("Trying to get json")
-                            creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
+                            #creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
+                            credentials = service_account.Credentials.from_service_account_file(os.path.join(i,'client_secret.json'), scopes=scope)
                             break
                         # If can't find json, end program
                     except Exception as e:
@@ -298,11 +313,16 @@ try:
                 print("---- Didn't find json ----")
                 print("---- Terminating application ----")
             else:
-                creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
-                                                                            os.environ["PULSO_APP_ASSETS"],
-                                                                            'client_secret.json'),
-                                                                        scope)
-            return creds
+                #creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
+                #                                                            os.environ["PULSO_APP_ASSETS"],
+                #                                                            'client_secret.json'),
+                #                                                        scope)
+            
+                credentials = service_account.Credentials.from_service_account_file(
+                        os.path.join(
+                            os.environ["PULSO_APP_ASSETS"],
+                            'client_secret.json'), scopes=scope)
+            return credentials
             
         def get_spread(self, sheet = None):
             '''
@@ -319,6 +339,8 @@ try:
             sheet = client.open( sheet ).sheet1
             print("sheet =", sheet)
             print("sheet =", sheet.get_all_values())
+            print("sheet.url =", sheet.url)
+            print("sheet.id =", sheet.url.split('/')[-1])
             return sheet
             
         def spread_unloaded(self, type_ = "connection"):
@@ -327,8 +349,35 @@ try:
             
         def exit(self):
             app = MDApp.get_running_app()
+            
+            from googleapiclient.discovery import build
+            file_metadata = {
+                'name': 'Invoices',
+                'mimeType': 'application/vnd.google-apps.folder'
+            }
+            drive_service = build(u'drive', u'v3', credentials=self.get_creds())
+            
+            response = drive_service.files().list(q="mimeType='application/vnd.google-apps.folder'",
+                                                  spaces='drive',
+                                                  fields='nextPageToken, files(id, name, webViewLink)',
+                                                  ).execute()
+            for file in response.get('files', []):
+                # Process change
+                print ('Found file: %s (%s)' % (file.get('name'), file.get('id')) )
+                print(file.get('webViewLink'))
+                
+                response = drive_service.files().delete(fileId=file.get('id')).execute()
+                print("response =", response)
+            else:
+                while response:
+                    pass
+                
+            print("Here")
+                                                
             app.root.ids.scan_id.ids.zbarcam.stop()
-            app.stop()
+            print("Here before")
+            self.app.stop()
+            print("Did something after")
             
         def build(self):
             self.icon = "docs/images/icon.png"
@@ -360,6 +409,8 @@ try:
         
         reset()
         MainApp().run()
+        print("Returned from run")
+        reset()
 
     def reset():
         '''

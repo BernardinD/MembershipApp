@@ -173,6 +173,7 @@ class Settings_Setup(Screen):
         self.app.store.put("Settings", **self.curr_sett)
         self.app.logo = self.app.store.get("Settings")["Logo"]
         self.app.club_stripped = self.app.strip_name()
+        self.app.email = self.app.store.get("Settings")["Primary contact"]
         print("self.app.store.get('Settings') =", self.app.store.get("Settings"))
         self.app.on_back()
         self.app.updates = "Settings have been updated."

@@ -4,7 +4,7 @@
         orientation: 'vertical'
         BoxLayout:
             orientation: 'horizontal'
-            size_hint: 1, 0.15
+            size_hint: 1, 0.10
             canvas:
                 Color:
                     rgba: 1, 1, 1, 1
@@ -14,7 +14,7 @@
             padding: 10
             Button:
                 id: new_button
-                size_hint: 0.33, 1
+                size_hint: 0.15, 1
                 text: 'Cancel?'
                 text_size: self.size
                 halign: 'center'
@@ -22,6 +22,14 @@
                 on_press: app.on_back()
                 #disabled: False if platform == 'win' else True
             Label:
+				size_hint: 0.60, 1
+			Button:
+				id: open_sheet
+				size_hint: 0.25, 1
+				text: "Open sheet online"
+				halign: 'center'
+				valign: 'middle'
+				on_press: root.open_online()
         BoxLayout
             size_hint: 1, 0.60
             orientation: 'horizontal'
