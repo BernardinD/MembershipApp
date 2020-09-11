@@ -1,10 +1,14 @@
 #kivymd==0.103.0
+opencv
+numpy
 kivy
 git+https://github.com/HeaTTheatR/KivyMD.git
+webbrowser
 Pillow
 cython
-gspread
+gspread==3.6
 google-auth-oauthlib
+google-api-python-client
 httplib2
 pyasn1
 pyasn1-modules
