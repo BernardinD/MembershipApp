@@ -233,7 +233,8 @@ try:
                 from googleapiclient.discovery import build
                 drive_service = build(u'drive', u'v3', credentials=self.get_creds())
                                                   
-                names = [self.store.get("Settings")["Current sheet"], '2020']
+                from datetime import date
+                names = [self.store.get("Settings")["Current sheet"], '{}'.format(date.today().year)]
                 folders = self.find_folders(drive_service, names[0], names[1])
                 print("--- Folders searched")
                                                   
@@ -454,6 +455,7 @@ try:
         def exit(self):
             app = MDApp.get_running_app()
             
+            '''
             from googleapiclient.discovery import build
             file_metadata = {
                 'name': 'Invoices',
@@ -475,7 +477,8 @@ try:
                 if file.get('owners')[0]['me']:
                     response = drive_service.files().delete(fileId=file.get('id')).execute()
                     print("response =", response)
-                    
+            '''
+            
             app.root.ids.scan_id.ids.zbarcam.stop()
             self.app.stop()
             print("Did something after")
