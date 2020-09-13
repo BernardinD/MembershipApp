@@ -230,41 +230,7 @@ try:
                 
                 
                 # Create folder for sheet if needed
-                from googleapiclient.discovery import build
-                drive_service = build(u'drive', u'v3', credentials=self.get_creds())
-                                                  
-                from datetime import date
-                names = [self.store.get("Settings")["Current sheet"], '{}'.format(date.today().year)]
-                folders = self.find_folders(drive_service, names[0], names[1])
-                print("--- Folders searched")
-                                                  
-                prevID = "root"
-                for folder, name in zip(folders,names):
-                    if not folder:
-                        # Create folder
-                        print("--- Creating folder.")
-                        file_metadata = {
-                            'name': name,
-                            'mimeType': 'application/vnd.google-apps.folder',
-                            'parents': [prevID]
-                        }
-                        folder = drive_service.files().create(body=file_metadata,
-                                                            fields='id').execute()
-                        print ( 'Folder ID: %s' % folder.get('id') )
-                        
-                        # Share folder with club email
-                        user_permission = {
-                            'type': 'user',
-                            'role': 'Owner',
-                            'emailAddress': self.app.store.get("Settings")["Primary contact"]
-                        }
-                        drive_service.permissions().create(
-                            fileId=folder.get('id'),
-                            body=user_permission,
-                            fields='id',
-                            transferOwnership='true', 
-                        ).execute()
-                    prevID = folder.get('id')
+                self.create_folders()
                 
             except Exception as e:
                 print(e)
@@ -451,6 +417,43 @@ try:
                     sub = None
                 
             return parent,file
+            
+        def create_folders(self):
+            from googleapiclient.discovery import build
+            drive_service = build(u'drive', u'v3', credentials=self.get_creds())
+                                              
+            from datetime import date
+            names = [self.store.get("Settings")["Current sheet"], '{}'.format(date.today().year)]
+            folders = self.find_folders(drive_service, names[0], names[1])
+            print("--- Folders searched")
+                                              
+            prevID = "root"
+            for folder, name in zip(folders,names):
+                if not folder:
+                    # Create folder
+                    print("--- Creating folder.")
+                    file_metadata = {
+                        'name': name,
+                        'mimeType': 'application/vnd.google-apps.folder',
+                        'parents': [prevID]
+                    }
+                    folder = drive_service.files().create(body=file_metadata,
+                                                        fields='id').execute()
+                    print ( 'Folder ID: %s' % folder.get('id') )
+                    
+                    # Share folder with club email
+                    user_permission = {
+                        'type': 'user',
+                        'role': 'Owner',
+                        'emailAddress': self.app.store.get("Settings")["Primary contact"]
+                    }
+                    drive_service.permissions().create(
+                        fileId=folder.get('id'),
+                        body=user_permission,
+                        fields='id',
+                        transferOwnership='true', 
+                    ).execute()
+                prevID = folder.get('id')
             
         def exit(self):
             app = MDApp.get_running_app()
