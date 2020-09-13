@@ -178,23 +178,93 @@ try:
             self.club_striped = self.strip_name()
             self.levels = levels
             
-            from googleapiclient.discovery import build
-            file_metadata = {
-                'name': 'Invoices',
-                'mimeType': 'application/vnd.google-apps.folder'
-            }
-            drive_service = build(u'drive', u'v3', credentials=self.get_creds())
-            file = drive_service.files().create(body=file_metadata,
-                                                fields='id').execute()
-            print ( 'Folder ID: %s' % file.get('id') )
             
             #Used for global sheet manipulation
             self.sheet = None
             
+            # Create folder
+            from googleapiclient.discovery import build
+            drive_service = build(u'drive', u'v3', credentials=self.get_creds())
+            
+            '''
+            file_metadata = {
+                'name': "Test",
+                'mimeType': 'application/vnd.google-apps.folder'
+            }
+            file = drive_service.files().create(body=file_metadata,
+                                                fields='id').execute()
+            file_metadata = {
+                'name': "Testy",
+                'mimeType': 'application/vnd.google-apps.folder',
+                'parents': [file.get('id')]
+            }
+            file = drive_service.files().create(body=file_metadata,
+                                                fields='id').execute()
+            file_metadata = {
+                'name': "Testytest",
+                'mimeType': 'application/vnd.google-apps.folder',
+                'parents': [file.get('id')]
+            }
+            file = drive_service.files().create(body=file_metadata,
+                                                fields='id').execute()
+            file_metadata = {
+                'name': "Invoices",
+                'mimeType': 'application/vnd.google-apps.folder',
+                #'parent': [file.get('id')]
+            }
+            file = drive_service.files().create(body=file_metadata,
+                                                fields='id').execute()
+            '''
+            
+            '''
+            if self.find_folders(drive_service, 'Test', 'Test'):
+                print("--- Found Folder.")
+            else:
+                print("--- Folder not found.")
+            '''
+                
             # Try to get sheet if accessable. Already handling the situation
             #where no sheet is loaded later in 'on_start' and 'changeScreen'
             try:
                 self.sheet = self.get_spread()
+                
+                
+                # Create folder for sheet if needed
+                from googleapiclient.discovery import build
+                drive_service = build(u'drive', u'v3', credentials=self.get_creds())
+                                                  
+                names = [self.store.get("Settings")["Current sheet"], '2020']
+                folders = self.find_folders(drive_service, names[0], names[1])
+                print("--- Folders searched")
+                                                  
+                prevID = "root"
+                for folder, name in zip(folders,names):
+                    if not folder:
+                        # Create folder
+                        print("--- Creating folder.")
+                        file_metadata = {
+                            'name': name,
+                            'mimeType': 'application/vnd.google-apps.folder',
+                            'parents': [prevID]
+                        }
+                        folder = drive_service.files().create(body=file_metadata,
+                                                            fields='id').execute()
+                        print ( 'Folder ID: %s' % folder.get('id') )
+                        
+                        # Share folder with club email
+                        user_permission = {
+                            'type': 'user',
+                            'role': 'Owner',
+                            'emailAddress': self.app.store.get("Settings")["Primary contact"]
+                        }
+                        drive_service.permissions().create(
+                            fileId=folder.get('id'),
+                            body=user_permission,
+                            fields='id',
+                            transferOwnership='true', 
+                        ).execute()
+                    prevID = folder.get('id')
+                
             except Exception as e:
                 print(e)
                 pass
@@ -347,6 +417,40 @@ try:
             self.app.updates = "Spreadsheet could not be loaded.\nCheck {} and reload".format(type_)
             self.app.popup.open()
             
+        def find_folders(self, drive_service, parent, sub=None):
+            ''' Returns the folder object or its subfolder if it exists
+            '''
+            response = drive_service.files().list(q="mimeType='application/vnd.google-apps.folder'",
+                                                  spaces='drive',
+                                                  fields='nextPageToken, files(id, name, webViewLink, parents)',
+                                                  ).execute()
+                                                  
+            for file in response.get('files', []):
+                # Process change
+                print ('Found file: %s (%s)' % (file.get('name'), file.get('id')) )
+                print ('parents: ', file.get('parents'))
+                print(file.get('webViewLink'))
+                
+                if parent == file.get('name'):
+                    parent = file
+                    break
+            else:
+                return None,None
+                
+            if sub:
+                response = drive_service.files().list(q="mimeType='application/vnd.google-apps.folder' and \
+                                                        name = '{}' and \
+                                                        '{}' in parents".format( sub, parent.get('id'), ),
+                                                      spaces='drive',
+                                                      fields='nextPageToken, files(id, name, webViewLink, parents)',
+                                                      ).execute()
+                if response.get('files', []):
+                    sub = response.get('files', [])[0]
+                else:
+                    sub = None
+                
+            return parent,file
+            
         def exit(self):
             app = MDApp.get_running_app()
             
@@ -359,23 +463,20 @@ try:
             
             response = drive_service.files().list(q="mimeType='application/vnd.google-apps.folder'",
                                                   spaces='drive',
-                                                  fields='nextPageToken, files(id, name, webViewLink)',
+                                                  fields='nextPageToken, files(id, name, webViewLink, parents, owners)',
                                                   ).execute()
             for file in response.get('files', []):
                 # Process change
                 print ('Found file: %s (%s)' % (file.get('name'), file.get('id')) )
-                print(file.get('webViewLink'))
+                print ('parents: ', file.get('parents'))
+                print('webViewLink: ', file.get('webViewLink'))
                 
-                response = drive_service.files().delete(fileId=file.get('id')).execute()
-                print("response =", response)
-            else:
-                while response:
-                    pass
-                
-            print("Here")
-                                                
+                #if 'Invoices' in file.get('name') :
+                if file.get('owners')[0]['me']:
+                    response = drive_service.files().delete(fileId=file.get('id')).execute()
+                    print("response =", response)
+                    
             app.root.ids.scan_id.ids.zbarcam.stop()
-            print("Here before")
             self.app.stop()
             print("Did something after")
             
@@ -410,7 +511,7 @@ try:
         reset()
         MainApp().run()
         print("Returned from run")
-        reset()
+        #reset()
 
     def reset():
         '''
