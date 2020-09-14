@@ -22,7 +22,7 @@ class Scan(Screen):
 		if self.ids.zbarcam.symbols and self.screen:
 			symbol = self.ids.zbarcam.symbols[0]
 			data = symbol.data.decode('utf8')
-			print(data)
+			#print(data)
 			# If unique identifier is in the QRCode, continue process
 			if self.app.club_striped in data:
 				temp = data.split(',')
