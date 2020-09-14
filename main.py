@@ -357,9 +357,9 @@ try:
                                                   
             for file in response.get('files', []):
                 # Process change
-                print ('Found file: %s (%s)' % (file.get('name'), file.get('id')) )
+                '''print ('Found file: %s (%s)' % (file.get('name'), file.get('id')) )
                 print ('parents: ', file.get('parents'))
-                print(file.get('webViewLink'))
+                print(file.get('webViewLink'))'''
                 
                 if parent == file.get('name'):
                     parent = file
@@ -393,11 +393,9 @@ try:
             from datetime import date
             names = [self.store.get("Settings")["Current sheet"], '{}'.format(date.today().year)]
             folders = self.find_folders(drive_service, names[0], names[1])
-            print("--- Folders searched")
                                               
             prevID = "root"
             for folder, name in zip(folders,names):
-                print("Folder: {} - {}".format(name, folder))
                 if not folder:
                     # Create folder
                     print("--- Creating folder.")
