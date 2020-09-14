@@ -8,7 +8,7 @@ Pillow
 cython
 gspread==3.6
 google-auth-oauthlib
-google-api-python-client
+google-api-python-client==1.8.0
 httplib2
 pyasn1
 pyasn1-modules
