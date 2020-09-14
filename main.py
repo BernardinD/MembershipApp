@@ -185,43 +185,6 @@ try:
             # Create folder
             from googleapiclient.discovery import build
             drive_service = build(u'drive', u'v3', credentials=self.get_creds())
-            
-            '''
-            file_metadata = {
-                'name': "Test",
-                'mimeType': 'application/vnd.google-apps.folder'
-            }
-            file = drive_service.files().create(body=file_metadata,
-                                                fields='id').execute()
-            file_metadata = {
-                'name': "Testy",
-                'mimeType': 'application/vnd.google-apps.folder',
-                'parents': [file.get('id')]
-            }
-            file = drive_service.files().create(body=file_metadata,
-                                                fields='id').execute()
-            file_metadata = {
-                'name': "Testytest",
-                'mimeType': 'application/vnd.google-apps.folder',
-                'parents': [file.get('id')]
-            }
-            file = drive_service.files().create(body=file_metadata,
-                                                fields='id').execute()
-            file_metadata = {
-                'name': "Invoices",
-                'mimeType': 'application/vnd.google-apps.folder',
-                #'parent': [file.get('id')]
-            }
-            file = drive_service.files().create(body=file_metadata,
-                                                fields='id').execute()
-            '''
-            
-            '''
-            if self.find_folders(drive_service, 'Test', 'Test'):
-                print("--- Found Folder.")
-            else:
-                print("--- Folder not found.")
-            '''
                 
             # Try to get sheet if accessable. Already handling the situation
             #where no sheet is loaded later in 'on_start' and 'changeScreen'
@@ -229,7 +192,7 @@ try:
                 self.sheet = self.get_spread()
                 
                 
-                # Create folder for sheet if needed
+                # Create needed folder(s)
                 self.create_folders()
                 
             except Exception as e:
@@ -416,9 +379,14 @@ try:
                 else:
                     sub = None
                 
-            return parent,file
+            return parent,sub
             
         def create_folders(self):
+            ''' Goes down the a listed path of folder directories.
+                Path patttern: [Spreadsheet name]/[Year]/.
+                
+                Updates the current GoogleDrive folder ID to the last folder in path
+            '''
             from googleapiclient.discovery import build
             drive_service = build(u'drive', u'v3', credentials=self.get_creds())
                                               
@@ -429,6 +397,7 @@ try:
                                               
             prevID = "root"
             for folder, name in zip(folders,names):
+                print("Folder: {} - {}".format(name, folder))
                 if not folder:
                     # Create folder
                     print("--- Creating folder.")
@@ -454,33 +423,11 @@ try:
                         transferOwnership='true', 
                     ).execute()
                 prevID = folder.get('id')
+                
+            self.app.folderID = prevID
             
         def exit(self):
             app = MDApp.get_running_app()
-            
-            '''
-            from googleapiclient.discovery import build
-            file_metadata = {
-                'name': 'Invoices',
-                'mimeType': 'application/vnd.google-apps.folder'
-            }
-            drive_service = build(u'drive', u'v3', credentials=self.get_creds())
-            
-            response = drive_service.files().list(q="mimeType='application/vnd.google-apps.folder'",
-                                                  spaces='drive',
-                                                  fields='nextPageToken, files(id, name, webViewLink, parents, owners)',
-                                                  ).execute()
-            for file in response.get('files', []):
-                # Process change
-                print ('Found file: %s (%s)' % (file.get('name'), file.get('id')) )
-                print ('parents: ', file.get('parents'))
-                print('webViewLink: ', file.get('webViewLink'))
-                
-                #if 'Invoices' in file.get('name') :
-                if file.get('owners')[0]['me']:
-                    response = drive_service.files().delete(fileId=file.get('id')).execute()
-                    print("response =", response)
-            '''
             
             app.root.ids.scan_id.ids.zbarcam.stop()
             self.app.stop()

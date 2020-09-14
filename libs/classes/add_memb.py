@@ -10,6 +10,8 @@ from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 
 import webbrowser
+import re
+regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
 
 import cv2
 import numpy as np
@@ -85,9 +87,12 @@ class AddMember(Screen):
         print()
         #print()
         #print("self.children:", self.children)
+        
+        '''
         cv2.imshow("img", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+        '''
         
         creds = self.app.get_creds()
         #d_creds = creds.with_subject('bdezius@gmail.com')
@@ -105,19 +110,40 @@ class AddMember(Screen):
         print("creds.valid =", creds.valid)
         service = build(u'drive', u'v3', credentials=creds)
         #send_email(service, 'me', message)
-        self.upload(service, './qrcode.png')
+        
+        # Upload QRcode
+        webUrlLink = self.upload(service, './qrcode.png')
+        
+        # Email message with link
+        import urllib.parse
+        subject = "Welcome!!"
+        body = \
+"""Thanks for joining! We're happy to have you.
+Here's the GoogleDrive link to your personal QRcode below:
+
+{}
+
+Make sure to save/screenshot the QRcode for signing in. Can't wait to see you!!
+
+-See you next class!
+Pulso Caribe at UCF
+
+""".format(webUrlLink)
+        webbrowser.open("mailto:?to=" + self.ids['mem_email'].text + "&subject=" + urllib.parse.quote(subject) + "&body=" + urllib.parse.quote(body), new=1)
         
     def upload(self, drive_service, file_path):
+        '''Uploads file to drive and returns weblink
+        '''
     
         file_metadata = {
             'name': '{}_{}.png'.format(self.ids['first_name'].text, self.ids['last_name'].text),
-            'parents[]': ['test_qrcodes'],
+            'parents': [self.app.folderID],
         }
         media = MediaFileUpload(file_path,
                                 mimetype='image/png')
         file = drive_service.files().create(body=file_metadata,
                                             media_body=media,
-                                            fields='id').execute()
+                                            fields='id, webViewLink').execute()
         print('File ID: %s' % file.get('id'))
         file_id = file.get('id')
         
@@ -125,7 +151,7 @@ class AddMember(Screen):
         batch = drive_service.new_batch_http_request()
         user_permission = {
             'type': 'user',
-            'role': 'reader',
+            'role': 'writer',
             'emailAddress': self.app.store.get("Settings")["Primary contact"]
         }
         batch.add(drive_service.permissions().create(
@@ -134,6 +160,8 @@ class AddMember(Screen):
             fields='id',
         ))
         batch.execute()
+        
+        return file.get('webViewLink')
     
     def open_online(self):
         sheet = self.app.get_spread()
@@ -141,5 +169,15 @@ class AddMember(Screen):
         webbrowser.open("https://docs.google.com/spreadsheets/d/{}".format(url_id), new=2)
         
     def confirm(self, button):
-        button.disabled = True
-        self.ids['confirm_button'].disabled = False
+    
+        if len(self.ids['first_name'].text) < 1 or  len(self.ids['last_name'].text) < 1:
+            self.app.updates = "Error: Enter both First and Last name."
+            self.app.popup.open()
+            return
+        
+        if re.search(regex, self.ids['mem_email'].text):
+            button.disabled = True
+            self.ids['confirm_button'].disabled = False
+        else:
+            self.app.updates = "Error: Confirm email is correct."
+            self.app.popup.open()

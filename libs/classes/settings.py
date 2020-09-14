@@ -177,10 +177,11 @@ class Settings_Setup(Screen):
         print("self.app.store.get('Settings') =", self.app.store.get("Settings"))
         self.app.on_back()
         self.app.updates = "Settings have been updated."
+        self.app.popup.open()
         if new_sheet:
             print("---- Sheet is changing ------")
             self.app.sheet = new_sheet
-        self.app.popup.open()
+            self.app.create_folders()
      
     def create(self, sheetname = "Test new sheet"):   
         '''
