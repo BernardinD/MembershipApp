@@ -1,4 +1,4 @@
-#kivymd==0.103.0
+#kivymd==0.104.0
 opencv
 numpy
 kivy
