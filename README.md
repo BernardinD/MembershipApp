@@ -12,7 +12,7 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 ## Walkthrough
 
 ### Run default app
-In order to run the pre-built app all you need to do is download/clone this repository and run file specific file for the machine you're running:
+In order to run the pre-built app all you need to do is download/clone this repository and run the specific file for the machine you're using:
 
 #### Windows:
 * Run the "Membership.exe"
