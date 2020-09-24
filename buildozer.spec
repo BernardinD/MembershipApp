@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Pulso Memebership App
+title = Memebership App
 
 # (str) Package name
-package.name = qrscan
+package.name = membershipApp
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain =  org.test
@@ -37,11 +37,13 @@ version = 0.1
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
 requirements =
+    opencv,
+    numpy,
     kivy-garden.zbarcam,
     android,
     decorator,
     kivy==1.11.1,
-    git+https://github.com/HeaTTheatR/KivyMD.git,
+    kivymd,
     xcamera,
     kivy-garden.qrcode,
     libiconv,
