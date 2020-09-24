@@ -27,7 +27,7 @@ In order to run the pre-built app all you need to do is download/clone this repo
 
 ## Developers
 
-## Basic info
+### Basic info
 `main.py` is where everything starts. All over scrips are in `libs/classes` and control the designs of each page.
 
 `libs/classes/home` is the home page.
@@ -36,7 +36,7 @@ Page designs are in `libs/kv` and can be edited with some knowledge of Kivy.
 
 All pages and their scripts have the same prefix to their file name (i.e. `libs/classes/home.py` <-> `libs/kv/home.kv`)
 
-## Techincal info
+### Techincal info
 The scanner handles scanning in QRcodes and finding the corresponding memeber in the Google Sheet.
 
 Member addition and QRcode generation is done from the Add Members page (only on desktops)
