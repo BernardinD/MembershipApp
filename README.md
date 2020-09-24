@@ -11,6 +11,21 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 
 ## Walkthrough
 
+### Run default app
+In order to run the pre-built app all you need to do is download/clone this repository and run file
+
+#### Windows:
+* Run the "Membership.exe"
+
+#### Android:
+* Download "bin/membership-[...].apk" to phone
+* Tap the download to run/install
+
+#### iPhone and Mac (TBD)
+...
+
+## Developers
+
 ### Basic info
 `main.py` is where everything starts. All over scrips are in `libs/classes` and control the designs of each page.
 
