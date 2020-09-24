@@ -58,7 +58,7 @@ python -m pip install kivy.deps.sdl2 kivy.deps.glew
 # Use
 
 ### Needed:
-* [Google credentials file 'client_secret.json'](#Creating-clientsecret.json-file)
+* [Google credentials file 'client_secret.json'](#Creating-client\_secret.json-file)
 * '.ico' file of club logo (optional - if you want to customize the image of the application)
 
 ## Creating 'client_secret.json' file:
