@@ -12,9 +12,9 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 
 ## Run default app
 In order to run the pre-built app all you need to do is:
-[1] Download/clone this repository
-[2] Have the [required components here](#Needed)
-[3] And run the specific file for the machine you're using:
+1. Download/clone this repository
+2. Have the [required components here](#Needed)
+3. And run the specific file for the machine you're using:
 
 ### Windows:
 * Run the "Membership.exe"
