@@ -17,7 +17,7 @@ In order to run the pre-built app all you need to do is:
 3. And run the specific file for the machine you're using:
 
 ### Windows:
-* Run the "Membership.exe"
+* Run the "Membership.exe" 
 
 ### Android:
 * Download "bin/membership-[...].apk" to phone
