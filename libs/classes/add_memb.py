@@ -119,7 +119,7 @@ class AddMember(Screen):
         subject = "Welcome!!"
         body = \
 """Thanks for joining! We're happy to have you.
-Here's the GoogleDrive link to your personal QRcode below:
+Here's the GoogleDrive link to your personal QRcode below (copy and paste into browswer if needed):
 
 {}
 

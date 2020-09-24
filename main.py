@@ -294,34 +294,12 @@ try:
                         "https://www.googleapis.com/auth/drive.file",
                     ]
             
-            # Find credentials json file and make connection
-            if 'client_secret.json' not in os.listdir(os.environ["PULSO_APP_ASSETS"]):
-                print("sys.path =", sys.path)
-                dirs = [ i for i in sys.path if os.path.isdir(i)]
-                for i in dirs:
-                    print("listdir(i) =", os.listdir(i))
-                    #print(os.listdir("C:\\Users"))
-                    try:
-                        if 'client_secret.json' in os.listdir(i):
-                            print("Trying to get json")
-                            #creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(i,'client_secret.json'), scope)
-                            credentials = service_account.Credentials.from_service_account_file(os.path.join(i,'client_secret.json'), scopes=scope)
-                            break
-                        # If can't find json, end program
-                    except Exception as e:
-                        print(e)
-                print("---- Didn't find json ----")
-                print("---- Terminating application ----")
-            else:
-                #creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
-                #                                                            os.environ["PULSO_APP_ASSETS"],
-                #                                                            'client_secret.json'),
-                #                                                        scope)
-            
-                credentials = service_account.Credentials.from_service_account_file(
-                        os.path.join(
-                            os.environ["PULSO_APP_ASSETS"],
-                            'client_secret.json'), scopes=scope)
+            # Get credentials json file and make connection
+            credentials = service_account.Credentials.from_service_account_file(
+                    os.path.join(
+                        abs_root,
+                        'assets',
+                        'client_secret.json'), scopes=scope)
             return credentials
             
         def get_spread(self, sheet = None):
