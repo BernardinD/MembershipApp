@@ -80,13 +80,13 @@ python -m pip install kivy.deps.sdl2 kivy.deps.glew
 
 # Build app
 
-## Windows
+### Windows
 On first creation the app will need to be built using the command `pyinstaller --onefile .\Membership.spec`
 after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory if you wish the app to have your club logo
 
 After the command finishes you'll find the application in the 'dist' folder
 
-## Android
+### Android
 `pip3 install --upgrade Cython`
 On a Linux machine you will have to run `buildozer -v android debug deploy run logcat`
 
@@ -97,3 +97,4 @@ To do a fresh build run `buildozer -v android clean` first
 * Include Mac and Linux installation instructions
 * Use Kivy's ColorPicker class to add customization
 * Incoporate Mac steps into README (source: https://www.pyimagesearch.com/2018/05/21/an-opencv-barcode-and-qr-code-scanner-with-zbar/)
+* Updating to using Flutter instead of Kivy
