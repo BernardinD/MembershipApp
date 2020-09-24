@@ -51,8 +51,6 @@ In order to run the pre-built app all you need to do is:
 
 # Developers
 
-## Walkthrough
-
 ### Basic info
 `main.py` is where everything starts. All over scrips are in `libs/classes` and control the designs of each page.
 
