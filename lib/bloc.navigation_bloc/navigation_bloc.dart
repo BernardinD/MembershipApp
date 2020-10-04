@@ -38,10 +38,10 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates> {
         yield ScanPage();
         //yield ScanScreen();
         break;
-      case NavigationEvents.TestScanPageClickedEvent:
-        yield TestScanPage();
-        //yield ScanScreen();
-        break;
+      // case NavigationEvents.TestScanPageClickedEvent:
+      //   yield TestScanPage();
+      //   //yield ScanScreen();
+      //   break;
     }
   }
 }

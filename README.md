@@ -52,49 +52,30 @@ In order to run the pre-built app all you need to do is:
 # Developers
 
 ### Basic info
-`main.py` is where everything starts. All over scrips are in `libs/classes` and control the designs of each page.
-
-`libs/classes/home` is the home page.
-
-Page designs are in `libs/kv` and can be edited with some knowledge of Kivy.
-
-All pages and their scripts have the same prefix to their file name (i.e. `libs/classes/home.py` <-> `libs/kv/home.kv`)
+(TBA)
 
 ### Techincal info
-The scanner handles scanning in QRcodes and finding the corresponding memeber in the Google Sheet.
+The scanner handles scanning in QRcodes and finding the corresponding memeber in the Google Sheet (Only on mobile).
 
-Member addition and QRcode generation is done from the Add Members page (only on desktops)
+Member addition and QRcode generation is done from the Add Members page
 
 The settings page is where individual club specfications can be set.
 
 ## Installations
-* Install Python3: https://www.python.org/downloads/ (Search for version 3.6.7)
-	* After launching the installation file make sure to click the check box at the bottom of the popup window that states adding Python to PATH
-* Run `pip install -r requirements` from the folder where you copied this repository
+(TBA)
 ## Windows:
-If getting an error involving `sld2` run:
-```
-python -m pip install kivy.deps.sdl2 kivy.deps.glew
-```
+(TBA)
 
 
 # Build app
 
 ### Windows
-On first creation the app will need to be built using the command `pyinstaller --onefile .\Membership.spec`
-after adding a 'client_secret.json' file to the assets directory as well as an 'club_logo.ico' file to the head directory if you wish the app to have your club logo
-
-After the command finishes you'll find the application in the 'dist' folder
+(TBA)
 
 ### Android
-`pip3 install --upgrade Cython`
-On a Linux machine you will have to run `buildozer -v android debug deploy run logcat`
+(TBA)
 
-To do a fresh build run `buildozer -v android clean` first
-
-# Working on
-* Adding a free way to send each member their QR code over SMS through Kivy or some other cross-plaform compatible desktop library
-* Include Mac and Linux installation instructions
-* Use Kivy's ColorPicker class to add customization
-* Incoporate Mac steps into README (source: https://www.pyimagesearch.com/2018/05/21/an-opencv-barcode-and-qr-code-scanner-with-zbar/)
-* Updating to using Flutter instead of Kivy
+# To-do
+* Sending QR codes to members (through email)
+* Edit app to direct only to settings page if `client_secret.json` can not be found
+* Making settings page to dynamic client_secret files

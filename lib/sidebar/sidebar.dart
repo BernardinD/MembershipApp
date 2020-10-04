@@ -64,6 +64,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return StreamBuilder<bool>(
       initialData: false,
@@ -81,86 +82,89 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   color: const Color(0xFF262AAA),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 100,
-                      ),
-                      ListTile(
-                        title: Text(
-                          "Prateek",
-                          style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w800),
+                  height: screenHeight,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: 100,
                         ),
-                        subtitle: Text(
-                          "www.techieblossom.com",
-                          style: TextStyle(
-                            color: Color(0xFF1BB5FD),
-                            fontSize: 18,
+                        ListTile(
+                          title: Text(
+                            "Prateek",
+                            style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w800),
+                          ),
+                          subtitle: Text(
+                            "www.techieblossom.com",
+                            style: TextStyle(
+                              color: Color(0xFF1BB5FD),
+                              fontSize: 18,
+                            ),
+                          ),
+                          leading: CircleAvatar(
+                            child: Icon(
+                              Icons.perm_identity,
+                              color: Colors.white,
+                            ),
+                            radius: 40,
                           ),
                         ),
-                        leading: CircleAvatar(
-                          child: Icon(
-                            Icons.perm_identity,
-                            color: Colors.white,
-                          ),
-                          radius: 40,
+                        Divider(
+                          height: 64,
+                          thickness: 0.5,
+                          color: Colors.white.withOpacity(0.3),
+                          indent: 32,
+                          endIndent: 32,
                         ),
-                      ),
-                      Divider(
-                        height: 64,
-                        thickness: 0.5,
-                        color: Colors.white.withOpacity(0.3),
-                        indent: 32,
-                        endIndent: 32,
-                      ),
-                      MenuItem(
-                        icon: Icons.home,
-                        title: "Home",
-                        onTap: () {
-                          onIconPressed();
-                          BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
-                        },
-                      ),
-                      MenuItem(
-                        icon: Icons.add_box_outlined,
-                        title: "Add Members",
-                        onTap: () {
-                          onIconPressed();
-                          BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AddMembersClickedEvent);
-                        },
-                      ),
-                      MenuItem(
-                        icon: Icons.qr_code_scanner_rounded,
-                        title: "Scan In",
-                        onTap: () {
-                          onIconPressed();
-                          BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ScanPageClickedEvent);
-                        },
-                      ),
-                      // MenuItem(
-                      //   icon: Icons.qr_code_scanner,
-                      //   title: "Test scanner",
-                      //   onTap: () {
-                      //     onIconPressed();
-                      //     BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.TestScanPageClickedEvent);
-                      //   },
-                      // ),
-                      Divider(
-                        height: 64,
-                        thickness: 0.5,
-                        color: Colors.white.withOpacity(0.3),
-                        indent: 32,
-                        endIndent: 32,
-                      ),
-                      MenuItem(
-                        icon: Icons.settings,
-                        title: "Settings",
-                      ),
-                      MenuItem(
-                        icon: Icons.exit_to_app,
-                        title: "Logout",
-                      ),
-                    ],
+                        MenuItem(
+                          icon: Icons.home,
+                          title: "Home",
+                          onTap: () {
+                            onIconPressed();
+                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
+                          },
+                        ),
+                        MenuItem(
+                          icon: Icons.add_box_outlined,
+                          title: "Add Members",
+                          onTap: () {
+                            onIconPressed();
+                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AddMembersClickedEvent);
+                          },
+                        ),
+                        MenuItem(
+                          icon: Icons.qr_code_scanner_rounded,
+                          title: "Scan In",
+                          onTap: () {
+                            onIconPressed();
+                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ScanPageClickedEvent);
+                          },
+                        ),
+                        // MenuItem(
+                        //   icon: Icons.qr_code_scanner,
+                        //   title: "Test scanner",
+                        //   onTap: () {
+                        //     onIconPressed();
+                        //     BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.TestScanPageClickedEvent);
+                        //   },
+                        // ),
+                        Divider(
+                          height: 64,
+                          thickness: 0.5,
+                          color: Colors.white.withOpacity(0.3),
+                          indent: 32,
+                          endIndent: 32,
+                        ),
+                        MenuItem(
+                          icon: Icons.settings,
+                          title: "Settings",
+                        ),
+                        MenuItem(
+                          icon: Icons.exit_to_app,
+                          title: "Logout",
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
