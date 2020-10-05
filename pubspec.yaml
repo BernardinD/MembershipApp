@@ -43,6 +43,10 @@ dependencies:
 
   webview_flutter: ^0.3.23
 
+  path_provider: ^1.6.18
+  url_launcher: ^5.7.2
+  mailto: ^1.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

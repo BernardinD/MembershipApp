@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:googleapis/cloudbuild/v1.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:googleapis/drive/v2.dart' as drive;
+import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:gsheets/gsheets.dart';
 import 'dart:convert';
@@ -24,13 +24,14 @@ class Utils{
     'docs' : "application/vnd.google-apps.document",
     'spreadsheet' : "application/vnd.google-apps.spreadsheet",
     'slides' : "application/vnd.google-apps.presentation",
+    'folder' : "application/vnd.google-apps.folder",
+    'image/png' : "application/vnd.google-apps.photo",
     'all' : null,
   };
   static Map get mimetypes => _mimetypes;
 
   static Future<ServiceAccountCredentials> getCreds(BuildContext context) async{
     if (_Creds != null) {
-      print("Came here");
       return _Creds;
     }
     else{
@@ -44,6 +45,57 @@ class Utils{
       print("-----GOT CREDENTIALS----");
       return _Creds;
     }
+  }
+
+  static Future<List<drive.File>> findFolders(BuildContext context, String parent, String sub) async{
+    return await Utils.getCreds(context).then((creds) async {
+      // Find correct sheet ID
+      final drive_scopes = [drive.DriveApi.DriveScope];
+      return await clientViaServiceAccount(creds, drive_scopes).then((
+          AuthClient client) async {
+        // [client] is an authenticated HTTP client.
+        var api = new drive.DriveApi(client);
+
+        return api.files.list(
+            q: "mimeType='${mimetypes["folder"]}' and name = '${parent}'",
+            spaces: 'drive').then((folders){
+              drive.File parent_ = folders.files.length > 0 ? folders.files[0] : null;
+              if (sub != null){
+                return api.files.list(
+                    q: """mimeType='${mimetypes["folder"]}' and 
+                    name = '${sub}' and '${parent_.id}' in parents""",
+                    spaces: 'drive').then((folders) {
+                      print("folder* = " + folders.toString());
+                      drive.File sub_ = folders.files.length > 0 ? folders.files[0] : null;
+                      return [parent_, sub_];
+                }, onError: (e) => print("Create: " + e.toString()));
+              }
+              return [parent_, null];
+            });
+      });
+    });
+  }
+
+  static Future<drive.File> createFolders(BuildContext context, String name, String parentID) async{
+    return await Utils.getCreds(context).then((creds) async {
+      // Find correct sheet ID
+      final drive_scopes = [drive.DriveApi.DriveScope];
+      return await clientViaServiceAccount(creds, drive_scopes).then((
+          AuthClient client) async {
+        // [client] is an authenticated HTTP client.
+        var api = new drive.DriveApi(client);
+
+        return await api.files.create(
+            drive.File()..name=name..mimeType=mimetypes["folder"]..parents=[parentID]).then((file) async {
+
+              // Change Ownership
+              await api.permissions.create(drive.Permission()..type='user'..role='Owner'..emailAddress="bdezius@gmail.com", file.id, transferOwnership: true);
+
+              return file;
+            });
+
+      });
+    });
   }
 
   static Future<String> loadAsset(BuildContext context) async{
@@ -77,7 +129,8 @@ class Utils{
         return Utils.findFile(
             context, mimetypes['spreadsheet'], name, api)
             .then((file) async {
-          print("file = " + file.title);
+          print("file = " + file.name);
+          print("file.webViewLink = " + file.webContentLink.toString());
           return await gsheetsApi.spreadsheet(file.id).then((sheet) {
             return sheet;
           });
@@ -89,17 +142,16 @@ class Utils{
 
   static Future<drive.File> findFile(BuildContext context, String mimeType, String name, drive.DriveApi api) async{
     if (_Sheet != null){
-      print("Came here");
       return _Sheet;
     }
     else {
       return api.files.list(
-          q: "mimeType='$mimeType'",
-          spaces: 'drive').then((value) {
-        debugPrint("values = " + value.items.toString());
+          // q: "mimeType='$mimeType'",
+          spaces: 'drive', $fields: "files(modifiedTime,id,name,createdTime,version,size,md5Checksum,webViewLink)").then((value) {
+        debugPrint("values = " + value.files.toString());
         int i = 0;
-        for (var item in value.items) {
-          if (name == item.title) {
+        for (var item in value.files) {
+          if (name == item.name) {
             return item;
           }
         }
