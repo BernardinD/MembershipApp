@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:MembershipApp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -27,10 +28,6 @@ class ScanPageState extends State<ScanPage> {
 
   ScanResult scanResult;
 
-  final _flashOnController = TextEditingController(text: "Flash on");
-  final _flashOffController = TextEditingController(text: "Flash off");
-  final _cancelController = TextEditingController(text: "Cancel");
-
   var _aspectTolerance = 0.00;
   var _numberOfCameras = 0;
   var _selectedCamera = -1;
@@ -40,7 +37,6 @@ class ScanPageState extends State<ScanPage> {
   static final _possibleFormats = BarcodeFormat.values.toList()
     ..removeWhere((e) => e == BarcodeFormat.unknown);
 
-  // List<BarcodeFormat> selectedFormats = [..._possibleFormats];
   List<BarcodeFormat> selectedFormats = [BarcodeFormat.qr];
 
   @override
@@ -54,36 +50,7 @@ class ScanPageState extends State<ScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    // if (scanResult != null){
-    //   debugPrint("scanResult = " + scanResult.rawContent);
-    //   List<String> parsed = scanResult.rawContent.split(",");
-    //   _first = parsed[1];
-    //   _last = parsed[2];
-    //   debugPrint("Testing");
-    //   Utils.getSpread(context, "Testing").then((spread) async{
-    //     Worksheet sheet = await spread.worksheetByTitle("Sheet1");
-    //
-    //     // Find row index of entry
-    //     await sheet.values.allRows().then((rows) async{
-    //       // Find rows that match name
-    //       int i = 1;
-    //       for (var row in rows){
-    //         debugPrint("row = " + row.toString());
-    //         if (row[0] == parsed[1] && row[1] == parsed[2]){
-    //           debugPrint("Match.");
-    //           if (row[4] == "No"){
-    //             row_ = i;
-    //               _signInEnabled=true;
-    //             debugPrint("i = " + i.toString());
-    //             break;
-    //           }
-    //         }
-    //         i++;
-    //       }
-    //     });
-    //
-    //   });
-    // }
+
     debugPrint("row_ = " + row_.toString());
     var contentList = <Widget>[
       // if (scanResult != null)
@@ -178,11 +145,6 @@ class ScanPageState extends State<ScanPage> {
     );
   }
 
-  // void setBtn(){
-  //   if (_signInEnabled) _btnController.text = "Sign in";
-  //   else _btnController.text = "Scan";
-  // }
-
   Future _signIn() async{
 
     // Sign person in
@@ -192,8 +154,8 @@ class ScanPageState extends State<ScanPage> {
         // setBtn();
       });
 
-      Utils.getSpread(context, "Testing").then((spread) async {
-        Worksheet sheet = await spread.worksheetByTitle("Sheet1");
+      Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async {
+        Worksheet sheet = spread.worksheetByTitle("Sheet1");
         final cell = await sheet.cells.cell(column: 5, row: row_);
         cell.post("Yes");
       });
@@ -210,7 +172,7 @@ class ScanPageState extends State<ScanPage> {
     _first = parsed[1];
     _last = parsed[2];
     debugPrint("Testing");
-    Utils.getSpread(context, "Testing").then((spread) async{
+    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
       Worksheet sheet = spread.worksheetByTitle("Sheet1");
       print("sheet.title = " +sheet.title);
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:MembershipApp/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +37,7 @@ class DrivePageState extends State<DrivePage>  {
     super.initState();
 
     // Initialize everything
-    Utils.getSpread(context, "Testing").then((spread) {
+    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) {
       print("Final result: " + spread.toString());
     });
 
@@ -157,7 +158,7 @@ class DrivePageState extends State<DrivePage>  {
       print(_phone);
 
       _data = _first + "," + _last + "," + "PulsoCaribe";
-      Utils.getSpread(context, "Testing").then((spread){
+      Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread){
         Worksheet sheet = spread.worksheetByTitle("Sheet1");
         var new_row = [_first, _last, "Beginner", 0, "No", _email, _phone];
         sheet.values.appendRow(new_row);

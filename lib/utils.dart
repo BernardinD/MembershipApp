@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:MembershipApp/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,7 +91,7 @@ class Utils{
             drive.File()..name=name..mimeType=mimetypes["folder"]..parents=[parentID]).then((file) async {
 
               // Change Ownership
-              await api.permissions.create(drive.Permission()..type='user'..role='Owner'..emailAddress="bdezius@gmail.com", file.id, transferOwnership: true);
+              await api.permissions.create(drive.Permission()..type='user'..role='Owner'..emailAddress=MyApp.prefs.getString("email"), file.id, transferOwnership: true);
 
               return file;
             });
@@ -146,16 +147,11 @@ class Utils{
   }
 
   static Future<drive.File> findFile(BuildContext context, String mimeType, String name, drive.DriveApi api) async{
-    if (_Sheet != null){
-      return _Sheet;
-    }
-    else {
-      return api.files.list(
-          q: "mimeType='$mimeType' and name = '${name}'",
-          spaces: 'drive', $fields: "files(modifiedTime,id,name,createdTime,version,size,md5Checksum,webViewLink)").then((value) {
-        debugPrint("values = " + value.files.toString());
-        return value.files[0];
-      }, onError: (e) => print("list: " + e.toString()));
-    }
+    return api.files.list(
+        q: "mimeType='$mimeType' and name = '${name}'",
+        spaces: 'drive', $fields: "files(modifiedTime,id,name,createdTime,version,size,md5Checksum,webViewLink)").then((value) {
+      debugPrint("values = " + value.files.toString());
+      return value.files[0];
+    }, onError: (e) => print("list: " + e.toString()));
   }
 }

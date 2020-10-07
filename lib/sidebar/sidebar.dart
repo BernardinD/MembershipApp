@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:MembershipApp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:MembershipApp/bloc.navigation_bloc/navigation_bloc.dart';
@@ -69,7 +70,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
     if(e != NavigationEvents.HomePageClickedEvent && e != NavigationEvents.SettingsPageClickedEvent){
       // Check json first, then sheet; If either fails block change and show popup
       var response = await Utils.loadAsset(context).then((value) async{
-        return await Utils.getSpread(context, "Testing").then((ret){
+        return await Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((ret){
           return ret.toString();
         }, onError: (e){
           throw ("Spreadsheet could not be found");
@@ -87,6 +88,8 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
               )
           );
         });
+        onIconPressed();
+        throw(e);
       });
     }
     BlocProvider.of<NavigationBloc>(context).add(e);

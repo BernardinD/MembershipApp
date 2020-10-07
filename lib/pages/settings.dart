@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 
+import 'package:MembershipApp/main.dart';
+
 
 class SettingsPage extends StatefulWidget with NavigationStates{
   @override
@@ -22,21 +24,16 @@ class _TextInputTileState extends State<TextInputTile> {
 
   String _display, _key, _new;
   Map _settings;
-  SharedPreferences _prefs;
-  _TextInputTileState(String display, String key, Map settings){_display=display; _key=key; _settings=settings; initSettings();}
+  _TextInputTileState(String display, String key, Map settings){_display=display; _key=key; _settings=settings;}
 
   final formKey = GlobalKey<FormState>();
-
-  void initSettings()async{
-    _prefs = await SharedPreferences.getInstance();
-  }
   void _submit(String key){
     debugPrint("_settings[_key] = " + _settings.toString());
     if(formKey.currentState.validate()){
       formKey.currentState.save();
-        _prefs.setString(key, _settings[_key]);
+        MyApp.prefs.setString(key, _settings[_key]);
         Navigator.pop(context);
-        debugPrint(_prefs.getString(_key));
+        debugPrint("New value: ${MyApp.prefs.getString(_key)}");
     }
   }
   @override
@@ -46,13 +43,21 @@ class _TextInputTileState extends State<TextInputTile> {
 
     return AlertDialog(
       content: Container(
-        height: screenHeight*0.15,
+        height: screenHeight*0.25,
         alignment: Alignment.center,
         child:
           Form(
             key: formKey,
             child: Column(
                 children: <Widget>[
+                  TextFormField(
+                    decoration: InputDecoration(
+                        labelText: "Current: ${MyApp.prefs.getString(_key??"") ?? "N/A"} "
+                    ),
+                    enabled: false,
+                    // validator: (input) => input.length < 1 ? 'Not a valid Email' : null,
+                    // onSaved: (input) => _settings[_key] = input,
+                  ),
                   TextFormField(
                     decoration: InputDecoration(
                         labelText: _display

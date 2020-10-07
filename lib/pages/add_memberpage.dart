@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:MembershipApp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -191,7 +192,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
 
     debugPrint("After setState");
 
-    Utils.getSpread(context, "Testing").then((spread){
+    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread){
       spread.refresh();
       Worksheet sheet = spread.worksheetByTitle("Sheet1");
       var new_row = [_first, _last, "Beginner", 0, "No", _email, _phone];
@@ -237,7 +238,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
             drive.Permission request = drive.Permission();
             request.type = "user";
             request.role = "writer";
-            request.emailAddress = "bdezius@gmail.com";
+            request.emailAddress = MyApp.prefs.getString("email");
 
             api.permissions.create(request, media.id);
 
