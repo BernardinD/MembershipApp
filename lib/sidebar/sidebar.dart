@@ -157,6 +157,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           onTap: () {
                             changePage(context, NavigationEvents.HomePageClickedEvent);
                           },
+                          width: screenWidth
                         ),
                         MenuItem(
                           icon: Icons.add_box_outlined,
@@ -164,6 +165,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           onTap: () {
                             changePage(context, NavigationEvents.AddMembersClickedEvent);
                           },
+                            width: screenWidth
                         ),
                         MenuItem(
                           icon: Icons.qr_code_scanner_rounded,
@@ -171,6 +173,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           onTap: () {
                             changePage(context, NavigationEvents.ScanPageClickedEvent);
                           },
+                            width: screenWidth
                         ),
                         // MenuItem(
                         //   icon: Icons.qr_code_scanner,
