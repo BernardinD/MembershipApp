@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget with NavigationStates {
             ),
             FlatButton(
               onPressed: (){
-                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.DriveClickedEvent);
+                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.SettingsPageClickedEvent);
               },
               child: Text(
                   "Change screen"

@@ -84,7 +84,7 @@ class ScanPageState extends State<ScanPage> {
     //
     //   });
     // }
-    debugPrint("row = " + row_.toString());
+    debugPrint("row_ = " + row_.toString());
     var contentList = <Widget>[
       // if (scanResult != null)
       Card(
@@ -212,6 +212,7 @@ class ScanPageState extends State<ScanPage> {
     debugPrint("Testing");
     Utils.getSpread(context, "Testing").then((spread) async{
       Worksheet sheet = spread.worksheetByTitle("Sheet1");
+      print("sheet.title = " +sheet.title);
 
       // Find row index of entry
       sheet.values.allRows().then((rows) async{

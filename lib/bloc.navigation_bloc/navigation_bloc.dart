@@ -1,8 +1,10 @@
+import 'package:MembershipApp/pages/settings.dart';
 import 'package:bloc/bloc.dart';
 import 'package:MembershipApp/pages/add_memberpage.dart';
 import 'package:MembershipApp/pages/drivepage.dart';
 import 'package:MembershipApp/pages/scanpage.dart';
 import 'package:MembershipApp/pages/testscanpage.dart';
+import 'package:MembershipApp/utils.dart';
 import '../pages/myaccountspage.dart';
 import '../pages/myorderspage.dart';
 
@@ -13,6 +15,7 @@ enum NavigationEvents {
   AddMembersClickedEvent,
   DriveClickedEvent,
   ScanPageClickedEvent,
+  SettingsPageClickedEvent,
   TestScanPageClickedEvent,
 }
 
@@ -36,6 +39,10 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates> {
         break;
       case NavigationEvents.ScanPageClickedEvent:
         yield ScanPage();
+        //yield ScanScreen();
+        break;
+      case NavigationEvents.SettingsPageClickedEvent:
+        yield SettingsPage();
         //yield ScanScreen();
         break;
       // case NavigationEvents.TestScanPageClickedEvent:

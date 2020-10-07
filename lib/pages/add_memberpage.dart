@@ -241,7 +241,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
 
             api.permissions.create(request, media.id);
 
-            await Utils.findFile(context, Utils.mimetypes['all'], "${_first}_${_last}.png", api).then((img){
+            await Utils.findFile(context, "", "${_first}_${_last}.png", api).then((img){
               print("img = " + img.name);
               print("img.webViewLink = " + img.webViewLink.toString());
               media.webViewLink=img.webViewLink;

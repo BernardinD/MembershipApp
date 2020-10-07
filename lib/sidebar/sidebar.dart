@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:MembershipApp/bloc.navigation_bloc/navigation_bloc.dart';
+import 'package:googleapis_auth/auth.dart';
 import 'package:rxdart/rxdart.dart';
 
 // import '../bloc.navigation_bloc/navigation_bloc.dart';
 import '../sidebar/menu_item.dart';
+import '../utils.dart';
 
 class SideBar extends StatefulWidget {
 
@@ -19,7 +22,7 @@ class SideBar extends StatefulWidget {
   }
 
   AnimationController getAnimationController(){
-    print("SidebarState._animationController = " + (SidebarState._animationController == null).toString() );
+    debugPrint("SidebarState._animationController = " + (SidebarState._animationController == null).toString() );
     return SidebarState._animationController;
   }
 }
@@ -59,6 +62,35 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
       isSidebarOpenedSink.add(true);
       _animationController.forward();
     }
+  }
+
+  void changePage(BuildContext context, NavigationEvents e,) async{
+    // Make sure credentials and spreadsheet
+    if(e != NavigationEvents.HomePageClickedEvent && e != NavigationEvents.SettingsPageClickedEvent){
+      // Check json first, then sheet; If either fails block change and show popup
+      var response = await Utils.loadAsset(context).then((value) async{
+        return await Utils.getSpread(context, "Testing").then((ret){
+          return ret.toString();
+        }, onError: (e){
+          throw ("Spreadsheet could not be found");
+        });
+      }).catchError( (e){
+        showDialog(context: context, builder: (BuildContext context){
+          return AlertDialog(
+              content: Stack(
+                children: <Widget>[
+                  Text(
+                    e.toString() + "\n\n Please double check settings",
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              )
+          );
+        });
+      });
+    }
+    BlocProvider.of<NavigationBloc>(context).add(e);
+    onIconPressed();
   }
 
   @override
@@ -120,24 +152,21 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           icon: Icons.home,
                           title: "Home",
                           onTap: () {
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
+                            changePage(context, NavigationEvents.HomePageClickedEvent);
                           },
                         ),
                         MenuItem(
                           icon: Icons.add_box_outlined,
                           title: "Add Members",
                           onTap: () {
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AddMembersClickedEvent);
+                            changePage(context, NavigationEvents.AddMembersClickedEvent);
                           },
                         ),
                         MenuItem(
                           icon: Icons.qr_code_scanner_rounded,
                           title: "Scan In",
                           onTap: () {
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ScanPageClickedEvent);
+                            changePage(context, NavigationEvents.ScanPageClickedEvent);
                           },
                         ),
                         // MenuItem(
@@ -145,7 +174,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         //   title: "Test scanner",
                         //   onTap: () {
                         //     onIconPressed();
-                        //     BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.TestScanPageClickedEvent);
+                        //     changePage(context, NavigationEvents.TestScanPageClickedEvent);
                         //   },
                         // ),
                         Divider(
@@ -158,6 +187,9 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         MenuItem(
                           icon: Icons.settings,
                           title: "Settings",
+                          onTap: () {
+                            changePage(context, NavigationEvents.SettingsPageClickedEvent);
+                          },
                         ),
                         MenuItem(
                           icon: Icons.exit_to_app,

@@ -35,14 +35,16 @@ class Utils{
       return _Creds;
     }
     else{
-      print("Before:");
       var jsonCredentials = await loadAsset(context);
-      print("Credentials = " + jsonCredentials.runtimeType.toString());
-      Map<String, dynamic> user = json.decode(jsonCredentials);
 
-      print("jsonEncode(user) = " + jsonEncode(user));
-      _Creds = new ServiceAccountCredentials.fromJson(user);
-      print("-----GOT CREDENTIALS----");
+      try {
+        Map<String, dynamic> user = json.decode(jsonCredentials);
+        // print("jsonEncode(user) = " + jsonEncode(user));
+        _Creds = new ServiceAccountCredentials.fromJson(user);
+      }
+      catch (e){
+        debugPrint("getCreds: " + e.toString());
+      }
       return _Creds;
     }
   }
@@ -65,7 +67,6 @@ class Utils{
                     q: """mimeType='${mimetypes["folder"]}' and 
                     name = '${sub}' and '${parent_.id}' in parents""",
                     spaces: 'drive').then((folders) {
-                      print("folder* = " + folders.toString());
                       drive.File sub_ = folders.files.length > 0 ? folders.files[0] : null;
                       return [parent_, sub_];
                 }, onError: (e) => print("Create: " + e.toString()));
@@ -106,7 +107,6 @@ class Utils{
     if (_SheetApi != null) return _SheetApi;
     else{
       String jsonCredentials = await loadAsset(context);
-      print("Credentials = " + jsonCredentials);
       _SheetApi = GSheets(jsonCredentials);
       return _SheetApi;
     }
@@ -129,11 +129,16 @@ class Utils{
         return Utils.findFile(
             context, mimetypes['spreadsheet'], name, api)
             .then((file) async {
-          print("file = " + file.name);
-          print("file.webViewLink = " + file.webContentLink.toString());
-          return await gsheetsApi.spreadsheet(file.id).then((sheet) {
-            return sheet;
-          });
+              if(file != null) {
+                debugPrint("file = " + file.name);
+                // print("file.webViewLink = " + file.webContentLink.toString());
+                return await gsheetsApi.spreadsheet(file.id).then((sheet) {
+                  return sheet;
+                });
+              }
+              else{
+                throw ("Spreadsheet does not exists.");
+              }
         });
         client.close();
       }, onError: (e) => print("FilesError: " + e.toString()));
@@ -146,15 +151,10 @@ class Utils{
     }
     else {
       return api.files.list(
-          // q: "mimeType='$mimeType'",
+          q: "mimeType='$mimeType' and name = '${name}'",
           spaces: 'drive', $fields: "files(modifiedTime,id,name,createdTime,version,size,md5Checksum,webViewLink)").then((value) {
         debugPrint("values = " + value.files.toString());
-        int i = 0;
-        for (var item in value.files) {
-          if (name == item.name) {
-            return item;
-          }
-        }
+        return value.files[0];
       }, onError: (e) => print("list: " + e.toString()));
     }
   }
