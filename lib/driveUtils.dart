@@ -101,7 +101,7 @@ class Utils{
   }
 
   static Future<String> loadAsset(BuildContext context) async{
-    return await DefaultAssetBundle.of(context).loadString("./client_secret.json");
+    return await DefaultAssetBundle.of(context).loadString(MyApp.prefs.getString("secret"));
   }
 
   static Future<GSheets> getSheetApi(BuildContext context) async{

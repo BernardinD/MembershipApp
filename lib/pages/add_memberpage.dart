@@ -16,7 +16,7 @@ import '../bloc.navigation_bloc/navigation_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 
-import '../utils.dart';
+import '../driveUtils.dart';
 
 class AddMemberPage extends StatefulWidget with NavigationStates {
   @override

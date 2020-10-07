@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:gsheets/gsheets.dart';
 import 'dart:io' show Platform;
 import '../bloc.navigation_bloc/navigation_bloc.dart';
-import '../utils.dart';
+import '../driveUtils.dart';
 //import 'package:flutter_qr_bar_scanner/qr_bar_scanner_camera.dart';
 
 class TestScanPage extends StatefulWidget with NavigationStates {

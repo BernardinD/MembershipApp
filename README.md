@@ -76,6 +76,9 @@ The settings page is where individual club specfications can be set.
 (TBA)
 
 # To-do
-* Sending QR codes to members (through email)
-* Edit app to direct only to settings page if `client_secret.json` can not be found
-* Making settings page to dynamic client_secret files
+* ~~Sending QR codes to members (through email)~~
+* ~~Edit app to direct only to settings page if `client_secret.json` can not be found~~
+* ~~Making settings page to dynamic client_secret files~~
+* Have check for "no member found" for scanning
+* Move initial credentials check to Home's build
+* Include dynamic logo 

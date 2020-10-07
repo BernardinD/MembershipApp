@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:MembershipApp/bloc.navigation_bloc/navigation_bloc.dart';
+import 'package:MembershipApp/settingsUtils.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -11,91 +16,10 @@ class SettingsPage extends StatefulWidget with NavigationStates{
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class TextInputTile extends StatefulWidget{
-  String _display, _key;
-  Map _settings;
-  TextInputTile({String display, String key, Map settings}){_display = display; _key = key; _settings = settings;}
-
-  @override
-  _TextInputTileState createState() => _TextInputTileState(_display, _key, _settings);
-}
-
-class _TextInputTileState extends State<TextInputTile> {
-
-  String _display, _key, _new;
-  Map _settings;
-  _TextInputTileState(String display, String key, Map settings){_display=display; _key=key; _settings=settings;}
-
-  final formKey = GlobalKey<FormState>();
-  void _submit(String key){
-    debugPrint("_settings[_key] = " + _settings.toString());
-    if(formKey.currentState.validate()){
-      formKey.currentState.save();
-        MyApp.prefs.setString(key, _settings[_key]);
-        Navigator.pop(context);
-        debugPrint("New value: ${MyApp.prefs.getString(_key)}");
-    }
-  }
-  @override
-  Widget build(BuildContext content) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return AlertDialog(
-      content: Container(
-        height: screenHeight*0.25,
-        alignment: Alignment.center,
-        child:
-          Form(
-            key: formKey,
-            child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    decoration: InputDecoration(
-                        labelText: "Current: ${MyApp.prefs.getString(_key??"") ?? "N/A"} "
-                    ),
-                    enabled: false,
-                    // validator: (input) => input.length < 1 ? 'Not a valid Email' : null,
-                    // onSaved: (input) => _settings[_key] = input,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        labelText: _display
-                    ),
-                    validator: (input) => input.length < 1 ? 'Not a valid Email' : null,
-                    onSaved: (input) => _settings[_key] = input,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4.0, 3, 8, 0),
-                        child: RaisedButton(
-                          onPressed: () => _submit(_key),
-                          child: Text('Submit'),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 3, 4, 0),
-                        child: RaisedButton(
-                          onPressed: () =>  Navigator.pop(content),
-                          child: Text('Cancel'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-          ),
-      )
-    );
-  }
-}
-
 class _SettingsPageState extends State<SettingsPage> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
-  Map _tempSettings = {'sheet':'', 'email':''};
+    Map _tempSettings = {'sheet':'', 'email':'', "logo":"", "secret":""};
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +43,12 @@ class _SettingsPageState extends State<SettingsPage> {
           SettingsSection(
             title: 'Account',
             tiles: [
+              SettingsTile(title: 'Client_secret file', leading: Icon(Icons.insert_drive_file_rounded),
+                onTap: (){
+                  showDialog(context: context, builder: (BuildContext context){
+                    return FileBrowserTile(display:"Choose file", key: "secret", settings: _tempSettings,);
+                  });
+                },),
               SettingsTile(title: 'Change Spreadsheet', leading: Icon(Icons.phone),
                 onTap: (){
                   showDialog(context: context, builder: (BuildContext context){
@@ -198,15 +128,14 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
-                  child: Image.asset(
-                    'assets/settings.png',
-                    height: 50,
-                    width: 50,
-                    color: Color(0xFF777777),
+                  child: Image.file(
+                    File('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
+                    width: 150,
+                    height: 150,
                   ),
                 ),
                 Text(
-                  'Version: 2.4.0 (287)',
+                  'Version: 1.0.0 (287)',
                   style: TextStyle(color: Color(0xFF777777)),
                 ),
               ],

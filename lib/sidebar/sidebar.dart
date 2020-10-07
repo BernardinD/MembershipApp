@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:MembershipApp/main.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:rxdart/rxdart.dart';
 
 // import '../bloc.navigation_bloc/navigation_bloc.dart';
 import '../sidebar/menu_item.dart';
-import '../utils.dart';
+import '../driveUtils.dart';
 
 class SideBar extends StatefulWidget {
 
@@ -124,24 +125,12 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         SizedBox(
                           height: 100,
                         ),
-                        ListTile(
-                          title: Text(
-                            "Prateek",
-                            style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w800),
-                          ),
-                          subtitle: Text(
-                            "www.techieblossom.com",
-                            style: TextStyle(
-                              color: Color(0xFF1BB5FD),
-                              fontSize: 18,
-                            ),
-                          ),
-                          leading: CircleAvatar(
-                            child: Icon(
-                              Icons.perm_identity,
-                              color: Colors.white,
-                            ),
-                            radius: 40,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 22, bottom: 8),
+                          child: Image.file(
+                            File('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
+                            // width: 150,
+                            height: screenHeight*.4,
                           ),
                         ),
                         Divider(
