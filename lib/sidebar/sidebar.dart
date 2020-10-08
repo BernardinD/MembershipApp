@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:MembershipApp/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:MembershipApp/bloc.navigation_bloc/navigation_bloc.dart';
 import 'package:googleapis_auth/auth.dart';
@@ -188,7 +189,8 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         ),
                         MenuItem(
                           icon: Icons.exit_to_app,
-                          title: "Logout",
+                          title: "Exit",
+                          onTap: () {SystemChannels.platform.invokeMethod('SystemNavigator.pop');},
                         ),
                       ],
                     ),
