@@ -215,6 +215,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
 
       // Save image locally
       final tempDir = await getApplicationDocumentsDirectory();
+      print("tempDir = ${tempDir}");
       // String myDir = r"C:\Users\deziu\Documents\MembershipApp";
       final file = await new File('${tempDir.path}/image.png').create();
       // final file = await new File('${myDir}/image.png');

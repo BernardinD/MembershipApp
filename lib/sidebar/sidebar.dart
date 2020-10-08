@@ -128,8 +128,8 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 22, bottom: 8),
-                          child: Image.file(
-                            File('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
+                          child: Image(
+                            image: AssetImage('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
                             // width: 150,
                             height: screenHeight*.4,
                           ),
