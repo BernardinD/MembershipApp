@@ -20,13 +20,13 @@ class Utils{
 
   // Mimetypes (ref: https://developers.google.com/drive/api/v2/mime-types)
   static final Map _mimetypes =  const {
-    'pdf' : "mimeType='application/pdf'",
-    'text' : "mimeType='text/plain'",
-    'docs' : "mimeType='application/vnd.google-apps.document'",
-    'spreadsheet' : "mimeType='application/vnd.google-apps.spreadsheet'",
-    'slides' : "mimeType='application/vnd.google-apps.presentation'",
-    'folder' : "mimeType='application/vnd.google-apps.folder'",
-    'image/png' : "mimeType='application/vnd.google-apps.photo'",
+    'pdf' : "mimeType = 'application/pdf'",
+    'text' : "mimeType = 'text/plain'",
+    'docs' : "mimeType = 'application/vnd.google-apps.document'",
+    'spreadsheet' : "mimeType = 'application/vnd.google-apps.spreadsheet'",
+    'slides' : "mimeType = 'application/vnd.google-apps.presentation'",
+    'folder' : "mimeType = 'application/vnd.google-apps.folder'",
+    'image/png' : "mimeType = 'application/vnd.google-apps.photo'",
     'all' : null,
   };
   static Map get mimetypes => _mimetypes;
@@ -60,12 +60,12 @@ class Utils{
         var api = new drive.DriveApi(client);
 
         return api.files.list(
-            q: "mimeType='${mimetypes["folder"]}' and name = '${parent}'",
+            q: "${mimetypes["folder"]} and name = '${parent}'",
             spaces: 'drive').then((folders){
               drive.File parent_ = folders.files.length > 0 ? folders.files[0] : null;
               if (sub != null){
                 return api.files.list(
-                    q: """mimeType='${mimetypes["folder"]}' and 
+                    q: """${mimetypes["folder"]} and 
                     name = '${sub}' and '${parent_.id}' in parents""",
                     spaces: 'drive').then((folders) {
                       drive.File sub_ = folders.files.length > 0 ? folders.files[0] : null;
@@ -148,7 +148,8 @@ class Utils{
 
   static Future<drive.File> findFile(BuildContext context, String mimeType, String name, drive.DriveApi api) async{
     print("len = " + "".length.toString());
-    String mimetype = mimeType.length>0 ? mimetypes[mimeType]+" and " : "";
+    String mimetype = mimeType.length>0 ? "${mimeType} and " : "";
+    print("mimetype = " + mimetype);
     return api.files.list(
         q: "${mimetype} name = '${name}'",
         spaces: 'drive', $fields: "files(modifiedTime,id,name,createdTime,version,size,md5Checksum,webViewLink)").then((value) {
