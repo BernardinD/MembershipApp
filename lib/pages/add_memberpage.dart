@@ -215,9 +215,9 @@ class AddMemberPageState extends State<AddMemberPage>  {
 
       // Save image locally
       final tempDir = await getApplicationDocumentsDirectory();
-      String myDir = r"C:\Users\deziu\Documents\MembershipApp";
-      // final file = await new File('${tempDir.path}/image.png').create();
-      final file = await new File('${myDir}/image.png');
+      // String myDir = r"C:\Users\deziu\Documents\MembershipApp";
+      final file = await new File('${tempDir.path}/image.png').create();
+      // final file = await new File('${myDir}/image.png');
       file.create();
       await file.writeAsBytes(pngBytes);
 
@@ -234,13 +234,15 @@ class AddMemberPageState extends State<AddMemberPage>  {
           var response = await api.files.create(drive.File()..name = "${_first}_${_last}.png"..parents=[folderID],
           uploadMedia: drive.Media(file.openRead(), file.lengthSync())).then((media) async{
             print("media.webViewLink = " + media.webViewLink.toString());
-            print("media.is = " + media.id.toString());
+            print("media.id = " + media.id.toString());
             drive.Permission request = drive.Permission();
             request.type = "user";
             request.role = "writer";
             request.emailAddress = MyApp.prefs.getString("email");
 
+            debugPrint("Before permissions");
             api.permissions.create(request, media.id);
+            debugPrint("After permissions");
 
             await Utils.findFile(context, "", "${_first}_${_last}.png", api).then((img){
               print("img = " + img.name);

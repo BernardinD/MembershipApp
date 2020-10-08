@@ -20,13 +20,13 @@ class Utils{
 
   // Mimetypes (ref: https://developers.google.com/drive/api/v2/mime-types)
   static final Map _mimetypes =  const {
-    'pdf' : "application/pdf",
-    'text' : "text/plain",
-    'docs' : "application/vnd.google-apps.document",
-    'spreadsheet' : "application/vnd.google-apps.spreadsheet",
-    'slides' : "application/vnd.google-apps.presentation",
-    'folder' : "application/vnd.google-apps.folder",
-    'image/png' : "application/vnd.google-apps.photo",
+    'pdf' : "mimeType='application/pdf'",
+    'text' : "mimeType='text/plain'",
+    'docs' : "mimeType='application/vnd.google-apps.document'",
+    'spreadsheet' : "mimeType='application/vnd.google-apps.spreadsheet'",
+    'slides' : "mimeType='application/vnd.google-apps.presentation'",
+    'folder' : "mimeType='application/vnd.google-apps.folder'",
+    'image/png' : "mimeType='application/vnd.google-apps.photo'",
     'all' : null,
   };
   static Map get mimetypes => _mimetypes;
@@ -147,8 +147,10 @@ class Utils{
   }
 
   static Future<drive.File> findFile(BuildContext context, String mimeType, String name, drive.DriveApi api) async{
+    print("len = " + "".length.toString());
+    String mimetype = mimeType.length>0 ? mimetypes[mimeType]+" and " : "";
     return api.files.list(
-        q: "mimeType='$mimeType' and name = '${name}'",
+        q: "${mimetype} name = '${name}'",
         spaces: 'drive', $fields: "files(modifiedTime,id,name,createdTime,version,size,md5Checksum,webViewLink)").then((value) {
       debugPrint("values = " + value.files.toString());
       return value.files[0];
