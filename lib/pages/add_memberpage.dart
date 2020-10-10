@@ -117,14 +117,14 @@ class AddMemberPageState extends State<AddMemberPage>  {
                             labelText: 'First name:'
                         ),
                         validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
-                        onSaved: (input) => _first = input,
+                        onSaved: (input) => _first = input.trim(),
                       ),
                       TextFormField(
                         decoration: InputDecoration(
                             labelText: 'Last name:'
                         ),
                         validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
-                        onSaved: (input) => _last = input,
+                        onSaved: (input) => _last = input.trim(),
                         // obscureText: true,
                       ),
                       TextFormField(
@@ -132,14 +132,14 @@ class AddMemberPageState extends State<AddMemberPage>  {
                             labelText: 'Email:'
                         ),
                         validator: (input) => EmailValidator.validate(input) ? null : 'Not a valid Email',
-                        onSaved: (input) => _email = input,
+                        onSaved: (input) => _email = input.trim(),
                       ),
                       TextFormField(
                         decoration: InputDecoration(
                             labelText: 'Phone number:'
                         ),
                         validator: (input) => regExp.hasMatch(input) ? null : 'Must be in the form: XXX XXX XXXX',
-                        onSaved: (input) => _phone = input,
+                        onSaved: (input) => _phone = input.trim(),
                         // obscureText: true,
                       ),
                       Row(
