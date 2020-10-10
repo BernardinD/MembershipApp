@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:MembershipApp/main.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +36,9 @@ class AddMemberPageState extends State<AddMemberPage>  {
   // Use this controller to clear all text fields
   TextEditingController _controller = TextEditingController();
 
+  // final pattern = r'^[0-9]{3}\s?[0-9]{3}\s?[0-9]{4}$';
+  final regExp = RegExp(r'^[0-9]{3}\s?[0-9]{3}\s?[0-9]{4}$');
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +68,6 @@ class AddMemberPageState extends State<AddMemberPage>  {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Back in here");
     return Center(
       child: Column(
           children: <Widget>[
@@ -113,14 +116,14 @@ class AddMemberPageState extends State<AddMemberPage>  {
                         decoration: InputDecoration(
                             labelText: 'First name:'
                         ),
-                        validator: (input) => input.length < 2 ? 'You need at least 8 characters' : null,
+                        validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
                         onSaved: (input) => _first = input,
                       ),
                       TextFormField(
                         decoration: InputDecoration(
                             labelText: 'Last name:'
                         ),
-                        validator: (input) => input.length < 2 ? 'You need at least 8 characters' : null,
+                        validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
                         onSaved: (input) => _last = input,
                         // obscureText: true,
                       ),
@@ -128,14 +131,14 @@ class AddMemberPageState extends State<AddMemberPage>  {
                         decoration: InputDecoration(
                             labelText: 'Email:'
                         ),
-                        validator: (input) => !input.contains('@') ? 'Not a valid Email' : null,
+                        validator: (input) => EmailValidator.validate(input) ? null : 'Not a valid Email',
                         onSaved: (input) => _email = input,
                       ),
                       TextFormField(
                         decoration: InputDecoration(
                             labelText: 'Phone number:'
                         ),
-                        validator: (input) => input.length < 10 ? 'You need at least 8 characters' : null,
+                        validator: (input) => regExp.hasMatch(input) ? null : 'Must be in the form: XXX XXX XXXX',
                         onSaved: (input) => _phone = input,
                         // obscureText: true,
                       ),
