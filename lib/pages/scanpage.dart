@@ -34,6 +34,11 @@ class ScanPageState extends State<ScanPage> {
   var _useAutoFocus = true;
   var _autoEnableFlash = false;
 
+  TextEditingController _firstController = TextEditingController(),
+      _lastController = TextEditingController(),
+      _levelController = TextEditingController(),
+      _numController = TextEditingController();
+
   static final _possibleFormats = BarcodeFormat.values.toList()
     ..removeWhere((e) => e == BarcodeFormat.unknown);
 
@@ -69,12 +74,14 @@ class ScanPageState extends State<ScanPage> {
                     ),
                   ),
                   TextField(
+                    controller: _firstController,
                     decoration: InputDecoration(
                       labelText: 'First name:',
                       enabled: false,
                     ),
                   ),
                   TextField(
+                    controller: _lastController,
                     decoration: InputDecoration(
                       labelText: 'Last name:',
                       enabled: false,
@@ -82,6 +89,7 @@ class ScanPageState extends State<ScanPage> {
                     // obscureText: true,
                   ),
                   TextField(
+                    controller: _levelController,
                     decoration: InputDecoration(
                       labelText: 'Level:',
                       enabled: false,
@@ -89,6 +97,7 @@ class ScanPageState extends State<ScanPage> {
                     enableInteractiveSelection: false,
                   ),
                   TextField(
+                    controller: _numController,
                     decoration: InputDecoration(
                       labelText: 'Phone number:',
                       enabled: false,
@@ -102,15 +111,15 @@ class ScanPageState extends State<ScanPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: RaisedButton(
-                          onPressed: _signInEnabled ? () => setState(() => _signIn()) : scan,
-                          child: Text(_signInEnabled ? 'Sign In' : "Scan"),
+                          onPressed: scan,
+                          child: Text("Scan"),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: RaisedButton(
-                          // onPressed: _confirmEnabled ? () => setState(() => _confirm()) : null,
-                          child: Text('Confirm'),
+                          onPressed:  _signInEnabled ? _signIn : null,
+                          child: Text('Sign in'),
                         ),
                       ),
                     ],
@@ -188,6 +197,9 @@ class ScanPageState extends State<ScanPage> {
               row_ = i;
               setState(() {
                 _signInEnabled=true;
+                _firstController.text = row[0];
+                _lastController.text = row[1];
+                _levelController.text = row[2];
               });
               debugPrint("i = " + i.toString());
               break;
@@ -216,6 +228,8 @@ class ScanPageState extends State<ScanPage> {
         ),
       );
 
+
+      _firstController.text = _lastController.text = _levelController.text = "";
       var result = await BarcodeScanner.scan(options: options);
 
 
