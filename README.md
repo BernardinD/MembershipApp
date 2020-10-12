@@ -81,7 +81,7 @@ The settings page is where individual club specfications can be set.
 * ~~Making settings page to dynamic client_secret files~~
 * ~~Have check for "no member found" for scanning (pop-up)~~
 * ~~Regex validation for adding members~~ 
-* Add dynamic club name to add member process
+* ~~Add dynamic club name to add member and scan process~~
 * Move initial credentials check to Home's build
 * Include dynamic logo 
 * Include 'reload' in sidebar

@@ -238,7 +238,8 @@ class ScanPageState extends State<ScanPage> {
       scanResult = result;
 
       // Post-process results
-      await scanned();
+      if (result.rawContent.contains(MyApp.prefs.getString("club_name").replaceAll(" ", ""))) await scanned();
+      else sendPopup();
 
     } on PlatformException catch (e) {
       var result = ScanResult(

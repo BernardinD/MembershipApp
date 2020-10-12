@@ -189,11 +189,8 @@ class AddMemberPageState extends State<AddMemberPage>  {
     print(_phone);
 
     setState(() {
-      debugPrint("Inside setState");
-      _data = _first + "," + _last + "," + "PulsoCaribe";
+      _data = _first + "," + _last + "," + MyApp.prefs.getString("club_name").replaceAll(" ", "");
     });
-
-    debugPrint("After setState");
 
     Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread){
       spread.refresh();
