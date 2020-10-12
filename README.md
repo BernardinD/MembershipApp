@@ -80,7 +80,7 @@ The settings page is where individual club specfications can be set.
 * ~~Edit app to direct only to settings page if `client_secret.json` can not be found~~
 * ~~Making settings page to dynamic client_secret files~~
 * Have check for "no member found" for scanning (pop-up)
-* Regex validation for adding members
+* ~~Regex validation for adding members~~ 
 * Add dynamic club name to add member process
 * Move initial credentials check to Home's build
 * Include dynamic logo 

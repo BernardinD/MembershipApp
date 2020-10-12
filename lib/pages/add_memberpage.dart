@@ -136,9 +136,9 @@ class AddMemberPageState extends State<AddMemberPage>  {
                       ),
                       TextFormField(
                         decoration: InputDecoration(
-                            labelText: 'Phone number:'
+                            labelText: 'Phone number (XXX XXX XXXX):'
                         ),
-                        validator: (input) => regExp.hasMatch(input) ? null : 'Must be in the form: XXX XXX XXXX',
+                        validator: (input) => regExp.hasMatch(input) ? null : 'Not a valid number. Make sure there are 10 digits',
                         onSaved: (input) => _phone = input.trim(),
                         // obscureText: true,
                       ),

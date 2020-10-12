@@ -207,6 +207,8 @@ class ScanPageState extends State<ScanPage> {
           }
           i++;
         }
+
+        sendPopup();
       });
 
     });
@@ -255,5 +257,20 @@ class ScanPageState extends State<ScanPage> {
         scanResult = result;
       });
     }
+  }
+
+  Widget sendPopup (){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+          content: Stack(
+            children: <Widget>[
+              Text(
+                "This QR Code does not belong to any current member",
+                textAlign: TextAlign.center,
+              )
+            ],
+          )
+      );
+    });
   }
 }
