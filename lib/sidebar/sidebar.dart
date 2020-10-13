@@ -98,6 +98,44 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
     onIconPressed();
   }
 
+  Future reloadSpread(BuildContext context) async{
+    // Check json first, then sheet; If either fails block change and show popup
+    await Utils.loadAsset(context).then((value) async{
+      return await Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((sheet) async{
+        await sheet.refresh();
+        showDialog(context: context, builder: (BuildContext context){
+          return AlertDialog(
+              content: Stack(
+                children: <Widget>[
+                  Text(
+                    "Spreadsheet has been reloaded",
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              )
+          );
+        });
+        onIconPressed();
+      }, onError: (e){
+        throw ("Spreadsheet could not be found");
+      });
+    }).catchError( (e){
+      showDialog(context: context, builder: (BuildContext context){
+        onIconPressed();
+        return AlertDialog(
+            content: Stack(
+              children: <Widget>[
+                Text(
+                  e.toString() + "\n\n Please double check settings and wifi",
+                  textAlign: TextAlign.center,
+                )
+              ],
+            )
+        );
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -133,6 +171,27 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                             // width: 150,
                             height: screenHeight*.4,
                           ),
+                        ),
+                        Divider(
+                          height: 64,
+                          thickness: 0.5,
+                          color: Colors.white.withOpacity(0.3),
+                          indent: 32,
+                          endIndent: 32,
+                        ),
+                        Container(
+                          // The Gesture doesn't apply to whole row with the Decoration for some reason
+                            decoration: BoxDecoration(
+                              color: Colors.amber,
+                            ),
+                            child: MenuItem(
+                                icon: Icons.refresh_rounded,
+                                title: "Reload Spreadsheet",
+                                onTap: () {
+                                  reloadSpread(context);
+                                },
+                                width: screenWidth
+                            )
                         ),
                         Divider(
                           height: 64,

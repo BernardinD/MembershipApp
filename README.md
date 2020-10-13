@@ -84,7 +84,7 @@ The settings page is where individual club specfications can be set.
 * ~~Add dynamic club name to add member and scan process~~
 * ~~Move initial credentials check to Home's build~~
 * Include dynamic logo 
-* Include 'reload' in sidebar
+* ~~Include 'reload' in sidebar~~
 * Clean up unnecessary files on GitHub
 * Add button to go directly to spreadsheet
 * Change app logo (https://flutter.dev/docs/development/ui/assets-and-images#updating-the-app-icon)
