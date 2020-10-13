@@ -15,7 +15,7 @@ import 'package:flutter/services.dart' show rootBundle;
 class Utils{
 
   static GSheets _SheetApi = null;
-  static drive.File _Sheet = null;
+  static Spreadsheet _Spread = null;
   static ServiceAccountCredentials _Creds = null;
 
   // Mimetypes (ref: https://developers.google.com/drive/api/v2/mime-types)
@@ -114,36 +114,43 @@ class Utils{
   }
 
   static Future<Spreadsheet> getSpread(BuildContext context, String name) async {
-    // Google credentials
-    return await Utils.getCreds(context).then((creds) async {
-      // Find correct sheet ID
-      final drive_scopes = [drive.DriveApi.DriveScope];
-      return await clientViaServiceAccount(creds, drive_scopes).then((
-          AuthClient client) async {
-        // [client] is an authenticated HTTP client.
-        // ...
-        var api = new drive.DriveApi(client);
 
-        final gsheetsApi = await Utils.getSheetApi(context);
+    if (_Spread != null){
+      return _Spread;
+    }
+    else {
+      // Google credentials
+      return await Utils.getCreds(context).then((creds) async {
+        // Find correct sheet ID
+        final drive_scopes = [drive.DriveApi.DriveScope];
+        return await clientViaServiceAccount(creds, drive_scopes).then((
+            AuthClient client) async {
+          // [client] is an authenticated HTTP client.
+          // ...
+          var api = new drive.DriveApi(client);
 
-        // print("mimtypes = " + mimetypes.keys.toString());
-        return Utils.findFile(
-            context, mimetypes['spreadsheet'], name, api)
-            .then((file) async {
-              if(file != null) {
-                debugPrint("file = " + file.name);
-                // print("file.webViewLink = " + file.webContentLink.toString());
-                return await gsheetsApi.spreadsheet(file.id).then((sheet) {
-                  return sheet;
-                });
-              }
-              else{
-                throw ("Spreadsheet does not exists.");
-              }
-        });
-        client.close();
-      }, onError: (e) => print("FilesError: " + e.toString()));
-    }, onError: (e) => print("DriveError: " + e.toString()));
+          final gsheetsApi = await Utils.getSheetApi(context);
+
+          // print("mimtypes = " + mimetypes.keys.toString());
+          _Spread = await Utils.findFile(
+              context, mimetypes['spreadsheet'], name, api)
+              .then((file) async {
+            if (file != null) {
+              debugPrint("file = " + file.name);
+              print("file.webViewLink = " + file.webViewLink.toString());
+              return await gsheetsApi.spreadsheet(file.id).then((sheet) {
+                return sheet;
+              });
+            }
+            else {
+              throw ("Spreadsheet does not exists.");
+            }
+          });
+          client.close();
+          return _Spread;
+        }, onError: (e) => print("FilesError: " + e.toString()));
+      }, onError: (e) => print("DriveError: " + e.toString()));
+    }
   }
 
   static Future<drive.File> findFile(BuildContext context, String mimeType, String name, drive.DriveApi api) async{

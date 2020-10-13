@@ -11,8 +11,8 @@ import 'package:googleapis_auth/auth.dart';
 import 'package:rxdart/rxdart.dart';
 
 // import '../bloc.navigation_bloc/navigation_bloc.dart';
-import '../sidebar/menu_item.dart';
-import '../driveUtils.dart';
+import 'package:MembershipApp/sidebar/menu_item.dart';
+import 'package:MembershipApp/driveUtils.dart';
 
 class SideBar extends StatefulWidget {
 
