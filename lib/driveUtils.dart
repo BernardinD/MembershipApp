@@ -17,6 +17,7 @@ class Utils{
   static GSheets _SheetApi = null;
   static Spreadsheet _Spread = null;
   static ServiceAccountCredentials _Creds = null;
+  static String _webLink = null;
 
   // Mimetypes (ref: https://developers.google.com/drive/api/v2/mime-types)
   static final Map _mimetypes =  const {
@@ -30,6 +31,7 @@ class Utils{
     'all' : null,
   };
   static Map get mimetypes => _mimetypes;
+  static String get webLink => _webLink;
 
   static Future<ServiceAccountCredentials> getCreds(BuildContext context) async{
     if (_Creds != null) {
@@ -138,6 +140,7 @@ class Utils{
             if (file != null) {
               debugPrint("file = " + file.name);
               print("file.webViewLink = " + file.webViewLink.toString());
+              _webLink = file.webViewLink;
               return await gsheetsApi.spreadsheet(file.id).then((sheet) {
                 return sheet;
               });

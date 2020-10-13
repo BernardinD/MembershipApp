@@ -161,6 +161,18 @@ class AddMemberPageState extends State<AddMemberPage>  {
                           ),
                         ],
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RaisedButton(
+                              onPressed: (Utils.webLink != null) ? () async { if (await canLaunch(Utils.webLink)) await launch(Utils.webLink);}  : null,
+                              child: Text('Open Spreadsheet'),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -263,6 +275,7 @@ ${media.webViewLink}
 Make sure to save/screenshot the QRcode for signing in. Can't wait to see you!!
 -See you next class!
 Pulso Caribe at UCF
+
 """
             );
             print("mailtoLink = " + mailtoLink.toString());
