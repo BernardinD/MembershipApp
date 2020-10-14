@@ -76,20 +76,10 @@ The settings page is where individual club specfications can be set.
 (TBA)
 
 # To-do
-* ~~Sending QR codes to members (through email)~~
-* ~~Edit app to direct only to settings page if `client_secret.json` can not be found~~
-* ~~Making settings page to dynamic client_secret files~~
-* ~~Have check for "no member found" for scanning (pop-up)~~
-* ~~Regex validation for adding members~~ 
-* ~~Add dynamic club name to add member and scan process~~
-* ~~Move initial credentials check to Home's build~~
-* Include dynamic logo 
-* ~~Include 'reload' in sidebar~~
 * Clean up unnecessary files on GitHub
-* ~~Add button to go directly to spreadsheet~~
+* Include dynamic logo 
 * Add padding to pages to make room for sidebar
 * Change app logo (https://flutter.dev/docs/development/ui/assets-and-images#updating-the-app-icon)
 * Add LaunchScreen logo (https://flutter.dev/docs/development/ui/assets-and-images#updating-the-launch-screen)
 * Format pages with padding for sidebar
 * Put sidebar in popup (blocks taps underneath)
-* ~~Change all pages to scroll views~~
