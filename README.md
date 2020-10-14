@@ -87,8 +87,9 @@ The settings page is where individual club specfications can be set.
 * ~~Include 'reload' in sidebar~~
 * Clean up unnecessary files on GitHub
 * ~~Add button to go directly to spreadsheet~~
+* Add padding to pages to make room for sidebar
 * Change app logo (https://flutter.dev/docs/development/ui/assets-and-images#updating-the-app-icon)
 * Add LaunchScreen logo (https://flutter.dev/docs/development/ui/assets-and-images#updating-the-launch-screen)
 * Format pages with padding for sidebar
 * Put sidebar in popup (blocks taps underneath)
-* Change all pages to scroll views
+* ~~Change all pages to scroll views~~

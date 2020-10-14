@@ -68,117 +68,119 @@ class AddMemberPageState extends State<AddMemberPage>  {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-          children: <Widget>[
-            Text(
-              "Add Member Page",
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
-            ),
-            Card(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                    RepaintBoundary(
-                      key: globalKey,
-                      child: QrImage(
-                        data: _data,
-                        version: QrVersions.auto,
-                        size: 220,
-                        gapless: false,
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+            children: <Widget>[
+              Text(
+                "Add Member Page",
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
+              ),
+              Card(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                      RepaintBoundary(
+                        key: globalKey,
+                        child: QrImage(
+                          data: _data,
+                          version: QrVersions.auto,
+                          size: 220,
+                          gapless: false,
+                        ),
                       ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RaisedButton(
+                                onPressed: () => setState(() {
+                                  formKey.currentState.reset();
+                                  FocusScope.of(context).unfocus();
+                                  _confirmEnabled = false;
+                                  _submitEnabled = true;
+                                  _first = _last = _email = _phone = "Testing123";
+                                  _data = "";
+                                }),
+                                child: Text('Reset'),
+                                autofocus: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: 'First name:'
+                          ),
+                          validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
+                          onSaved: (input) => _first = input.trim(),
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: 'Last name:'
+                          ),
+                          validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
+                          onSaved: (input) => _last = input.trim(),
+                          // obscureText: true,
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: 'Email:'
+                          ),
+                          validator: (input) => EmailValidator.validate(input) ? null : 'Not a valid Email',
+                          onSaved: (input) => _email = input.trim(),
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: 'Phone number (XXX XXX XXXX):'
+                          ),
+                          validator: (input) => regExp.hasMatch(input) ? null : 'Not a valid number. Make sure there are 10 digits',
+                          onSaved: (input) => _phone = input.trim(),
+                          // obscureText: true,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RaisedButton(
+                                onPressed: _submitEnabled ? () => setState(() => _submit()) : null,
+                                child: Text('Submit'),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RaisedButton(
+                                onPressed: _confirmEnabled ? () =>  _confirm() : null,
+                                child: Text('Confirm'),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RaisedButton(
+                                onPressed: (Utils.webLink != null) ? () async { if (await canLaunch(Utils.webLink)) await launch(Utils.webLink);}  : null,
+                                child: Text('Open Spreadsheet'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RaisedButton(
-                              onPressed: () => setState(() {
-                                formKey.currentState.reset();
-                                FocusScope.of(context).unfocus();
-                                _confirmEnabled = false;
-                                _submitEnabled = true;
-                                _first = _last = _email = _phone = "Testing123";
-                                _data = "";
-                              }),
-                              child: Text('Reset'),
-                              autofocus: true,
-                            ),
-                          ),
-                        ],
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            labelText: 'First name:'
-                        ),
-                        validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
-                        onSaved: (input) => _first = input.trim(),
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            labelText: 'Last name:'
-                        ),
-                        validator: (input) => input.length < 2 ? 'You need at least 2 characters' : null,
-                        onSaved: (input) => _last = input.trim(),
-                        // obscureText: true,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            labelText: 'Email:'
-                        ),
-                        validator: (input) => EmailValidator.validate(input) ? null : 'Not a valid Email',
-                        onSaved: (input) => _email = input.trim(),
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            labelText: 'Phone number (XXX XXX XXXX):'
-                        ),
-                        validator: (input) => regExp.hasMatch(input) ? null : 'Not a valid number. Make sure there are 10 digits',
-                        onSaved: (input) => _phone = input.trim(),
-                        // obscureText: true,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RaisedButton(
-                              onPressed: _submitEnabled ? () => setState(() => _submit()) : null,
-                              child: Text('Submit'),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RaisedButton(
-                              onPressed: _confirmEnabled ? () =>  _confirm() : null,
-                              child: Text('Confirm'),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RaisedButton(
-                              onPressed: (Utils.webLink != null) ? () async { if (await canLaunch(Utils.webLink)) await launch(Utils.webLink);}  : null,
-                              child: Text('Open Spreadsheet'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                   ),
                 ),
               ),
-            ),
-          ]
+            ]
+        ),
       ),
     );
   }
