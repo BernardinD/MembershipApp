@@ -136,7 +136,9 @@ class ScanPageState extends State<ScanPage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Barcode Scanner Example'),
+          title: Text('Sign Members In'),
+          centerTitle: true,
+          backgroundColor: MyApp.primaryColor,
           actions: <Widget>[
             // IconButton(
             //   icon: Icon(Icons.camera),
@@ -145,10 +147,13 @@ class ScanPageState extends State<ScanPage> {
             // )
           ],
         ),
-        body: ListView(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          children: contentList,
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(10, 50, 0, 0),
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            children: contentList,
+          ),
         ),
       ),
     );

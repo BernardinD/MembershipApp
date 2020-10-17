@@ -161,15 +161,14 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        SizedBox(
-                          height: 100,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 22, bottom: 8),
-                          child: Image(
-                            image: AssetImage('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
-                            // width: 150,
-                            height: screenHeight*.4,
+                        Container(
+                          width: screenHeight >= screenWidth*0.6 ? screenWidth*0.8 : screenWidth*0.4,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 22, bottom: 8),
+                            child: Image(
+                              image: AssetImage('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Divider(

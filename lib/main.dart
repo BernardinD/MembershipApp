@@ -10,6 +10,8 @@ class MyApp extends StatelessWidget {
 
   static SharedPreferences _prefs;
   static SharedPreferences get prefs => _prefs;
+  static Color _primaryColor = Color(0xFF262AAA);
+  static Color get primaryColor => _primaryColor;
 
   void initSettings(BuildContext context)async{
     _prefs = await SharedPreferences.getInstance().catchError((onError){
