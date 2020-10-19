@@ -189,7 +189,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                                 onTap: () {
                                   reloadSpread(context);
                                 },
-                                width: screenWidth
+                          height: screenHeight,
                             )
                         ),
                         Divider(
@@ -205,7 +205,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           onTap: () {
                             changePage(context, NavigationEvents.HomePageClickedEvent);
                           },
-                          width: screenWidth
+                          height: screenHeight,
                         ),
                         MenuItem(
                           icon: Icons.add_box_outlined,
@@ -213,7 +213,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           onTap: () {
                             changePage(context, NavigationEvents.AddMembersClickedEvent);
                           },
-                            width: screenWidth
+                          height: screenHeight,
                         ),
                         MenuItem(
                           icon: Icons.qr_code_scanner_rounded,
@@ -221,7 +221,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           onTap: () {
                             changePage(context, NavigationEvents.ScanPageClickedEvent);
                           },
-                            width: screenWidth
+                          height: screenHeight,
                         ),
                         // MenuItem(
                         //   icon: Icons.qr_code_scanner,
@@ -241,6 +241,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         MenuItem(
                           icon: Icons.settings,
                           title: "Settings",
+                          height: screenHeight,
                           onTap: () {
                             changePage(context, NavigationEvents.SettingsPageClickedEvent);
                           },
@@ -248,6 +249,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         MenuItem(
                           icon: Icons.exit_to_app,
                           title: "Exit",
+                          height: screenHeight,
                           onTap: () {SystemChannels.platform.invokeMethod('SystemNavigator.pop');},
                         ),
                       ],

@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget with NavigationStates {
           title:
             Center(
                child: Text(
-                  "HomePage",
+                  "Membership Scanner",
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
                 ),
             ),

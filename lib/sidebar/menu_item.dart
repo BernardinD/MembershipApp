@@ -4,9 +4,9 @@ class MenuItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final Function onTap;
-  final double width;
+  final double height;
 
-  const MenuItem({Key key, this.icon, this.title, this.onTap, this.width}) : super(key: key);
+  const MenuItem({Key key, this.icon, this.title, this.onTap, this.height}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class MenuItem extends StatelessWidget {
         decoration: BoxDecoration(
         ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, height*0.02, 16, height*0.02),
               child: Row(
                 children: <Widget>[
                   Icon(
