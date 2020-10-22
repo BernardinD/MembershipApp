@@ -217,8 +217,8 @@ class AddMemberPageState extends State<AddMemberPage>  {
       _data = _first + "," + _last + "," + MyApp.prefs.getString("club_name").replaceAll(" ", "");
     });
 
-    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread){
-      spread.refresh();
+    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
+      await MyApp.pr.show();
       Worksheet sheet = spread.worksheetByTitle("Sheet1");
       var new_row = [_first, _last, "Beginner", 0, "No", _email, _phone];
       sheet.values.appendRow(new_row);
@@ -296,6 +296,7 @@ Pulso Caribe at UCF
 
             // Start client mail service to send email
             launch(mailtoLink.toString());
+            await MyApp.pr.hide();
           });
 
         });
@@ -306,6 +307,7 @@ Pulso Caribe at UCF
       print(e.toString());
     }
   }
+
 }
 
 class EnableButton extends StatefulWidget {

@@ -99,11 +99,13 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
   }
 
   Future reloadSpread(BuildContext context) async{
+    await MyApp.pr.show();
     // Check json first, then sheet; If either fails block change and show popup
     await Utils.loadAsset(context).then((value) async{
       return await Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((sheet) async{
         await sheet.refresh();
-        showDialog(context: context, builder: (BuildContext context){
+        await MyApp.pr.hide();
+        showDialog(context: context, builder: (BuildContext context) {
           return AlertDialog(
               content: Stack(
                 children: <Widget>[
@@ -122,6 +124,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
     }).catchError( (e){
       showDialog(context: context, builder: (BuildContext context){
         onIconPressed();
+        MyApp.pr.hide();
         return AlertDialog(
             content: Stack(
               children: <Widget>[

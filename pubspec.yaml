@@ -57,6 +57,8 @@ dependencies:
   # Email validation
   email_validator: ^1.0.6
 
+  progress_dialog: ^1.2.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

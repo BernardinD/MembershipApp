@@ -181,6 +181,7 @@ class ScanPageState extends State<ScanPage> {
   }
 
   Future scanned() async{
+    await MyApp.pr.show();
     debugPrint("scanResult = " + scanResult.rawContent);
     List<String> parsed = scanResult.rawContent.split(",");
     _first = parsed[1];
@@ -191,7 +192,7 @@ class ScanPageState extends State<ScanPage> {
       print("sheet.title = " +sheet.title);
 
       // Find row index of entry
-      sheet.values.allRows().then((rows) async{
+      await sheet.values.allRows().then((rows){
         // Find rows that match name
         int i = 1;
         for (var row in rows){
@@ -207,7 +208,7 @@ class ScanPageState extends State<ScanPage> {
                 _levelController.text = row[2];
               });
               debugPrint("i = " + i.toString());
-              break;
+              return;
             }
           }
           i++;
@@ -215,7 +216,8 @@ class ScanPageState extends State<ScanPage> {
 
         sendPopup();
       });
-
+      debugPrint("Hide.");
+      await MyApp.pr.hide();
     });
   }
   Future scan() async {
