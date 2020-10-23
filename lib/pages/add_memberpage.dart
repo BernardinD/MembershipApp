@@ -214,7 +214,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
     print(_phone);
 
     setState(() {
-      _data = _first + "," + _last + "," + MyApp.prefs.getString("club_name").replaceAll(" ", "");
+      _data = MyApp.prefs.getString("club_name").replaceAll(" ", "") + "," + _first + "," + _last;
     });
 
     Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
