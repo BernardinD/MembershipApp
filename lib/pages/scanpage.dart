@@ -186,6 +186,7 @@ class ScanPageState extends State<ScanPage> {
     List<String> parsed = scanResult.rawContent.split(",");
     _first = parsed[1];
     _last = parsed[2];
+    print("_first = ${_first}, _last = ${_last}");
     debugPrint("Testing");
     Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
       Worksheet sheet = spread.worksheetByTitle("Sheet1");
@@ -241,11 +242,12 @@ class ScanPageState extends State<ScanPage> {
       _firstController.text = _lastController.text = _levelController.text = "";
       var result = await BarcodeScanner.scan(options: options);
 
-
+      print("result = " + result.rawContent);
       scanResult = result;
 
       // Post-process results
       if (result.rawContent.contains(MyApp.prefs.getString("club_name").replaceAll(" ", ""))) await scanned();
+      else if (result.rawContent == "") return;
       else sendPopup();
 
     } on PlatformException catch (e) {
@@ -267,7 +269,8 @@ class ScanPageState extends State<ScanPage> {
     }
   }
 
-  Widget sendPopup (){
+  void sendPopup ()async{
+    await MyApp.pr.hide();
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
           content: Stack(
