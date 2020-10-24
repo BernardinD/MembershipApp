@@ -32,7 +32,7 @@ dependencies:
 
   # For QRcodes
   qr_flutter: ^3.1.0
-  barcode_scan: ^3.0.1
+  flutter_barcode_scanner: ^1.0.1
 
   # For Google api
   googleapis: any

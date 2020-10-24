@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:MembershipApp/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:gsheets/gsheets.dart';
 import 'dart:io' show Platform;
@@ -26,7 +26,7 @@ class ScanPageState extends State<ScanPage> {
   int row_;
   bool _signInEnabled=false;
 
-  ScanResult scanResult;
+  String scanResult;
 
   var _aspectTolerance = 0.00;
   var _numberOfCameras = 0;
@@ -38,11 +38,6 @@ class ScanPageState extends State<ScanPage> {
       _lastController = TextEditingController(),
       _levelController = TextEditingController(),
       _numController = TextEditingController();
-
-  static final _possibleFormats = BarcodeFormat.values.toList()
-    ..removeWhere((e) => e == BarcodeFormat.unknown);
-
-  List<BarcodeFormat> selectedFormats = [BarcodeFormat.qr];
 
   @override
   // ignore: type_annotate_public_apis
@@ -182,8 +177,8 @@ class ScanPageState extends State<ScanPage> {
 
   Future scanned() async{
     await MyApp.pr.show();
-    debugPrint("scanResult = " + scanResult.rawContent);
-    List<String> parsed = scanResult.rawContent.split(",");
+    debugPrint("scanResult = " + scanResult);
+    List<String> parsed = scanResult.split(",");
     _first = parsed[1];
     _last = parsed[2];
     print("_first = ${_first}, _last = ${_last}");
@@ -223,49 +218,21 @@ class ScanPageState extends State<ScanPage> {
   }
   Future scan() async {
     try {
-      var options = ScanOptions(
-        strings: {
-          "cancel": "Cancel",
-          "flash_on": "Flash on",
-          "flash_off": "Flash off",
-        },
-        restrictFormat: selectedFormats,
-        useCamera: _selectedCamera,
-        autoEnableFlash: _autoEnableFlash,
-        android: AndroidOptions(
-          aspectTolerance: _aspectTolerance,
-          useAutoFocus: _useAutoFocus,
-        ),
-      );
-
 
       _firstController.text = _lastController.text = _levelController.text = "";
-      var result = await BarcodeScanner.scan(options: options);
+      var result = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
 
-      print("result = " + result.rawContent);
+      print("result = " + result);
       scanResult = result;
 
       // Post-process results
-      if (result.rawContent.contains(MyApp.prefs.getString("club_name").replaceAll(" ", ""))) await scanned();
-      else if (result.rawContent == "") return;
+      if (result.contains(MyApp.prefs.getString("club_name").replaceAll(" ", ""))) await scanned();
+      else if (result == "") return;
       else sendPopup();
 
-    } on PlatformException catch (e) {
-      var result = ScanResult(
-        type: ResultType.Error,
-        format: BarcodeFormat.unknown,
-      );
-
-      if (e.code == BarcodeScanner.cameraAccessDenied) {
-        setState(() {
-          result.rawContent = 'The user did not grant the camera permission!';
-        });
-      } else {
-        result.rawContent = 'Unknown error: $e';
-      }
-      setState(() {
-        scanResult = result;
-      });
+    } on PlatformException {
+      scanResult = 'Failed to get platform version.';
     }
   }
 
