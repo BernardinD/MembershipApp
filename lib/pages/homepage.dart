@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget with NavigationStates {
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
                   child:  Image(
-                    image: AssetImage('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
+                    image: AssetImage('./iphone-388387_1920.jpg'),
                     width: 500,
                     height: 500,
                   ),
