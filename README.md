@@ -76,6 +76,7 @@ The settings page is where individual club specfications can be set.
 (TBA)
 
 # To-do
+* iPhone app
 * Clean up unnecessary files on GitHub
 * Include dynamic logo 
 * Add padding to pages to make room for sidebar
