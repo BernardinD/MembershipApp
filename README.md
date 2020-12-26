@@ -46,7 +46,7 @@ In order to run the pre-built app all you need to do is:
 * Give this a name and create it (press continue until it is created)
 * Click on the item you've just created (towards the bottom of the page) and at the bottom of the next page select "Add key > Create new key" 
 * Select 'JSON' and create the file. 
-* Save this file with the name 'client_secret'
+* Save this file with the name 'client_secret' to somewhere reachable **THE SAME FILE CAN'T BE DOWNLOADED AGAIN**
 
 
 # Developers
