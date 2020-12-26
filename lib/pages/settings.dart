@@ -73,47 +73,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     return TextInputTile(display:"Enter new sheet's name:", key: "");
                   });
                 },),
-              SettingsTile(
+              /*SettingsTile(
                   title: 'Sign out',
                   leading: Icon(Icons.exit_to_app)
-              ),
+              ),*/
             ],
           ),
-          SettingsSection(
-            title: 'Security',
-            tiles: [
-              SettingsTile.switchTile(
-                title: 'Lock app in background',
-                leading: Icon(Icons.phonelink_lock),
-                switchValue: lockInBackground,
-                onToggle: (bool value) {
-                  setState(() {
-                    lockInBackground = value;
-                    notificationsEnabled = value;
-                  });
-                },
-              ),
-              SettingsTile.switchTile(
-                  title: 'Use fingerprint',
-                  leading: Icon(Icons.fingerprint),
-                  onToggle: (bool value) {},
-                  switchValue: false),
-              SettingsTile.switchTile(
-                title: 'Change password',
-                leading: Icon(Icons.lock),
-                switchValue: true,
-                onToggle: (bool value) {},
-              ),
-              SettingsTile.switchTile(
-                title: 'Enable Notifications',
-                enabled: notificationsEnabled,
-                leading: Icon(Icons.notifications_active),
-                switchValue: true,
-                onToggle: (value) {},
-              ),
-            ],
-          ),
-          SettingsSection(
+          /*SettingsSection(
             title: 'Misc',
             tiles: [
               SettingsTile(
@@ -122,14 +88,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: 'Open source licenses',
                   leading: Icon(Icons.collections_bookmark)),
             ],
-          ),
+          ),*/
           CustomSection(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
-                  child: Image.file(
-                    File('C:/Users/deziu/Downloads/iphone-388387_1920.jpg'),
+                  child: Image(
+                    image: AssetImage('./iphone-388387_1920.jpg'),
                     width: 150,
                     height: 150,
                   ),

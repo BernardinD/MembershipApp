@@ -83,9 +83,22 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
               content: Stack(
                 children: <Widget>[
                   Text(
-                    e.toString() + "\n\n Please double check settings",
+                    e.toString(),
                     textAlign: TextAlign.center,
-                  )
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget> [
+                        Container(
+                          child: Text(
+                            "Please double check settings",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                          ),
+                          padding: const EdgeInsets.only(top: 50, bottom: 8),
+                        ),
+                      ]
+                  ),
                 ],
               )
           );
@@ -121,16 +134,29 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
       }, onError: (e){
         throw ("Spreadsheet could not be found");
       });
-    }).catchError( (e){
+    }).catchError( (e) async{
+      await MyApp.pr.hide();
       showDialog(context: context, builder: (BuildContext context){
         onIconPressed();
-        MyApp.pr.hide();
         return AlertDialog(
             content: Stack(
               children: <Widget>[
                 Text(
-                  e.toString() + "\n\n Please double check settings and wifi",
+                  e.toString(),
                   textAlign: TextAlign.center,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget> [
+                      Container(
+                        child: Text(
+                          "Please double check settings and wifi",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                        ),
+                        padding: const EdgeInsets.only(top: 50, bottom: 8),
+                      ),
+                  ]
                 )
               ],
             )
