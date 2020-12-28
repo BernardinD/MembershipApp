@@ -19,7 +19,9 @@ class SettingsPage extends StatefulWidget with NavigationStates{
 class _SettingsPageState extends State<SettingsPage> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
-    Map _tempSettings = {'sheet':'', 'email':'', "logo":"", "secret":""};
+
+  // Empty string is a placeholder for temp data
+  Map _tempSettings = {'sheet':'', 'email':'', "logo":"", "secret":"", "":null};
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile(title: 'Create new sheet', leading: Icon(Icons.create_new_folder_rounded),
                 onTap: (){
                   showDialog(context: context, builder: (BuildContext context){
-                    return TextInputTile(display:"Enter new sheet's name:", key: "");
+                    return TextInputTile(display:"Enter new sheet's name:", key: "", settings: _tempSettings);
                   });
                 },),
               /*SettingsTile(

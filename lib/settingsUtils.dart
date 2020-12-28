@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
+import 'package:MembershipApp/driveUtils.dart';
 
 class TextInputTile extends StatefulWidget{
   String _display, _key;
@@ -20,13 +21,53 @@ class _TextInputTileState extends State<TextInputTile> {
   _TextInputTileState(String display, String key, Map settings){_display=display; _key=key; _settings=settings;}
 
   final formKey = GlobalKey<FormState>();
-  void _submit(String key){
+
+  // Setting new settings data
+  void _submit(String key) async{
     debugPrint("_settings[_key] = " + _settings.toString());
     if(formKey.currentState.validate()){
+
+      // Save input to temp settings
       formKey.currentState.save();
+
+      // If creating new sheet
+      if(key == ""){
+        /* REMINDER: PUT CHECK TO SEE IF EMAIL ALREADY EXISTS*/
+        // Check if email exists, throw alert if not
+        print("MyApp.prefs.getString('email') = " + MyApp.prefs.getString('email'));
+        if(MyApp.prefs.getString('email') == null){
+          showDialog(context: context, builder: (BuildContext context) {
+            return AlertDialog(
+                content: Stack(
+                  children: <Widget>[
+                    Text(
+                      "Set email in order to create spreadshet",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                )
+            );
+          });
+
+          return;
+        }
+
+        MyApp.pr.show();
+        // Create and sets up new membership spreadsheet
+        await Utils.createSheet(_settings[_key]);
+        await Utils.getSpread(context,  _settings[_key]);
+        MyApp.pr.hide();
+
+        // Change key to match a new sheet selection
+        key = "sheet";
+      }
+
       MyApp.prefs.setString(key, _settings[_key]);
+      debugPrint("New value: ${MyApp.prefs.getString(key)}");
+
+
       Navigator.pop(context);
-      debugPrint("New value: ${MyApp.prefs.getString(_key)}");
     }
   }
   @override
@@ -65,7 +106,7 @@ class _TextInputTileState extends State<TextInputTile> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(4.0, 0, 8, 0),
                       child: RaisedButton(
-                        onPressed: () => _submit(_key),
+                        onPressed: () async => await _submit(_key),
                         child: Text('Submit'),
                       ),
                     ),
@@ -141,13 +182,21 @@ class _FileBrowserTileState extends State<FileBrowserTile> {
     });
   }
 
-  void _submit(String key){
+  void _submit(String key) async{
     debugPrint("_settings[_key] = " + _settings.toString());
     if(formKey.currentState.validate()){
       formKey.currentState.save();
       MyApp.prefs.setString(key, _paths[0].path.toString());
       Navigator.pop(context);
       debugPrint("New value: ${MyApp.prefs.getString(_key)}");
+
+      // Reload client_secret if it was changed
+      if(key == "secret"){
+        // Utils.loadAsset(context);
+        await Utils.getSheetApi(context);
+        print("inside condition");
+        print("ran api reset");
+      }
     }
   }
   @override

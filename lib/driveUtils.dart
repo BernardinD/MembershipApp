@@ -52,7 +52,8 @@ class Utils{
     }
   }
 
-  static Future<List<drive.File>> findFolders(BuildContext context, String parent, String sub) async{
+  // Return list of existing directories along a path, up to the point where the path exists
+  static Future<List<drive.File>> findFolders(BuildContext context, List<String> names) async{
     return await Utils.getCreds(context).then((creds) async {
       // Find correct sheet ID
       final drive_scopes = [drive.DriveApi.DriveScope];
@@ -61,25 +62,54 @@ class Utils{
         // [client] is an authenticated HTTP client.
         var api = new drive.DriveApi(client);
 
-        return api.files.list(
-            q: "${mimetypes["folder"]} and name = '${parent}'",
-            spaces: 'drive').then((folders){
-              drive.File parent_ = folders.files.length > 0 ? folders.files[0] : null;
-              if (sub != null){
-                return api.files.list(
-                    q: """${mimetypes["folder"]} and 
-                    name = '${sub}' and '${parent_.id}' in parents""",
-                    spaces: 'drive').then((folders) {
-                      drive.File sub_ = folders.files.length > 0 ? folders.files[0] : null;
-                      return [parent_, sub_];
-                }, onError: (e) => print("Create: " + e.toString()));
-              }
-              return [parent_, null];
-            });
+        print("right before loop");
+        List<drive.File> ret_folders = new List<drive.File>();
+        for(int i = 0; i < names.length; i++) {
+          print("inside loop");
+          print("ret_folders[i - 1] = " + ((i - 1 >= 0) ? ret_folders[i - 1].toString(): ""));
+          // Run query
+          // Return null if (we are passed the root) && (there exists no folder above)
+          drive.File sub_ = (i - 1 >= 0) && (ret_folders[i - 1]== null) ? null : await api.files.list(
+            // Set parentID if idx is passed root
+            q: """${mimetypes["folder"]}
+                  ${(i - 1 >= 0) ? "and '${ret_folders[i - 1].id}' in parents" : ""}
+                  and name = '${names[i]}'
+                  """,
+            spaces: 'drive').then((folders) {
+              drive.File sub_ = folders.files.length > 0
+                  ? folders.files[0]
+                  : null;
+              return sub_;
+          }, onError: (e) => print("Create: " + e.toString()));
+
+          print("sub_ = " + sub_.toString());
+          ret_folders.add(sub_);
+        }
+        print("after loop");
+        for(drive.File folder in ret_folders){
+          print("folder: " +folder.toString());
+        }
+        return ret_folders;
       });
     });
   }
 
+  static Future createSheet(String title)async{
+    Spreadsheet sh = await _SheetApi.createSpreadsheet(title);
+    await sh.share(MyApp.prefs.getString('email'), type:PermType.user, role:PermRole.owner).catchError((e){
+      print("---share got an error---");
+      print(e);
+    });
+    var sheet = sh.worksheetByTitle("Sheet1");
+    await sheet.values.appendRow(["First Name", "Last Name", 'Level', "Attendences", "Signed-in", "Email", "Phone #"]);
+
+    // Clear spreadsheet
+    clearSpread();
+
+  }
+
+  // Creates a folder in the drive of the set email in settings
+  // Becomes a sub-folder if a parent is given
   static Future<drive.File> createFolders(BuildContext context, String name, String parentID) async{
     return await Utils.getCreds(context).then((creds) async {
       // Find correct sheet ID
@@ -89,14 +119,21 @@ class Utils{
         // [client] is an authenticated HTTP client.
         var api = new drive.DriveApi(client);
 
+        print("new folder name = " + name);
         return await api.files.create(
-            drive.File()..name=name..mimeType=mimetypes["folder"]..parents=[parentID]).then((file) async {
+            drive.File()..name=name..mimeType='application/vnd.google-apps.folder'..parents=[parentID],).catchError((e){
+              print("Caught create error");
+              print(e);
+        }).then((file) async {
 
-              // Change Ownership
-              await api.permissions.create(drive.Permission()..type='user'..role='Owner'..emailAddress=MyApp.prefs.getString("email"), file.id, transferOwnership: true);
+          print("new file: "+ file.name);
+          print("parentID = " + parentID);
 
-              return file;
-            });
+          // Change Ownership
+          await api.permissions.create(drive.Permission()..type='user'..role='Owner'..emailAddress=MyApp.prefs.getString("email"), file.id, transferOwnership: true);
+
+          return file;
+        });
 
       });
     });
@@ -115,6 +152,11 @@ class Utils{
     }
   }
 
+  static void clearSpread(){
+    _Spread = null;
+    print("Spreadsheet cleared");
+  }
+
   static Future<Spreadsheet> getSpread(BuildContext context, String name) async {
 
     if (_Spread != null){
@@ -128,7 +170,6 @@ class Utils{
         return await clientViaServiceAccount(creds, drive_scopes).then((
             AuthClient client) async {
           // [client] is an authenticated HTTP client.
-          // ...
           var api = new drive.DriveApi(client);
 
           final gsheetsApi = await Utils.getSheetApi(context);

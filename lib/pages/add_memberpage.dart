@@ -16,8 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../bloc.navigation_bloc/navigation_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
-
-import '../driveUtils.dart';
+import 'package:MembershipApp/driveUtils.dart';
 
 class AddMemberPage extends StatefulWidget with NavigationStates {
   @override
@@ -44,22 +43,26 @@ class AddMemberPageState extends State<AddMemberPage>  {
     super.initState();
 
     // Initialize everything needs to spreadsheet
-    Utils.getSpread(context, "Testing").then((spread) {
+    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) {
       print("Final result: " + spread.toString());
     });
 
     // Initialize folders
-    List<String> names = ["Testing", "2020"];
-    Utils.findFolders(context, "Testing", "2020").then((folders) async {
+    List<String> names = [MyApp.prefs.getString("sheet"), "2020"];
+    print("finding folders");
+    Utils.findFolders(context, names).then((folders) async {
       String prevID = "root";
       int i = 0;
       for(var folder in folders){
         if (folder == null){
-          await Utils.createFolders(context, names[i++], prevID);
+          print("creating folder");
+          var f = await Utils.createFolders(context, names[i], prevID);
+          prevID = f.id;
         }
-        else{
+        else
           prevID = folder.id;
-        }
+
+        i++;
       }
       folderID = prevID;
     });
@@ -197,6 +200,24 @@ class AddMemberPageState extends State<AddMemberPage>  {
   }
 
   void _submit(){
+
+    if(MyApp.prefs.getString('club_name') == null){
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+            content: Stack(
+              children: <Widget>[
+                Text(
+                  "Set club's name in settings in order to add members",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                )
+              ],
+            )
+        );
+      });
+      return;
+    }
+
     if(formKey.currentState.validate()){
       print(_first);
       print(_last);
@@ -240,12 +261,20 @@ class AddMemberPageState extends State<AddMemberPage>  {
 
       // Save image locally
       final tempDir = await getApplicationDocumentsDirectory();
-      print("tempDir = ${tempDir}");
+      print("tempDir = ${tempDir.path}");
       // String myDir = r"C:\Users\deziu\Documents\MembershipApp";
-      final file = await new File('${tempDir.path}/image.png').create();
+      final file = await new File('${tempDir.path}/image.png').create().catchError((e){
+        print("file creation failed.");
+        print(e);
+      });
       // final file = await new File('${myDir}/image.png');
-      file.create();
-      await file.writeAsBytes(pngBytes);
+      // file.create();
+      await file.writeAsBytes(pngBytes).catchError((e){
+        print("file writing failed.");
+        print(e);
+      });
+      print("image file exists: " + (await file.exists()).toString());
+      print("image file path: " + (await file.path));
 
       // Upload image to drive and share with club account
       return await Utils.getCreds(context).then((creds) async {
@@ -257,6 +286,8 @@ class AddMemberPageState extends State<AddMemberPage>  {
           var api = new drive.DriveApi(client);
 
           // Upload and update permissions
+          print("Uploading");
+          print("folderID = " + folderID);
           var response = await api.files.create(drive.File()..name = "${_first}_${_last}.png"..parents=[folderID],
           uploadMedia: drive.Media(file.openRead(), file.lengthSync())).then((media) async{
             print("media.webViewLink = " + media.webViewLink.toString());
@@ -304,6 +335,7 @@ Pulso Caribe at UCF
       });
 
     } catch(e) {
+      print("-- save and share failed. --");
       print(e.toString());
     }
   }
