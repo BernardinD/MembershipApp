@@ -38,7 +38,8 @@ In order to run the pre-built app all you need to do is:
 ### Activate option to connect:
 * Go to this page: https://console.developers.google.com/project
 * Select the option to "Create Project", give it a name and create it 
-![\n](demos/demo1.gif)
+![](demos/demo1.gif)
+
 * On the side-left menu go to “APIs & Services > Library”
 * Search for and enable both "Drive API" and "Sheets API" respectively 
 ![](demos/demo2.gif)
