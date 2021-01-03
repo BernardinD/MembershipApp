@@ -37,7 +37,8 @@ In order to run the pre-built app all you need to do is:
 
 ### Needed:
 * Google credentials file ['client_secret.json'](#Creating-client\_secret-file)
-* '.ico' file of club logo (optional - if you want to customize the image of the application)
+### Optional
+* --
 
 ## Creating client_secret file:
 
@@ -82,6 +83,11 @@ The settings page is where individual club specfications can be set.
 
 
 # Build app
+
+### Needed:
+* --
+### Optional
+* '.ico' file of club logo (if you want to customize the image of the application)
 
 ### Windows
 (TBA)
