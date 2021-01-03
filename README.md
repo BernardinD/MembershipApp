@@ -9,6 +9,12 @@ This also makes it easy for converting/exporting to a mobile app version
 
 All one would need in order to use this app is a GoogleSheets spreadsheet of there members and a google client key
 
+## Current stable Platforms
+- [ ] Windows
+- [ ] MacOS
+- [ ] Linux
+- [x] Android
+- [ ] iPhone
 
 ## Run default app
 In order to run the pre-built app all you need to do is:
@@ -47,10 +53,14 @@ In order to run the pre-built app all you need to do is:
 ### Create linking file:
 * On the side-left menu go to “APIs & Services > Credentials”
 * Choose the option to "Create Credentials” and select "Service Account"
-* Give this a name and create it (press continue until it is created)
+* Give this a name and create it (press continue until it is created) 
+
+![](demos/demo3a.gif)
 * Click on the item you've just created (towards the bottom of the page) and at the bottom of the next page select "Add key > Create new key" 
 * Select 'JSON' and create the file. 
-* Save this file with the name 'client_secret' to somewhere reachable **THE SAME FILE CAN'T BE DOWNLOADED AGAIN**
+* Save this file with the name 'client_secret' to somewhere reachable **THE SAME FILE CAN'T BE DOWNLOADED AGAIN** 
+
+![](demos/demo3b.gif)
 
 
 # Developers
