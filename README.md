@@ -20,7 +20,7 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 In order to run the pre-built app all you need to do is:
 1. Download/clone this repository
 2. Have the [required components here](#Needed)
-3. Run the [specific file for the platform](#) you're using
+3. Run the [specific file for the platform](#Platform-installations) you're using
 4. [Run setup](#App-setup)
 
 # Platform installations:
