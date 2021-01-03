@@ -46,6 +46,9 @@ In order to run the pre-built app all you need to do is:
 ## App setup:
 * Tap menu button in top left of screen, go to Settings
 * Set the [`client_secret.json`](#Creating-client\_secret-file) file
+
+![](demos/demo1.gif)
+
 * Set club's email
 * Set club's name
 
