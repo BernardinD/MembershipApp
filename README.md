@@ -17,12 +17,9 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 - [ ] [iPhone](#iPhone-and-Mac)
 
 ## Run default app
-# Use
 
 ### Needed:
 * Google credentials file ['client_secret.json'](#Creating-client\_secret-file)
-### Optional
-* --
 ### Steps
 1. Download/clone this repository
 2. Have the [required components here](#Needed)
