@@ -14,7 +14,7 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 - [ ] [MacOS](#)
 - [ ] [Linux](#)
 - [x] [Android](#Android)
-- [ ] iPhone(#iPhone-and-Mac)
+- [ ] [iPhone](#iPhone-and-Mac)
 
 ## Run default app
 In order to run the pre-built app all you need to do is:
