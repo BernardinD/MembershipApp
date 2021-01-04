@@ -9,7 +9,7 @@ This also makes it easy for converting/exporting to a mobile app version
 
 All one would need in order to use this app is a GoogleSheets spreadsheet of there members and a google client key
 
-## Current stable Platforms
+## Current Platforms
 - [x] [Windows (Unstable)](#Windows)
 - [ ] [MacOS](#)
 - [ ] [Linux](#)
@@ -34,7 +34,7 @@ In order to run the pre-built app all you need to do is:
 - Download [MembershipApp.apk](https://github.com/BernardinD/MembershipApp/releases/download/1.0/MembershipApp.apk) to phone
 - Tap the download to install
 
-### iPhone and Mac (TBD)
+### iPhone and Mac
 ...
 
 
