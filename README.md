@@ -29,7 +29,7 @@ In order to run the pre-built app all you need to do is:
 * Run the "Membership.exe" 
 
 ### Android:
-- [Download MembershipApp.apk](#https://github.com/BernardinD/MembershipApp/releases/download/1.0/MembershipApp.apk) to phone
+- [Download MembershipApp.apk](https://github.com/BernardinD/MembershipApp/releases/download/1.0/MembershipApp.apk) to phone
 - Tap the click to install
 
 ### iPhone and Mac (TBD)
