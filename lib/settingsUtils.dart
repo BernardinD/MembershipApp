@@ -1,4 +1,5 @@
 import 'package:MembershipApp/main.dart';
+import 'package:MembershipApp/scriptUtils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,10 +54,26 @@ class _TextInputTileState extends State<TextInputTile> {
           return;
         }
 
+        // Show loading screen
         MyApp.pr.show();
+
         // Create and sets up new membership spreadsheet
-        await Utils.createSheet(_settings[_key]);
-        await Utils.getSpread(context,  _settings[_key]);
+        // using name in temp/local settings
+        await driveUtils.createSheet(_settings[_key]);
+        await driveUtils.getSpread(context,  _settings[_key]);
+
+        // Create form for new sheet with standalone Googe App Script
+        var formName = "${_settings[_key]} - New member sign-up";
+        var script_result = await scriptUtils.createForm(context, formName);
+        debugPrint("script result = ${script_result}");
+        // If script was successful, get ID of new form
+        if(!(script_result is PlatformException) || !script_result){
+          await driveUtils.useDriveAPI(context, (api) async{
+            driveUtils.findFile(
+                context, driveUtils.mimetypes['form'], formName, api);
+          });
+        }
+        // Hide loading screen
         MyApp.pr.hide();
 
         // Change key to match a new sheet selection
@@ -193,7 +210,7 @@ class _FileBrowserTileState extends State<FileBrowserTile> {
       // Reload client_secret if it was changed
       if(key == "secret"){
         // Utils.loadAsset(context);
-        await Utils.getSheetApi(context);
+        await driveUtils.getSheetApi(context);
         print("inside condition");
         print("ran api reset");
       }

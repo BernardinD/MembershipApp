@@ -71,8 +71,8 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
     // Make sure credentials and spreadsheet
     if(e != NavigationEvents.HomePageClickedEvent && e != NavigationEvents.SettingsPageClickedEvent){
       // Check json first, then sheet; If either fails block change and show popup
-      var response = await Utils.loadAsset(context).then((value) async{
-        return await Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((ret){
+      var response = await driveUtils.loadAsset(context).then((value) async{
+        return await driveUtils.getSpread(context, MyApp.prefs.getString("sheet")).then((ret){
           return ret.toString();
         }, onError: (e){
           throw ("Spreadsheet could not be found");
@@ -114,8 +114,8 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
   Future reloadSpread(BuildContext context) async{
     await MyApp.pr.show();
     // Check json first, then sheet; If either fails block change and show popup
-    await Utils.loadAsset(context).then((value) async{
-      return await Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((sheet) async{
+    await driveUtils.loadAsset(context).then((value) async{
+      return await driveUtils.getSpread(context, MyApp.prefs.getString("sheet")).then((sheet) async{
         await sheet.refresh();
         await MyApp.pr.hide();
         showDialog(context: context, builder: (BuildContext context) {

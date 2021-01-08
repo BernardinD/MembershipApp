@@ -163,7 +163,7 @@ class ScanPageState extends State<ScanPage> {
         // setBtn();
       });
 
-      Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async {
+      driveUtils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async {
         Worksheet sheet = spread.worksheetByTitle("Sheet1");
         final cell = await sheet.cells.cell(column: 5, row: row_);
         cell.post("Yes");
@@ -183,7 +183,7 @@ class ScanPageState extends State<ScanPage> {
     _last = parsed[2];
     print("_first = ${_first}, _last = ${_last}");
     debugPrint("Testing");
-    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
+    driveUtils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
       Worksheet sheet = spread.worksheetByTitle("Sheet1");
       print("sheet.title = " +sheet.title);
 

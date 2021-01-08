@@ -17,6 +17,7 @@ import '../bloc.navigation_bloc/navigation_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:MembershipApp/driveUtils.dart';
+import 'package:googleapis/script/v1.dart'as app_scripts;
 
 class AddMemberPage extends StatefulWidget with NavigationStates {
   @override
@@ -43,20 +44,20 @@ class AddMemberPageState extends State<AddMemberPage>  {
     super.initState();
 
     // Initialize everything needs to spreadsheet
-    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) {
+    driveUtils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) {
       print("Final result: " + spread.toString());
     });
 
     // Initialize folders
     List<String> names = [MyApp.prefs.getString("sheet"), "2020"];
     print("finding folders");
-    Utils.findFolders(context, names).then((folders) async {
+    driveUtils.findFolders(context, names).then((folders) async {
       String prevID = "root";
       int i = 0;
       for(var folder in folders){
         if (folder == null){
           print("creating folder");
-          var f = await Utils.createFolders(context, names[i], prevID);
+          var f = await driveUtils.createFolders(context, names[i], prevID);
           prevID = f.id;
         }
         else
@@ -180,7 +181,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: RaisedButton(
-                                      onPressed: (Utils.webLink != null) ? () async { if (await canLaunch(Utils.webLink)) await launch(Utils.webLink);}  : null,
+                                      onPressed: (driveUtils.webLink != null) ? () async { if (await canLaunch(driveUtils.webLink)) await launch(driveUtils.webLink);}  : null,
                                       child: Text('Open Spreadsheet'),
                                     ),
                                   ),
@@ -238,7 +239,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
       _data = MyApp.prefs.getString("club_name").replaceAll(" ", "") + "," + _first + "," + _last;
     });
 
-    Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
+    driveUtils.getSpread(context, MyApp.prefs.getString("sheet")).then((spread) async{
       await MyApp.pr.show();
       Worksheet sheet = spread.worksheetByTitle("Sheet1");
       var new_row = [_first, _last, "Beginner", 0, "No", _email, _phone];
@@ -277,7 +278,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
       print("image file path: " + (await file.path));
 
       // Upload image to drive and share with club account
-      return await Utils.getCreds(context).then((creds) async {
+      return await driveUtils.getCreds(context).then((creds) async {
         // Find correct sheet ID
         final drive_scopes = [drive.DriveApi.DriveScope];
         return await clientViaServiceAccount(creds, drive_scopes).then((
@@ -301,7 +302,7 @@ class AddMemberPageState extends State<AddMemberPage>  {
             api.permissions.create(request, media.id);
             debugPrint("After permissions");
 
-            await Utils.findFile(context, "", "${_first}_${_last}.png", api).then((img){
+            await driveUtils.findFile(context, "", "${_first}_${_last}.png", api).then((img){
               print("img = " + img.name);
               print("img.webViewLink = " + img.webViewLink.toString());
               media.webViewLink=img.webViewLink;

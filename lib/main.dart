@@ -41,8 +41,8 @@ class MyApp extends StatelessWidget {
     }
 
     // Initial initialization of Spreadsheet
-    await Utils.loadAsset(context).then((value) async{
-      return await Utils.getSpread(context, MyApp.prefs.getString("sheet")).then((ret){
+    await driveUtils.loadAsset(context).then((value) async{
+      return await driveUtils.getSpread(context, MyApp.prefs.getString("sheet")).then((ret){
         return ret.toString();
       }, onError: (e){
         throw ("Spreadsheet could not be found");

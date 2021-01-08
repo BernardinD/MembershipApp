@@ -11,8 +11,9 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:gsheets/gsheets.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:googleapis/script/v1.dart'as app_scripts;
 
-class Utils{
+class driveUtils{
 
   static GSheets _SheetApi = null;
   static Spreadsheet _Spread = null;
@@ -52,9 +53,59 @@ class Utils{
     }
   }
 
+  // Run a given function on the DriveAPI
+  static Future useDriveAPI(BuildContext context, Function callback) async{
+    return await driveUtils.getCreds(context).then((creds) async {
+      // Find correct sheet ID
+      final drive_scopes = [drive.DriveApi.DriveScope];
+      return await clientViaServiceAccount(creds, drive_scopes).then((
+          AuthClient client) async {
+        // [client] is an authenticated HTTP client.
+        var api = new drive.DriveApi(client);
+
+        // Run custom function
+        return await callback(api);
+      });
+    });
+  }
+
   // Return list of existing directories along a path, up to the point where the path exists
   static Future<List<drive.File>> findFolders(BuildContext context, List<String> names) async{
-    return await Utils.getCreds(context).then((creds) async {
+    return await useDriveAPI(context, (api) async{
+      print("right before loop");
+      List<drive.File> ret_folders = new List<drive.File>();
+      for(int i = 0; i < names.length; i++) {
+        print("inside loop");
+        print("ret_folders[i - 1] = " + ((i - 1 >= 0) ? ret_folders[i - 1].toString(): ""));
+        // Run query
+        // Return null if (we are passed the root) && (there exists no folder above)
+        drive.File sub_ = (i - 1 >= 0) && (ret_folders[i - 1]== null) ? null : await api.files.list(
+          // Set parentID if idx is passed root
+            q: """${mimetypes["folder"]}
+                  ${(i - 1 >= 0) ? "and '${ret_folders[i - 1].id}' in parents" : ""}
+                  and name = '${names[i]}'
+                  """,
+            spaces: 'drive').then((folders) {
+          drive.File sub_ = folders.files.length > 0
+              ? folders.files[0]
+              : null;
+          return sub_;
+        }, onError: (e) => print("Create: " + e.toString()));
+
+        print("sub_ = " + sub_.toString());
+        ret_folders.add(sub_);
+      }
+      print("after loop");
+      for(drive.File folder in ret_folders){
+        print("folder: " +folder.toString());
+      }
+      return ret_folders;
+    });
+  }
+  /*
+  // Return list of existing directories along a path, up to the point where the path exists
+  static Future<List<drive.File>> findFolders(BuildContext context, List<String> names) async{
+    return await driveUtils.getCreds(context).then((creds) async {
       // Find correct sheet ID
       final drive_scopes = [drive.DriveApi.DriveScope];
       return await clientViaServiceAccount(creds, drive_scopes).then((
@@ -94,6 +145,8 @@ class Utils{
     });
   }
 
+   */
+
   static Future createSheet(String title)async{
     Spreadsheet sh = await _SheetApi.createSpreadsheet(title);
     await sh.share(MyApp.prefs.getString('email'), type:PermType.user, role:PermRole.owner).catchError((e){
@@ -111,7 +164,7 @@ class Utils{
   // Creates a folder in the drive of the set email in settings
   // Becomes a sub-folder if a parent is given
   static Future<drive.File> createFolders(BuildContext context, String name, String parentID) async{
-    return await Utils.getCreds(context).then((creds) async {
+    return await driveUtils.getCreds(context).then((creds) async {
       // Find correct sheet ID
       final drive_scopes = [drive.DriveApi.DriveScope];
       return await clientViaServiceAccount(creds, drive_scopes).then((
@@ -139,6 +192,8 @@ class Utils{
     });
   }
 
+  // Loads the client_secret.json file, either in the current directory
+  // or the path in settings.
   static Future<String> loadAsset(BuildContext context) async{
     return await File("./client_secret.json").readAsString().catchError((e) {return File(MyApp.prefs.getString("secret")).readAsString();});
   }
@@ -164,19 +219,21 @@ class Utils{
     }
     else {
       // Google credentials
-      return await Utils.getCreds(context).then((creds) async {
+      return await driveUtils.getCreds(context).then((creds) async {
         // Find correct sheet ID
         final drive_scopes = [drive.DriveApi.DriveScope];
         return await clientViaServiceAccount(creds, drive_scopes).then((
             AuthClient client) async {
           // [client] is an authenticated HTTP client.
           var api = new drive.DriveApi(client);
+          var script_api = new app_scripts.ScriptApi(client);
 
-          final gsheetsApi = await Utils.getSheetApi(context);
+
+          final gsheetsApi = await driveUtils.getSheetApi(context);
 
           // print("mimtypes = " + mimetypes.keys.toString());
-          _Spread = await Utils.findFile(
-              context, mimetypes['spreadsheet'], name, api)
+          _Spread = await driveUtils.findFile(
+              context, mimetypes['spreadsheet'], name, api, script_api: script_api)
               .then((file) async {
             if (file != null) {
               debugPrint("file = " + file.name);
@@ -197,10 +254,11 @@ class Utils{
     }
   }
 
-  static Future<drive.File> findFile(BuildContext context, String mimeType, String name, drive.DriveApi api) async{
+  static Future<drive.File> findFile(BuildContext context, String mimeType, String name, drive.DriveApi api, {app_scripts.ScriptApi script_api=null}) async{
     print("len = " + "".length.toString());
     String mimetype = mimeType.length>0 ? "${mimeType} and " : "";
     print("mimetype = " + mimetype);
+    
     return api.files.list(
         q: "${mimetype} name = '${name}'",
         spaces: 'drive', $fields: "files(modifiedTime,id,name,createdTime,version,size,md5Checksum,webViewLink)").then((value) {
