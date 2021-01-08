@@ -11,12 +11,12 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 
 ## Current Platforms
 - [x] [Windows (Unstable)](#Windows)
-- [ ] [MacOS](#)
-- [ ] [Linux](#)
+- [ ] [MacOS](#)(#iPhone-and-Mac)
+- [ ] Linux
 - [x] [Android](#Android)
 - [ ] [iPhone](#iPhone-and-Mac)
 
-## Run default app
+## Use
 
 ### Needed:
 * Google credentials file ['client_secret.json'](#Creating-client\_secret-file)
@@ -62,7 +62,7 @@ All one would need in order to use this app is a GoogleSheets spreadsheet of the
 
 ![](demos/demo1.gif)
 * On the side-left menu go to “APIs & Services > Library”
-* Search for and enable both "Drive API" and "Sheets API" respectively 
+* Search for and enable "Drive API", "Sheets API", "Apps Script API" respectively 
 
 ![](demos/demo2.gif)
 ### Create linking file:

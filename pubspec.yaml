@@ -35,7 +35,7 @@ dependencies:
   flutter_barcode_scanner: ^1.0.1
 
   # For Google api
-  googleapis: any
+  googleapis: ^0.56.1
   googleapis_auth: any
 
   # For Google sheets api
@@ -52,7 +52,7 @@ dependencies:
   shared_preferences: ^0.5.12
 
   # File browsing
-  file_picker: ^2.0.7
+  file_picker: ^2.1.4
 
   # Email validation
   email_validator: ^1.0.6
