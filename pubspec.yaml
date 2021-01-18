@@ -41,7 +41,7 @@ dependencies:
   # For Google sheets api
   gsheets: ^0.2.5
 
-  webview_flutter: ^0.3.23
+  #webview_flutter: ^0.3.23
 
   path_provider: ^1.6.18
   mailto: ^1.0.0
@@ -52,12 +52,18 @@ dependencies:
   shared_preferences: ^0.5.12
 
   # File browsing
-  file_picker: ^2.1.4
+  file_picker: ^2.1.5
 
   # Email validation
   email_validator: ^1.0.6
 
   progress_dialog: ^1.2.4
+
+  # For decoding html responces
+  html_unescape: ^1.0.2
+
+  # For little faded notification on screen
+  fluttertoast: ^7.1.6
 
 dev_dependencies:
   flutter_test:
